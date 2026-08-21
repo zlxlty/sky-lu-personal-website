@@ -1,6 +1,6 @@
 # Sky Lu Personal Website - Implementation Roadmap
 
-Status: governance branch in progress; Commit 00.2 pending review
+Status: Stage 01 foundation in progress
 Last updated: 2026-08-21
 Companion documents: `PLAN.md`, `AGENTS.md`
 
@@ -40,12 +40,14 @@ latest reviewed main
   -> run branch-level checks
   -> present branch/PR review
   -> wait for merge authorization
-  -> merge through GitHub
+  -> rebase merge through GitHub
   -> update local main
   -> create the next dependent branch
 ```
 
 Do not stack dependent branches by default. If a later branch must begin before an earlier branch merges, document the dependency and ask the user to approve a stacked-branch workflow.
+
+Every feature branch uses a rebase merge. On GitHub, select **Rebase and merge**. For a local-only branch, rebase it onto current `main`, rerun affected verification, and fast-forward `main` with `--ff-only`. Preserve the approved commits; do not squash them or create feature merge commits. Every push, rebase of published history, and merge still requires explicit user authorization.
 
 ### 2.3 Commit review packet
 
@@ -263,7 +265,30 @@ Checks:
 - `pnpm build`.
 - Inspect generated `dist/` and confirm a static index page.
 
-### Commit 01.2 - add React, MDX, and Tailwind integrations
+### Commit 01.2 - require rebase merges
+
+Proposed message:
+
+```text
+docs: require rebase merges
+```
+
+Scope:
+
+- Record **Rebase and merge** as the only feature-branch merge method.
+- Define the equivalent local flow: rebase onto current `main`, rerun affected checks, and fast-forward with `--ff-only`.
+- Preserve individually approved commits by excluding squash and feature merge commits.
+- Keep explicit authorization gates for pushes, published-history rewrites, and merges.
+- Configure the future GitHub repository policy accordingly.
+
+Checks:
+
+- `AGENTS.md` and this roadmap use the same merge terminology.
+- No remaining recommendation permits squash or feature merge commits.
+- Conflict resolution returns to the normal review gate whenever the reviewed tree changes.
+- Markdown and privacy checks pass.
+
+### Commit 01.3 - add React, MDX, and Tailwind integrations
 
 Proposed message:
 
@@ -292,7 +317,7 @@ Checks:
 - Inspect generated HTML for the non-hydrated React component.
 - Confirm the smoke component adds no unnecessary client script.
 
-### Commit 01.3 - add formatting, linting, and unit-test tooling
+### Commit 01.4 - add formatting, linting, and unit-test tooling
 
 Proposed message:
 
@@ -317,7 +342,7 @@ Checks:
 - `pnpm test`.
 - `pnpm build`.
 
-### Commit 01.4 - add Playwright and continuous integration
+### Commit 01.5 - add Playwright and continuous integration
 
 Proposed message:
 
@@ -348,7 +373,7 @@ Checks:
 - `pnpm verify` and `pnpm verify:full`.
 - Verify workflow YAML syntax.
 
-### Commit 01.5 - add editor and pre-commit tooling
+### Commit 01.6 - add editor and pre-commit tooling
 
 Proposed message:
 
@@ -377,7 +402,7 @@ Checks:
 - Unstaged/unrelated files remain unchanged.
 - `pnpm verify` still passes outside the editor.
 
-### Commit 01.6 - add local development documentation
+### Commit 01.7 - add local development documentation
 
 Proposed message:
 
@@ -1601,9 +1626,10 @@ After the governance branch merges and the remote exists:
 3. Require the CI job names introduced in Stage 01.
 4. Require branches to be up to date if that does not create unnecessary churn for a single-developer repository.
 5. Disable force pushes and branch deletion on `main`.
-6. Add production environment protection before Stage 09 deployment workflows.
-7. Store Cloudflare and contact values in environment-scoped GitHub secrets.
-8. Keep pull requests small enough to review commit by commit.
+6. Enable **Rebase and merge** and disable merge commits and squash merging.
+7. Add production environment protection before Stage 09 deployment workflows.
+8. Store Cloudflare and contact values in environment-scoped GitHub secrets.
+9. Keep pull requests small enough to review commit by commit.
 
 Recommended pull-request title format:
 
@@ -1611,11 +1637,11 @@ Recommended pull-request title format:
 <type>: <feature outcome>
 ```
 
-Recommended merge policy:
+Required merge policy:
 
-- Preserve the reviewed commits with a merge commit or rebase merge.
-- Do not squash by default because the user is reviewing commit boundaries as architectural units.
-- Choose the exact merge method with the user at the first PR and document the decision.
+- Use **Rebase and merge** for every feature branch.
+- Preserve the reviewed commit boundaries; do not squash or create feature merge commits.
+- Obtain explicit authorization for the merge after the branch review, even though the method is predetermined.
 
 ## 19. Cross-branch invariants
 
@@ -1656,6 +1682,6 @@ After Commit 00.2 is approved and committed:
 
 1. Check the Stage 00 branch acceptance criteria against the complete branch diff.
 2. Present the governance branch review and wait for explicit merge, push, or pull-request authorization.
-3. Use the user-approved merge method and update local `main` to the reviewed result.
+3. After merge authorization, use the required rebase workflow and update local `main` to the reviewed result.
 4. Create `codex/chore/foundation` from that updated `main`.
 5. Prepare Commit 01.1 and return to the per-commit approval gate.
