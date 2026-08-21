@@ -1,0 +1,28 @@
+---
+import "../styles/global.css";
+
+const title = "Sky Lu";
+const description = "Personal website and technical writing by Sky Lu.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Foundation online</p>
+      <h1>{title}</h1>
+      <p>
+        This static Astro page establishes the build boundary for the personal
+        site. The full design and interactive hero will arrive in reviewed
+        feature commits.
+      </p>
+    </main>
+  </body>
+</html>
