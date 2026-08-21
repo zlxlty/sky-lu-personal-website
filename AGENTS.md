@@ -51,7 +51,9 @@ Keep static components in Astro when possible. A familiar React implementation i
 - Follow the branch names in `IMPLEMENTATIONS.md`, for example `codex/chore/foundation` and `codex/feat/guitar-widget`.
 - Create each dependent branch from the latest reviewed and merged `main`.
 - Do not begin a dependent branch from an unmerged feature branch unless the user explicitly approves stacked branches.
-- Do not merge a branch into `main`, push, force-push, rebase published history, or delete a branch without explicit user authorization.
+- Land every feature branch with a rebase merge. On GitHub, use **Rebase and merge**; for a local-only branch, rebase it onto current `main` and then fast-forward `main` with `--ff-only`.
+- Preserve the individually reviewed commits. Do not squash or create merge commits for feature branches.
+- Merge authorization remains branch-specific. Do not merge into `main`, push, force-push, rewrite published history, or delete a branch without explicit user authorization.
 - Never use destructive Git commands such as `git reset --hard` or `git checkout --` to discard work.
 - Preserve unrelated user files and changes. In particular, do not modify `.opencode/` unless the user asks.
 
@@ -159,10 +161,10 @@ Before asking to merge a feature branch:
    - Tests and quality results.
    - Screenshots for visual work.
    - Known limitations and deferred items.
-   - Merge method recommendation.
+   - Rebase readiness and any expected conflicts.
 6. Wait for explicit permission before merging or opening/pushing a pull request.
 
-Prefer a normal pull request review on GitHub. Do not assume squash, merge commit, or rebase merge; ask which merge method the user wants when it matters.
+Prefer a normal pull request review on GitHub and select **Rebase and merge**. If rebasing produces a conflict or changes the reviewed tree, resolve it through the normal approval workflow, rerun affected checks, and present the updated branch diff before merging.
 
 ## 6. Implementation discipline
 
