@@ -360,6 +360,9 @@ Scope:
 - Required job names documented for later GitHub branch protection.
 - Stable scripts: `test:e2e`, `test:e2e:ui`, `test:e2e:update`, `verify`, and `verify:full`.
 - Failure-only Playwright traces/screenshots/artifacts.
+- Initial `DEVELOPMENT.md` instructions for retrieving, inspecting, and safely
+  handling failed Playwright traces from GitHub Actions, with a GitLab CI
+  equivalent.
 
 Non-goals:
 
@@ -413,7 +416,7 @@ docs: add local development guide
 Scope:
 
 - `README.md` with project purpose, prerequisites, five-minute quick start, command summary, and links to detailed documents.
-- `DEVELOPMENT.md` with runtime setup, pnpm/Corepack, install, environment setup, dev server, production preview, test selection, `/lab`, debugging, CI parity, Git review flow, and troubleshooting.
+- Expand `DEVELOPMENT.md` with runtime setup, pnpm/Corepack, install, environment setup, dev server, production preview, test selection, `/lab`, debugging, CI parity, Git review flow, and troubleshooting.
 - `.env.example` with placeholders only and comments explaining when values become required.
 - Document the future `cf:preview` contract as unavailable until Stage 09 rather than providing a broken command early.
 

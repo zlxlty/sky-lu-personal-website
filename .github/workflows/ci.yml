@@ -1,0 +1,80 @@
+name: CI
+
+# Stable required job names for main branch protection: Quality and Browser.
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.19.0
+          cache: true
+          cache-dependency-path: pnpm-lock.yaml
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run required verification
+        run: pnpm verify
+
+      - name: Report unit coverage
+        run: pnpm test:coverage
+
+  browser:
+    name: Browser
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.19.0
+          cache: true
+          cache-dependency-path: pnpm-lock.yaml
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser verification
+        run: pnpm test:e2e
+
+      - name: Upload browser failure artifacts
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-failure-${{ github.run_attempt }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
