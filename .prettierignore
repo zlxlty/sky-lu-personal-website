@@ -1,0 +1,13 @@
+.agents/
+.astro/
+coverage/
+dist/
+node_modules/
+playwright-report/
+test-results/
+pnpm-lock.yaml
+
+# Preserve the compact tables in the reviewed governance documents.
+AGENTS.md
+IMPLEMENTATIONS.md
+PLAN.md
