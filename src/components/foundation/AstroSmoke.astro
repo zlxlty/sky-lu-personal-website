@@ -1,0 +1,14 @@
+---
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<p
+  data-smoke="astro"
+  class="m-0 rounded-sm border border-current/20 px-3 py-2 text-sm"
+>
+  {label}
+</p>
