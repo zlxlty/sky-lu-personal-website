@@ -1,4 +1,7 @@
 ---
+import AstroSmoke from "@/components/foundation/AstroSmoke.astro";
+import StaticMdxSmoke from "@/components/foundation/StaticMdxSmoke.mdx";
+import { StaticReactSmoke } from "@/components/foundation/StaticReactSmoke";
 import "../styles/global.css";
 
 const title = "Sky Lu";
@@ -23,6 +26,19 @@ const description = "Personal website and technical writing by Sky Lu.";
         site. The full design and interactive hero will arrive in reviewed
         feature commits.
       </p>
+      <section aria-labelledby="integration-heading" class="mt-10">
+        <h2
+          id="integration-heading"
+          class="text-sm font-semibold tracking-wide uppercase"
+        >
+          Static integration checks
+        </h2>
+        <div class="mt-3 grid gap-2 sm:grid-cols-3">
+          <AstroSmoke label="Astro component" />
+          <StaticReactSmoke label="React without hydration" />
+          <StaticMdxSmoke />
+        </div>
+      </section>
     </main>
   </body>
 </html>
