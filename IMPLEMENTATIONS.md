@@ -388,9 +388,14 @@ Scope:
 
 - Optional VS Code extension recommendations for Astro, ESLint, Prettier, Tailwind, MDX, and Playwright.
 - Conservative repository VS Code settings that use local formatters without rewriting unrelated files.
-- Husky and lint-staged, or a simpler equivalent selected during implementation after comparing maintenance cost.
+- `simple-git-hooks` plus check-only `lint-staged` tasks, selected over Husky to
+  keep hook installation and configuration small.
 - Pre-commit hook limited to approved staged files; it may format/lint but must never stage extra files, run deployment, or create a commit.
 - Pull-request template containing architecture, testing, privacy, screenshots, and documentation checklists.
+- Initial `README.md` with prerequisites, a first-clone setup sequence, automatic
+  hook activation, hook recovery, and local verification commands.
+- `DEVELOPMENT.md` instructions for optional editor setup, hook activation,
+  check-only behavior, and recovery from a failed hook.
 
 Architectural walkthrough:
 
@@ -415,7 +420,7 @@ docs: add local development guide
 
 Scope:
 
-- `README.md` with project purpose, prerequisites, five-minute quick start, command summary, and links to detailed documents.
+- Expand `README.md` with the complete project overview and command summary.
 - Expand `DEVELOPMENT.md` with runtime setup, pnpm/Corepack, install, environment setup, dev server, production preview, test selection, `/lab`, debugging, CI parity, Git review flow, and troubleshooting.
 - `.env.example` with placeholders only and comments explaining when values become required.
 - Document the future `cf:preview` contract as unavailable until Stage 09 rather than providing a broken command early.

@@ -1,7 +1,56 @@
 # Development
 
-This guide currently covers browser-test diagnostics. The remaining local setup,
-workflow, and troubleshooting sections are added in Foundation Commit 01.7.
+This guide currently covers local editor and commit checks plus browser-test
+diagnostics. The remaining setup, workflow, and troubleshooting sections are added
+in Foundation Commit 01.7.
+
+## Editor setup
+
+The repository includes optional VS Code recommendations for Astro, ESLint,
+Prettier, Tailwind CSS, MDX, and Playwright. Install them from the workspace's
+**Recommended Extensions** view. The settings use the repository's TypeScript and
+formatter versions, but leave format-on-save disabled so opening the project cannot
+rewrite a file unexpectedly.
+
+Editor feedback is advisory. The `pnpm` commands remain authoritative and work in
+any editor.
+
+## Pre-commit checks
+
+`pnpm install` runs the root `prepare` script, which installs a local Git pre-commit
+hook through `simple-git-hooks`. The hook runs `lint-staged` against files already
+staged for the proposed commit:
+
+- Prettier checks supported source, content, configuration, and documentation.
+- ESLint checks staged Astro, JavaScript, and TypeScript source.
+
+Both tasks are check-only: they do not format, fix, or intentionally stage files.
+If either task fails, the commit stops. Fix the reported file, run the relevant
+repository command, review the new diff, and ask for commit approval again before
+staging it.
+
+Useful commands are:
+
+```bash
+pnpm format
+pnpm lint:fix
+pnpm format:check
+pnpm lint
+```
+
+The first two commands write changes, so always inspect their diff. The latter two
+only check. The hook is fast feedback, not a replacement for `pnpm verify`, CI, or
+the repository's approval gate. Do not bypass it with `--no-verify` unless a
+documented emergency has been explicitly approved.
+
+If a fresh install did not activate the hook, run:
+
+```bash
+pnpm run prepare
+```
+
+Then confirm that `.git/hooks/pre-commit` exists. A GUI Git client launched outside
+your shell may also need the pinned Node and pnpm binaries on its `PATH`.
 
 ## Diagnose a Playwright failure from CI
 
