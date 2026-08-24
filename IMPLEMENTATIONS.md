@@ -1,7 +1,7 @@
 # Sky Lu Personal Website - Implementation Roadmap
 
 Status: Stage 01 foundation in progress
-Last updated: 2026-08-21
+Last updated: 2026-08-23
 Companion documents: `PLAN.md`, `AGENTS.md`
 
 ## 1. Purpose
@@ -122,6 +122,30 @@ The work is intentionally sequential even where branches could be parallelized. 
 | 09 | `codex/feat/cloudflare-production` | Static deployment, email privacy, crawler and security policy | 08 |
 | 10 | `codex/chore/launch-hardening` | Accessibility, performance, observability, release checks | 09 |
 | 11 | `codex/feat/portrait-content-polish` | Photograph, canonical links, final public content | 10 and user assets |
+
+### 4.1 Progress log
+
+This table records the repository state when the current roadmap revision was
+prepared. Uncommitted work is identified explicitly and does not count as durable
+progress until it passes the approval gate.
+
+| Stage | Status | Evidence and next action |
+| ---: | --- | --- |
+| 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
+| 01 | Active; final candidate implemented | Commits 01.1-01.6 are pushed and green in CI. Commit 01.7 is implemented and unstaged pending review. After approval, run the branch acceptance review. |
+| 02-11 | Not started | Begin Stage 02 only after Stage 01 is reviewed and rebase-merged into `main`. |
+
+Stage 01 commit ledger:
+
+| Candidate | Status | Commit or evidence |
+| --- | --- | --- |
+| 01.1 Astro scaffold | Committed and pushed | `73dedc4` |
+| 01.2 rebase policy | Committed and pushed | `431dbbe` |
+| 01.3 React, MDX, and Tailwind | Committed and pushed | `fbd23fc` |
+| 01.4 code quality | Committed and pushed | `dc237ea` |
+| 01.5 Playwright and CI | Committed, pushed, CI passed | `c3777f6` |
+| 01.6 local developer tooling | Committed, pushed, CI passed | `f455c27` |
+| 01.7 development documentation | Implemented and unstaged | Current review candidate; proposed message `docs: add local development guide`. |
 
 ## 5. Stage 00 - Repository governance
 

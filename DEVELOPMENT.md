@@ -1,8 +1,112 @@
 # Development
 
-This guide currently covers local editor and commit checks plus browser-test
-diagnostics. The remaining setup, workflow, and troubleshooting sections are added
-in Foundation Commit 01.7.
+This is the complete local development guide for the current foundation. Keep it
+in sync whenever a command, environment variable, test layer, or contributor
+workflow changes.
+
+## Toolchain
+
+The repository pins its toolchain instead of relying on whatever happens to be
+installed globally:
+
+- `.nvmrc` pins Node.js 24.19.0.
+- `package.json#engines` accepts compatible Node.js 24 and pnpm 11 releases.
+- `package.json#packageManager` pins pnpm 11.22.0.
+- `pnpm-lock.yaml` makes dependency resolution reproducible.
+
+Use pnpm for all dependency and script operations. Do not use npm, Yarn, or Bun to
+change the dependency graph or lockfile.
+
+## First-time setup
+
+From a fresh clone:
+
+```bash
+nvm install
+nvm use
+corepack enable
+pnpm install --frozen-lockfile
+pnpm exec playwright install chromium
+cp .env.example .env.local
+pnpm dev
+```
+
+If `nvm` is unavailable, use another version manager to install the exact version
+in `.nvmrc`. `pnpm install --frozen-lockfile` also runs the root `prepare` script,
+which installs the local pre-commit hook.
+
+Astro prints the local URL when the server is ready. The site is currently at `/`.
+The development-only `/lab` route arrives in Stage 02 and does not exist during the
+foundation stage.
+
+## Environment variables
+
+No environment variable is required yet. Copying `.env.example` reserves an
+ignored `.env.local` for later local-only values without changing current behavior.
+
+Stage 09 introduces these build-time contact variables:
+
+- `SITE_EMAIL_BROWN`
+- `SITE_EMAIL_PERSONAL`
+
+Leave both empty until that feature exists. Never commit their real values, add a
+`PUBLIC_` prefix, print them, or include them in fixtures, snapshots, metadata, RSS,
+or generated JSON. GitHub and Cloudflare receive production values through secrets,
+not repository files.
+
+## Architecture boundaries
+
+- `src/pages/` defines routes. Astro statically generates them into `dist/`.
+- `.astro` components own static layout and content by default.
+- React components become client islands only when an explicit `client:*` directive
+  is necessary.
+- Markdown and MDX content will live in Astro content collections rather than a
+  database or CMS.
+- Browser APIs, Tone.js, and per-frame guitar state remain behind client boundaries.
+- Tailwind CSS and custom properties provide styling without requiring a client
+  runtime.
+- `tests/unit/` holds deterministic Vitest tests; `tests/e2e/` holds real-browser
+  Playwright tests.
+
+Do not introduce SSR, a Worker binding, or a hydrated React wrapper for static
+content as a convenience. Cloudflare Workers Static Assets remains the production
+target.
+
+## Command reference
+
+| Command                | Behavior                                                      |
+| ---------------------- | ------------------------------------------------------------- |
+| `pnpm dev`             | Start Astro's development server with hot module replacement. |
+| `pnpm build`           | Generate the static production build in `dist/`.              |
+| `pnpm preview`         | Serve the generated build through Astro for local inspection. |
+| `pnpm check`           | Run `astro check`, TypeScript, and content type validation.   |
+| `pnpm format`          | Write Prettier formatting across supported repository files.  |
+| `pnpm format:check`    | Check formatting without writing.                             |
+| `pnpm lint`            | Run ESLint without writing.                                   |
+| `pnpm lint:fix`        | Apply safe ESLint fixes; inspect the diff afterward.          |
+| `pnpm test`            | Run Vitest once in deterministic mode.                        |
+| `pnpm test:watch`      | Keep Vitest running while unit-test code changes.             |
+| `pnpm test:coverage`   | Run Vitest and write the ignored coverage report.             |
+| `pnpm test:e2e`        | Build and run Playwright against a production-style server.   |
+| `pnpm test:e2e:ui`     | Open Playwright UI mode for local browser-test debugging.     |
+| `pnpm test:e2e:update` | Update reviewed browser snapshots when snapshots exist.       |
+| `pnpm verify`          | Run formatting, linting, type checks, unit tests, and build.  |
+| `pnpm verify:full`     | Run `pnpm verify` followed by Playwright.                     |
+| `pnpm run prepare`     | Reinstall the local pre-commit hook.                          |
+
+`pnpm cf:preview` is intentionally unavailable until Stage 09 adds Wrangler. No
+install, build, preview, verify, or Git hook command deploys the website.
+
+## Normal development loop
+
+1. Start from the latest reviewed `main` and create the planned `codex/...` feature
+   branch.
+2. Run `pnpm install --frozen-lockfile` when dependencies changed.
+3. Run `pnpm dev` for browser feedback and `pnpm test:watch` for pure logic.
+4. Keep static presentation in Astro and hydrate only the smallest required island.
+5. Run the smallest relevant checks while working.
+6. Before review, run `pnpm verify`; run `pnpm verify:full` for browser-facing work.
+7. Inspect the complete diff, check privacy, and follow the approval process below.
 
 ## Editor setup
 
@@ -14,6 +118,67 @@ rewrite a file unexpectedly.
 
 Editor feedback is advisory. The `pnpm` commands remain authoritative and work in
 any editor.
+
+## Choose the right test
+
+| Tool                   | Use it for                                                                                                        |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Vitest                 | Geometry, scheduling, reducers, schemas, content filtering, and utilities.                                        |
+| Playwright             | Routes, generated HTML, hydration, navigation, themes, pointer and keyboard behavior, and responsive integration. |
+| Axe through Playwright | Automated accessibility regressions on representative pages.                                                      |
+| Astro preview          | Generated routes, asset URLs, client chunks, and no-JavaScript behavior.                                          |
+| Manual browser review  | Sound quality, animation feel, focus order, contrast, and assistive-technology judgment.                          |
+
+Audio tests assert scheduling and instrument calls rather than attempting to record
+speaker output. Automated Axe checks complement rather than replace keyboard and
+screen-reader review.
+
+Run a particular Vitest file during development by forwarding its path:
+
+```bash
+pnpm test:watch -- tests/unit/foundation.test.ts
+```
+
+Run a particular Playwright test or browser project with:
+
+```bash
+pnpm exec playwright test -g "homepage satisfies"
+pnpm exec playwright test --project=chromium
+```
+
+### Component lab
+
+Stage 02 adds a development-only `/lab` for component states, themes, responsive
+behavior, focus, reduced motion, and the guitar. It replaces Storybook initially.
+Until then, use the homepage foundation smoke route and do not document `/lab` as an
+available page.
+
+### Production preview
+
+Use a production preview for generated-output or hydration issues:
+
+```bash
+pnpm build
+pnpm preview
+```
+
+Inspect `dist/`, loaded client chunks, browser console output, navigation, and the
+no-JavaScript state. After Stage 09, use `pnpm cf:preview` specifically for
+Cloudflare routing, bindings, and headers.
+
+## Debugging
+
+Start with Astro's development overlay and the browser console. For a problem that
+appears only after building, reproduce it through `pnpm preview`. Use browser
+developer tools to inspect layout shifts, long tasks, animation frames, network
+requests, hydration warnings, and loaded chunks.
+
+For unit tests, use `pnpm test:watch` and narrow the file or test name. For browser
+tests, use `pnpm test:e2e:ui`, `--debug`, or the retained CI trace described below.
+
+Vite provides source mapping during local development. Public production source-map
+files are not enabled in the foundation. A later observability gate may generate
+private CI source maps for upload without publishing ordinary `.map` files.
 
 ## Pre-commit checks
 
@@ -51,6 +216,39 @@ pnpm run prepare
 
 Then confirm that `.git/hooks/pre-commit` exists. A GUI Git client launched outside
 your shell may also need the pinned Node and pnpm binaries on its `PATH`.
+
+## CI parity
+
+GitHub Actions uses two stable required jobs:
+
+- **Quality** installs the frozen lockfile, runs `pnpm verify`, and reports unit
+  coverage.
+- **Browser** waits for Quality, installs Chromium, runs `pnpm test:e2e`, and uploads
+  seven-day failure artifacts.
+
+Run `pnpm verify:full` for the closest local equivalent. CI has read-only repository
+contents permission and no deployment credentials or deployment step.
+
+## Git and review workflow
+
+Every feature is implemented on its documented `codex/...` branch. Before each
+commit:
+
+1. Finish one coherent candidate and leave it unstaged.
+2. Run the documented checks and inspect the complete diff.
+3. Present the intent, architecture, behavior, file walkthrough, verification,
+   risks, and proposed message.
+4. Wait for explicit approval for that exact candidate.
+5. Stage only the approved files and commit them.
+
+Do not interpret approval of one commit as approval of the next. If a formatter,
+linter, or requested revision changes the reviewed tree, present the updated diff
+again. Never commit real contact addresses or secrets.
+
+When the branch is complete, rebase it onto the latest `main`, rerun branch checks,
+review the full branch diff, and obtain explicit merge approval. Use GitHub's
+**Rebase and merge** option; do not squash the individually reviewed commits or
+create a merge commit.
 
 ## Diagnose a Playwright failure from CI
 
@@ -178,3 +376,55 @@ Further reading:
 - [Playwright continuous integration](https://playwright.dev/docs/ci)
 - [GitHub workflow artifacts](https://docs.github.com/en/actions/tutorials/store-and-share-data)
 - [GitLab job artifacts](https://docs.gitlab.com/ci/jobs/job_artifacts/)
+
+## Troubleshooting
+
+### Node or pnpm engine warning
+
+Confirm the active versions, then reload the repository pins:
+
+```bash
+node --version
+pnpm --version
+nvm install
+nvm use
+corepack enable
+```
+
+### The pre-commit hook is missing
+
+Run `pnpm install --frozen-lockfile` or `pnpm run prepare`. Do not approve
+`simple-git-hooks` as a dependency build; its postinstall is intentionally blocked.
+If a GUI Git client cannot find pnpm, launch it from the configured shell or add the
+version manager's shims to the GUI environment.
+
+### Playwright cannot find Chromium
+
+Install the repository's configured browser:
+
+```bash
+pnpm exec playwright install chromium
+```
+
+On a Linux machine missing browser system libraries, use:
+
+```bash
+pnpm exec playwright install --with-deps chromium
+```
+
+### A local port is already in use
+
+Stop an Astro development server started by this project:
+
+```bash
+pnpm exec astro dev stop
+```
+
+Playwright reserves `127.0.0.1:4322` and intentionally refuses to reuse an existing
+server so its production-style run remains isolated.
+
+### Local checks pass but CI fails
+
+Use the pinned Node and pnpm versions, reinstall with `--frozen-lockfile`, and run
+`pnpm verify:full`. Compare CI's first failing command rather than only its final job
+status. For browser failures, download and inspect the trace as described above.
