@@ -132,20 +132,28 @@ progress until it passes the approval gate.
 | Stage | Status | Evidence and next action |
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
-| 01 | Active; final candidate implemented | Commits 01.1-01.6 are pushed and green in CI. Commit 01.7 is implemented and unstaged pending review. After approval, run the branch acceptance review. |
-| 02-11 | Not started | Begin Stage 02 only after Stage 01 is reviewed and rebase-merged into `main`. |
+| 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
+| 02 | Active; first candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commit 02.1 is implemented and unstaged pending review. |
+| 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
 
 | Candidate | Status | Commit or evidence |
 | --- | --- | --- |
-| 01.1 Astro scaffold | Committed and pushed | `73dedc4` |
-| 01.2 rebase policy | Committed and pushed | `431dbbe` |
-| 01.3 React, MDX, and Tailwind | Committed and pushed | `fbd23fc` |
-| 01.4 code quality | Committed and pushed | `dc237ea` |
-| 01.5 Playwright and CI | Committed, pushed, CI passed | `c3777f6` |
-| 01.6 local developer tooling | Committed, pushed, CI passed | `f455c27` |
-| 01.7 development documentation | Implemented and unstaged | Current review candidate; proposed message `docs: add local development guide`. |
+| 01.1 Astro scaffold | Rebase-merged | `ebe9b30` |
+| 01.2 rebase policy | Rebase-merged | `384caf1` |
+| 01.3 React, MDX, and Tailwind | Rebase-merged | `b6c2cad` |
+| 01.4 code quality | Rebase-merged | `bc5bbb1` |
+| 01.5 Playwright and CI | Rebase-merged; CI passed | `84a7943` |
+| 01.6 local developer tooling | Rebase-merged; CI passed | `f8ac86c` |
+| 01.7 development documentation | Rebase-merged; CI passed | `3681ca7` |
+
+Stage 02 commit ledger:
+
+| Candidate | Status | Commit or evidence |
+| --- | --- | --- |
+| 02.1 tokens and typography | Implemented and unstaged | Current review candidate; proposed message `feat: add color tokens and typography`. |
+| 02.2-02.5 | Not started | Begin after the preceding candidate is reviewed and committed. |
 
 ## 5. Stage 00 - Repository governance
 
