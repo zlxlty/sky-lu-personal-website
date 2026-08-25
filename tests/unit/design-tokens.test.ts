@@ -1,0 +1,99 @@
+import { readFile, stat } from "node:fs/promises";
+import { resolve } from "node:path";
+
+import { describe, expect, it } from "vitest";
+
+const tokensSource = await readFile(resolve("src/styles/tokens.css"), "utf8");
+const fontsSource = await readFile(resolve("src/styles/fonts.css"), "utf8");
+
+const lightTokens = extractTokens(extractRule(":root"));
+const darkTokens = extractTokens(extractRule('[data-theme="dark"]'));
+
+describe.each([
+  ["light", lightTokens],
+  ["dark", darkTokens],
+] as const)("%s design tokens", (_theme, tokens) => {
+  it("keeps readable text and links above WCAG AA contrast", () => {
+    expect(
+      contrast(tokens["--color-ink"], tokens["--color-paper"]),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrast(tokens["--color-muted"], tokens["--color-paper"]),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrast(tokens["--color-link"], tokens["--color-paper"]),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("keeps focus and brass foreground pairs visible", () => {
+    expect(
+      contrast(tokens["--color-focus"], tokens["--color-paper"]),
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      contrast(tokens["--color-on-brass"], tokens["--color-brass"]),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe("self-hosted typography", () => {
+  it("references only local WOFF2 font assets", async () => {
+    const urls = [...fontsSource.matchAll(/url\("([^"]+)"\)/g)].map(
+      ([, url]) => url,
+    );
+
+    expect(urls).toHaveLength(4);
+    expect(
+      urls.every((url) => url.startsWith("/fonts/") && url.endsWith(".woff2")),
+    ).toBe(true);
+
+    for (const url of urls) {
+      const asset = await stat(resolve("public", url.slice(1)));
+      expect(asset.size).toBeGreaterThan(0);
+    }
+  });
+});
+
+function extractRule(selector: string): string {
+  const start = tokensSource.indexOf(`${selector} {`);
+  if (start < 0) {
+    throw new Error(`Missing CSS rule: ${selector}`);
+  }
+
+  const bodyStart = tokensSource.indexOf("{", start) + 1;
+  const bodyEnd = tokensSource.indexOf("\n}", bodyStart);
+  if (bodyEnd < 0) {
+    throw new Error(`Unclosed CSS rule: ${selector}`);
+  }
+
+  return tokensSource.slice(bodyStart, bodyEnd);
+}
+
+function extractTokens(rule: string): Record<string, string> {
+  return Object.fromEntries(
+    [...rule.matchAll(/(--[\w-]+):\s*(#[\da-f]{6});/gi)].map(
+      ([, name, value]) => [name, value],
+    ),
+  );
+}
+
+function contrast(foreground: string, background: string): number {
+  const [lighter, darker] = [luminance(foreground), luminance(background)].sort(
+    (a, b) => b - a,
+  );
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function luminance(hex: string): number {
+  const pairs = hex.slice(1).match(/.{2}/g);
+  if (pairs?.length !== 3) {
+    throw new Error(`Invalid six-digit hex color: ${hex}`);
+  }
+
+  const [red, green, blue] = pairs
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) =>
+      channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
+    );
+
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
