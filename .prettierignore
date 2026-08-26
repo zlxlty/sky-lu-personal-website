@@ -4,6 +4,7 @@ coverage/
 dist/
 node_modules/
 playwright-report/
+reference/
 test-results/
 pnpm-lock.yaml
 

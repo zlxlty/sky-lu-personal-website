@@ -13,6 +13,7 @@
     "coverage",
     "dist",
     "playwright-report",
+    "reference",
     "test-results"
   ]
 }

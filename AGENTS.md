@@ -28,8 +28,14 @@ Do not silently reinterpret a confirmed product decision. If a necessary change 
 - Astro with strict TypeScript.
 - Static generation by default.
 - React islands only for behavior that needs a client runtime.
-- Tailwind CSS v4 plus CSS custom-property design tokens.
+- Tailwind CSS v4 first: express component-local layout and spacing with
+  utilities at call sites; reserve CSS custom properties for semantic color,
+  typography, motion, and sizing values rather than a parallel numeric scale.
 - A small, curated subset of shadcn/ui; do not install the full registry.
+- The blueprint shell is selectively migrated from MIT-licensed
+  `ncdai/chanhdai.com` React modules under `src/components/blueprint/` and
+  renders statically through Astro. Extend that module seam instead of creating
+  parallel Astro layout primitives.
 - Git-authored Markdown/MDX in Astro content collections.
 - Anime.js v4 for authored motion.
 - Custom `requestAnimationFrame` physics and Tone.js synthesis for the guitar.
@@ -179,7 +185,8 @@ Prefer a normal pull request review on GitHub and select **Rebase and merge**. I
 - Do not introduce SSR or a Cloudflare binding for convenience.
 - Do not add analytics, Sentry, Storybook, a CMS, or backend storage before its planned gate.
 - Do not copy personal data, logos, wordmarks, or distinctive brand assets from chanhdai.com.
-- Preserve required MIT notices for substantial reused source.
+- Preserve per-file attribution and `THIRD_PARTY_NOTICES.md` for substantial
+  source migrated from chanhdai.com.
 
 ## 7. Privacy and secrets
 

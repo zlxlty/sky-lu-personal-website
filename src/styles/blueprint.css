@@ -1,0 +1,77 @@
+/*
+ * Adapted from src/styles/globals.css in ncdai/chanhdai.com at
+ * b0f54ff5a6b40e13fa9a9ce6d3458c7833d50321.
+ * Copyright (c) 2026 Chánh Đại. Licensed under the MIT License.
+ */
+
+@theme inline {
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-line: var(--color-rule);
+  --color-muted-foreground: var(--color-muted);
+  --font-heading: var(--font-heading-family);
+}
+
+@utility screen-line-top {
+  @apply relative;
+
+  &::before {
+    content: "";
+    @apply absolute top-0 left-[-100vw] -z-1 h-px w-[200vw] bg-line;
+  }
+}
+
+@utility screen-line-bottom {
+  @apply relative;
+
+  &::after {
+    content: "";
+    @apply absolute bottom-0 left-[-100vw] -z-1 h-px w-[200vw] bg-line;
+  }
+}
+
+@utility panel-stack {
+  @apply screen-line-top screen-line-bottom;
+
+  &
+    > :not([data-slot="panel-rule-band"])
+    + :not([data-slot="panel-rule-band"]) {
+    @apply screen-line-top;
+  }
+
+  /*
+   * A rule band owns both of its edges. The panel keeps ownership only when
+   * that edge is also the panel's outer boundary, and adjacent bands share a
+   * single middle edge.
+   */
+  & > [data-slot="panel-rule-band"]:first-child::before,
+  & > [data-slot="panel-rule-band"] + [data-slot="panel-rule-band"]::before,
+  & > [data-slot="panel-rule-band"]:last-child::after {
+    content: none;
+  }
+}
+
+@utility diagonal-stripes {
+  --pattern-foreground: color-mix(
+    in oklab,
+    var(--color-rule-strong) 56%,
+    transparent
+  );
+  background-image: repeating-linear-gradient(
+    315deg,
+    var(--pattern-foreground) 0,
+    var(--pattern-foreground) 1px,
+    transparent 0,
+    transparent 50%
+  );
+  background-size: 10px 10px;
+}
+
+@utility stripe-divider {
+  @apply relative h-8;
+
+  &::before {
+    content: "";
+    @apply absolute left-[-100vw] -z-1 h-full w-[200vw] diagonal-stripes;
+  }
+}

@@ -50,12 +50,17 @@ The site is both a portfolio and a technical blog. It should feel like a careful
 
 ## 3. Inspiration and originality boundary
 
-The homepage may reuse MIT-licensed code patterns from `ncdai/chanhdai.com`, but it must not look like a rebadged copy.
+The homepage selectively ports the MIT-licensed blueprint layout modules from
+`ncdai/chanhdai.com`. The adapted React modules render statically through Astro
+without hydration. The imported source revision and license are recorded in
+`THIRD_PARTY_NOTICES.md`, and the result must not look like a rebadged copy.
 
 ### Patterns to reuse
 
 - Narrow centered document rail.
 - Persistent vertical grid lines and horizontal section separators.
+- The upstream Panel family, screen-line utilities, and hatched separators,
+  adapted to Sky's tokens and content.
 - Compact sticky navigation.
 - Large technical illustration near the top.
 - Small figure captions, annotations, keycaps, metadata, and superscript counts.
@@ -76,7 +81,8 @@ The homepage may reuse MIT-licensed code patterns from `ncdai/chanhdai.com`, but
 - Systems and research content before general experience.
 - An original packet-routing/network figure in the research section.
 - A substantial jazz narrative section that supports, but does not duplicate, the hero instrument.
-- IBM Plex Sans and IBM Plex Mono rather than the reference site's Geist identity.
+- Geist Sans for display headings, paired with IBM Plex Sans and IBM Plex Mono
+  for Sky's body and technical typography.
 - A distinct monogram or portrait treatment, to be finalized when a photograph is provided.
 
 If substantial source code is ported from the reference repository, preserve the applicable MIT copyright notice in the repository's third-party notices.
@@ -356,9 +362,10 @@ Theme behavior:
 
 ### 6.4 Typography
 
-- Primary: IBM Plex Sans, self-hosted variable WOFF2 where licensing permits.
+- Display headings: Geist Sans, self-hosted variable WOFF2.
+- Body: IBM Plex Sans, self-hosted variable WOFF2.
 - Technical metadata and code-adjacent UI: IBM Plex Mono.
-- Use no more than two font families.
+- Use no more than these three role-specific font families.
 - Body: 16 px/1.65.
 - Metadata: 12-13 px/1.45.
 - Hero heading: fluid 40-64 px, restrained rather than oversized.

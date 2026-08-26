@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; first candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commit 02.1 is implemented and unstaged pending review. |
+| 02 | Active; second candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commit 02.2 is implemented and unstaged pending review. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -152,8 +152,9 @@ Stage 02 commit ledger:
 
 | Candidate | Status | Commit or evidence |
 | --- | --- | --- |
-| 02.1 tokens and typography | Implemented and unstaged | Current review candidate; proposed message `feat: add color tokens and typography`. |
-| 02.2-02.5 | Not started | Begin after the preceding candidate is reviewed and committed. |
+| 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
+| 02.2 blueprint layout | Implemented and unstaged | Current review candidate; proposed message `feat: port blueprint layout system`. |
+| 02.3-02.5 | Not started | Begin after the preceding candidate is reviewed and committed. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -498,7 +499,7 @@ Scope:
 
 - Light and dark CSS variables derived from `#2B2724` and `#A59170`.
 - IBM Plex Sans and IBM Plex Mono self-hosting after license/source verification.
-- Type scale, spacing scale, border/rule, focus, and motion tokens.
+- Type scale plus semantic border/rule, focus, and motion tokens.
 - Base document, selection, link, and focus styles.
 
 Checks:
@@ -508,27 +509,58 @@ Checks:
 - Contrast measurements for body, muted text, links, focus, and brass accents.
 - Confirm fonts are served locally and do not cause obvious layout shift.
 
-### Commit 02.2 - implement the document rail and layout primitives
+### Commit 02.2 - port the blueprint document layout
 
 Proposed message:
 
 ```text
-feat: add document layout primitives
+feat: port blueprint layout system
 ```
 
 Scope:
 
-- `SiteRail`, `Section`, `SectionHeading`, `Figure`, `MetadataRow`, `Divider`, and responsive container primitives.
-- Persistent grid rules and section separators.
-- Mobile and wide-hero behavior.
-- Skip link and semantic landmarks.
+- MIT-licensed `BlueprintPage`, Panel family, and striped Separator migrated
+  from `ncdai/chanhdai.com` revision
+  `b0f54ff5a6b40e13fa9a9ce6d3458c7833d50321`.
+- Upstream screen-line and diagonal-stripe utilities adapted to Sky's warm
+  design tokens.
+- Static React rendering through Astro without hydrated islands.
+- Skip link, semantic landmarks, responsive rail behavior, and a regression
+  keeping ordinary figures within the rail.
+- Tailwind spacing utilities applied directly to responsive inline gutters,
+  section insets, internal text gaps, and a restrained hero scale without a
+  parallel numeric spacing-token layer.
+- Optical alignment for the hero title's first glyph without shifting its
+  layout box off the document rail.
+- Self-hosted variable Geist Sans assigned only to the display-heading role,
+  with a preload for the Latin asset used above the fold.
+- Page-specific presentation expressed with Tailwind utilities at the Astro
+  call site; shared CSS remains limited to tokens, base styles, and the
+  blueprint module's reusable rule utilities.
+- Source-faithful paired-rule bands framing content after a panel title or
+  between panel sections.
+- A full-bleed divide stack coordinates normal section boundaries while each
+  direct-child `PanelRuleBand` owns its paired rules. Its internal adjacency
+  contract prevents semitransparent rules from alpha-stacking without
+  requiring call-site edge overrides.
+- Per-file attribution, `THIRD_PARTY_NOTICES.md`, and a local-only ignored
+  reference checkout.
 
 Checks:
 
 - Responsive screenshots at 360, 768, 1024, and 1440 px.
 - Keyboard skip-link behavior.
 - No horizontal overflow.
+- Shared alignment and vertical-inset geometry across panel sections.
+- Loaded-font glyph metrics keep the hero title optically aligned with its
+  eyebrow.
+- Paired-rule band count, height, boundary joins, and compact title-header
+  composition.
+- Single visible paint ownership for every physical screen-rule coordinate,
+  including sibling and parent-child seams.
+- Panel callers render clean boundaries without `screen-line-*-none` overrides.
 - Build and accessibility smoke check.
+- Confirm zero upstream personal data, marks, portraits, or branded assets.
 
 ### Commit 02.3 - add theme initialization and control
 

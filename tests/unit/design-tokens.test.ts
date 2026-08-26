@@ -5,6 +5,13 @@ import { describe, expect, it } from "vitest";
 
 const tokensSource = await readFile(resolve("src/styles/tokens.css"), "utf8");
 const fontsSource = await readFile(resolve("src/styles/fonts.css"), "utf8");
+const blueprintSource = await readFile(
+  resolve("src/styles/blueprint.css"),
+  "utf8",
+);
+const packageManifest = JSON.parse(
+  await readFile(resolve("package.json"), "utf8"),
+) as { dependencies?: Record<string, string> };
 
 const lightTokens = extractTokens(extractRule(":root"));
 const darkTokens = extractTokens(extractRule('[data-theme="dark"]'));
@@ -50,6 +57,27 @@ describe("self-hosted typography", () => {
       const asset = await stat(resolve("public", url.slice(1)));
       expect(asset.size).toBeGreaterThan(0);
     }
+  });
+
+  it("assigns self-hosted Geist to the heading role", () => {
+    expect(fontsSource).toContain(
+      '@import "@fontsource-variable/geist/wght.css";',
+    );
+    expect(packageManifest.dependencies?.["@fontsource-variable/geist"]).toBe(
+      "5.3.0",
+    );
+    expect(tokensSource).toContain(
+      '--font-heading-family: "Geist Variable", var(--font-sans);',
+    );
+    expect(blueprintSource).toContain(
+      "--font-heading: var(--font-heading-family);",
+    );
+  });
+});
+
+describe("Tailwind-first spacing", () => {
+  it("does not maintain a parallel numeric spacing scale", () => {
+    expect(tokensSource).not.toMatch(/--space-\d+:/);
   });
 });
 

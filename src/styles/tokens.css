@@ -17,6 +17,7 @@
 
   --font-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --font-heading-family: "Geist Variable", var(--font-sans);
   --text-meta: 0.75rem;
   --text-small: 0.875rem;
   --text-body: 1rem;
@@ -29,18 +30,6 @@
   --leading-body: 1.65;
   --leading-meta: 1.45;
   --tracking-meta: 0.12em;
-
-  --space-0: 0;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 4.5rem;
-  --space-10: 6rem;
 
   --size-rail: 48rem;
   --size-prose: 68ch;

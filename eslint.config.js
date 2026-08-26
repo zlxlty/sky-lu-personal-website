@@ -13,6 +13,7 @@ export default defineConfig([
       "dist/**",
       "node_modules/**",
       "playwright-report/**",
+      "reference/**",
       "test-results/**",
     ],
     "Generated and user-owned files",
