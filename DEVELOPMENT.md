@@ -57,7 +57,15 @@ not repository files.
 ## Architecture boundaries
 
 - `src/pages/` defines routes. Astro statically generates them into `dist/`.
-- `.astro` components own static layout and content by default.
+- `.astro` components own static content and route composition by default.
+- `src/components/blueprint/` preserves the attributed React module seam migrated
+  from `ncdai/chanhdai.com`; Astro renders these modules statically without a
+  `client:*` directive.
+- `Panel` is a boundary-owning divided stack: normal direct children are
+  sections, `PanelHeader` owns the compact title row, and a sibling
+  `PanelRuleBand` may follow it or separate later sections. The module
+  reconciles shared edges; do not coordinate adjoining rules with call-site
+  edge overrides.
 - React components become client islands only when an explicit `client:*` directive
   is necessary.
 - Markdown and MDX content will live in Astro content collections rather than a
@@ -71,6 +79,22 @@ not repository files.
 Do not introduce SSR, a Worker binding, or a hydrated React wrapper for static
 content as a convenience. Cloudflare Workers Static Assets remains the production
 target.
+
+### Optional design-reference checkout
+
+The production build does not depend on the upstream repository. For source
+comparison, keep an optional checkout at `reference/chanhdai.com`; the entire
+`reference/` directory is ignored by Git and excluded from formatting, linting,
+type checking, and tests.
+
+```bash
+git clone https://github.com/ncdai/chanhdai.com reference/chanhdai.com
+git -C reference/chanhdai.com checkout b0f54ff5a6b40e13fa9a9ce6d3458c7833d50321
+```
+
+Port only general-purpose source through `src/components/blueprint/`, retain its
+attribution, and update `THIRD_PARTY_NOTICES.md`. Do not copy upstream identity,
+personal content, portraits, illustrations, or branded assets.
 
 ## Command reference
 
@@ -103,7 +127,8 @@ install, build, preview, verify, or Git hook command deploys the website.
    branch.
 2. Run `pnpm install --frozen-lockfile` when dependencies changed.
 3. Run `pnpm dev` for browser feedback and `pnpm test:watch` for pure logic.
-4. Keep static presentation in Astro and hydrate only the smallest required island.
+4. Compose static content in Astro, extend the migrated blueprint modules at their
+   existing seam, and hydrate only the smallest required island.
 5. Run the smallest relevant checks while working.
 6. Before review, run `pnpm verify`; run `pnpm verify:full` for browser-facing work.
 7. Inspect the complete diff, check privacy, and follow the approval process below.
