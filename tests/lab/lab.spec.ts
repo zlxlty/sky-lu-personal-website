@@ -116,6 +116,35 @@ test("rail annotations stay in the outer gutters on wide screens", async ({
   await expect(annotations.first()).toBeVisible();
   await expect(annotations.last()).toBeVisible();
 
+  const overlayStyles = await annotations.evaluateAll((elements) =>
+    elements.map((element) => ({
+      position: getComputedStyle(element).position,
+      beforeContent: getComputedStyle(element, "::before").content,
+    })),
+  );
+  const annotatedPanelStyles = await page
+    .locator("#lab-foundation, #lab-annotations")
+    .evaluateAll((panels) =>
+      panels.map((panel) => {
+        const header = panel.querySelector('[data-slot="panel-header"]');
+        return {
+          panelBeforeContent: getComputedStyle(panel, "::before").content,
+          headerBeforeContent: header
+            ? getComputedStyle(header, "::before").content
+            : "missing",
+        };
+      }),
+    );
+
+  expect(overlayStyles).toEqual([
+    { position: "absolute", beforeContent: "none" },
+    { position: "absolute", beforeContent: "none" },
+  ]);
+  expect(annotatedPanelStyles).toEqual([
+    { panelBeforeContent: '""', headerBeforeContent: "none" },
+    { panelBeforeContent: '""', headerBeforeContent: "none" },
+  ]);
+
   const panelBox = await annotationPanel.boundingBox();
   const leftBox = await annotations
     .filter({ hasText: "left of the rail" })

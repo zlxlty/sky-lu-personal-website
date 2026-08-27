@@ -14,6 +14,7 @@ describe("RailAnnotation", () => {
     expect(html).toContain('data-side="left"');
     expect(html).toContain('data-align="start"');
     expect(html).toContain('data-arrow-direction="down"');
+    expect(html).toContain('data-panel-overlay=""');
     expect(html).toContain('aria-hidden="true"');
     expect(html).toContain("right-full");
     expect(html).toContain("mr-3");

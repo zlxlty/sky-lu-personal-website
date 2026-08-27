@@ -34,9 +34,14 @@
 @utility panel-stack {
   @apply screen-line-top screen-line-bottom;
 
+  /*
+   * Direct-child overlays sit before the first stack section and do not own
+   * layout or screen rules. Normal sections and rule bands retain the same
+   * adjacency contract whether or not an overlay layer is present.
+   */
   &
-    > :not([data-slot="panel-rule-band"])
-    + :not([data-slot="panel-rule-band"]) {
+    > :not([data-panel-overlay], [data-slot="panel-rule-band"])
+    + :not([data-panel-overlay], [data-slot="panel-rule-band"]) {
     @apply screen-line-top;
   }
 

@@ -158,8 +158,8 @@ Stage 02 commit ledger:
 | 02.4 interactive controls | Committed and pushed | `b61cdfe` on `origin/codex/feat/design-system`. |
 | 02.5 component lab | Committed and pushed | `5bd9eee` on `origin/codex/feat/design-system`. |
 | 02.6 rail annotations | Committed and pushed | `fbd8af6` on `origin/codex/feat/design-system`. |
-| 02.7 dark raised-surface contrast | Implemented, pending review | Current working-tree candidate; proposed message `fix: meet dark surface contrast requirements`. |
-| 02.8 annotation stack isolation | Planned | Exclude decorative absolute overlays from panel adjacency ownership. |
+| 02.7 dark raised-surface contrast | Committed and pushed | `1b5c637` on `origin/codex/feat/design-system`. |
+| 02.8 annotation stack isolation | Implemented, pending review | Current working-tree candidate; proposed message `fix: isolate rail annotations from panel flow`. |
 | 02.9 completion documentation | Planned | Record branch completion and refresh the README project phase after final verification. |
 
 ## 5. Stage 00 - Repository governance
