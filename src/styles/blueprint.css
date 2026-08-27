@@ -51,6 +51,13 @@
   }
 }
 
+@utility blueprint-page-stack {
+  /* The sticky header owns the shell boundary above the first panel. */
+  & > [data-slot="blueprint-rail"] > [data-slot="panel"]:first-child::before {
+    content: none;
+  }
+}
+
 @utility diagonal-stripes {
   --pattern-foreground: color-mix(
     in oklab,

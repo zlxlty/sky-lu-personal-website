@@ -2,6 +2,12 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test("homepage satisfies the production smoke contract", async ({ page }) => {
+  const runtimeErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") runtimeErrors.push(message.text());
+  });
+  page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
   const response = await page.goto("/");
   const accessibility = await new AxeBuilder({ page }).analyze();
 
@@ -16,7 +22,8 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
       .locator(".screen-line-top-none, .screen-line-bottom-none")
       .count(),
     islands: await page.locator("astro-island").count(),
-    scripts: await page.locator("script").count(),
+    themeScripts: await page.locator("script").count(),
+    runtimeErrors,
     accessibilityViolations: accessibility.violations.map(({ id }) => id),
   }).toEqual({
     status: 200,
@@ -27,9 +34,193 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
     ruleBands: 3,
     edgeOverrides: 0,
     islands: 0,
-    scripts: 0,
+    themeScripts: 2,
+    runtimeErrors: [],
     accessibilityViolations: [],
   });
+});
+
+for (const theme of ["light", "dark"] as const) {
+  test(`first visit follows the ${theme} system theme before styles load`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: theme });
+    const response = await page.goto("/");
+    const html = (await response?.text()) ?? "";
+    const expected = themeExpectation(theme);
+
+    expect(html.indexOf("<script>")).toBeGreaterThan(
+      html.indexOf('name="theme-color"'),
+    );
+    expect(html.indexOf("<script>")).toBeLessThan(
+      html.indexOf('rel="stylesheet"'),
+    );
+    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+    await expect(
+      page.getByRole("button", { name: expected.toggleLabel }),
+    ).toBeVisible();
+    await expect(
+      page.locator(`[data-theme-icon="${expected.nextTheme}"]`),
+    ).toBeVisible();
+    await expect(page.locator(`[data-theme-icon="${theme}"]`)).toBeHidden();
+    expect(await readThemeState(page)).toEqual(expected.state);
+  });
+}
+
+test("explicit theme choice persists and overrides later system changes", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.addInitScript(() => {
+    if (localStorage.getItem("theme") === null) {
+      localStorage.setItem("theme", "light");
+    }
+  });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+
+  const toggle = page.locator("[data-theme-toggle]");
+  await expect(toggle).toHaveAccessibleName("Switch to dark theme");
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(
+    page.getByRole("button", { name: "Switch to light theme" }),
+  ).toBeFocused();
+  await expect(page.locator("[data-theme-status]")).toHaveText(
+    "Dark theme active.",
+  );
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await readThemeState(page)).toEqual(themeExpectation("dark").state);
+});
+
+test("system theme changes remain live until the visitor chooses", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await readThemeState(page)).toEqual(themeExpectation("dark").state);
+});
+
+test("theme control stays unboxed and fills only over the icon", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+
+  const toggle = page.locator("[data-theme-toggle]");
+  await expect(toggle).toHaveAccessibleName("Switch to dark theme");
+  const moonFill = page
+    .locator('[data-theme-icon="dark"] [data-theme-icon-fill]')
+    .first();
+  const moonIcon = page.locator('[data-theme-icon="dark"]');
+
+  expect(
+    await toggle.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        background: style.backgroundColor,
+        borderWidth: style.borderTopWidth,
+        boxShadow: style.boxShadow,
+      };
+    }),
+  ).toEqual({
+    background: "rgba(0, 0, 0, 0)",
+    borderWidth: "0px",
+    boxShadow: "none",
+  });
+  await expect(moonFill).toHaveCSS("opacity", "0");
+
+  await toggle.hover({ position: { x: 1, y: 1 } });
+  await expect(moonFill).toHaveCSS("opacity", "0");
+
+  await moonIcon.hover();
+  await expect(moonFill).toHaveCSS("opacity", "1");
+
+  await toggle.click();
+  const sunFill = page
+    .locator('[data-theme-icon="light"] [data-theme-icon-fill]')
+    .first();
+  await page.locator('[data-theme-icon="light"]').hover();
+  await expect(sunFill).toHaveCSS("opacity", "1");
+});
+
+test("sticky header aligns to the blueprint rail and owns its boundary", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 320 });
+  await page.goto("/");
+
+  const shell = await page.evaluate(() => {
+    const header = document.querySelector<HTMLElement>(
+      '[data-slot="site-header"]',
+    );
+    const headerRail = document.querySelector<HTMLElement>(
+      '[data-slot="site-header-rail"]',
+    );
+    const pageRail = document.querySelector<HTMLElement>(
+      '[data-slot="blueprint-rail"]',
+    );
+    const firstPanel = document.querySelector<HTMLElement>("#hero-panel");
+    const toggle = document.querySelector<HTMLElement>("[data-theme-toggle]");
+    if (!header || !headerRail || !pageRail || !firstPanel || !toggle) {
+      throw new Error("Missing sticky shell elements");
+    }
+
+    const rect = (element: HTMLElement) => {
+      const bounds = element.getBoundingClientRect();
+      return {
+        top: bounds.top,
+        bottom: bounds.bottom,
+        left: bounds.left,
+        right: bounds.right,
+        height: bounds.height,
+      };
+    };
+
+    return {
+      header: rect(header),
+      headerRail: rect(headerRail),
+      pageRail: rect(pageRail),
+      firstPanel: rect(firstPanel),
+      toggle: rect(toggle),
+      position: getComputedStyle(header).position,
+      headerBottomRule: getComputedStyle(headerRail, "::after").content,
+      firstPanelTopRule: getComputedStyle(firstPanel, "::before").content,
+      headerText: header.textContent?.trim() ?? "",
+    };
+  });
+
+  expect(shell.position).toBe("sticky");
+  expect(shell.header.height).toBe(52);
+  expect(shell.headerRail.left).toBeCloseTo(shell.pageRail.left, 3);
+  expect(shell.headerRail.right).toBeCloseTo(shell.pageRail.right, 3);
+  expect(shell.firstPanel.top).toBeCloseTo(shell.header.bottom, 3);
+  expect(shell.toggle.right).toBeLessThan(shell.headerRail.right);
+  expect(shell.headerBottomRule).toBe('""');
+  expect(shell.firstPanelTopRule).toBe("none");
+  expect(shell.headerText).toBe("");
+  await expect(page.locator('[data-slot="site-header"] a')).toHaveCount(0);
+
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect
+    .poll(() =>
+      page
+        .locator('[data-slot="site-header"]')
+        .evaluate((element) => element.getBoundingClientRect().top),
+    )
+    .toBeCloseTo(0, 3);
 });
 
 test("skip link reaches the main landmark with the keyboard", async ({
@@ -68,7 +259,12 @@ for (const width of [360, 768, 1024, 1440]) {
       const heroHeader = document.querySelector<HTMLElement>(
         '#hero-panel > [data-slot="panel-header"]',
       );
-      if (!heroHeader) throw new Error("Missing hero header");
+      const themeToggle = document.querySelector<HTMLElement>(
+        "[data-theme-toggle]",
+      );
+      if (!heroHeader || !themeToggle) {
+        throw new Error("Missing hero header or theme control");
+      }
 
       return {
         viewport: document.documentElement.clientWidth,
@@ -80,13 +276,21 @@ for (const width of [360, 768, 1024, 1440]) {
         ),
         heroHeading: rect("#hero-heading"),
         figure: rect("figure"),
+        headerRail: rect('[data-slot="site-header-rail"]'),
+        themeToggle: rect("[data-theme-toggle]"),
       };
     });
 
     expect(geometry.scrollWidth).toBe(geometry.viewport);
     expect(Math.abs(geometry.rail.left - geometry.rail.right)).toBeLessThan(1);
+    expect(geometry.headerRail.left).toBeCloseTo(geometry.rail.left, 3);
+    expect(geometry.headerRail.right).toBeCloseTo(geometry.rail.right, 3);
     expect(geometry.figure.left).toBeGreaterThanOrEqual(geometry.rail.left);
     expect(geometry.figure.right).toBeGreaterThanOrEqual(geometry.rail.right);
+    expect(geometry.themeToggle.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.themeToggle.right).toBeGreaterThanOrEqual(
+      geometry.rail.right,
+    );
     expect(geometry.heroHeading.left).toBeCloseTo(
       geometry.heroHeader.left + geometry.heroHeaderPaddingLeft,
       3,
@@ -378,16 +582,16 @@ test("homepage serves both visual themes and local typography", async ({
   const dark = await readTheme(page);
 
   expect(light).toEqual({
-    background: "rgb(243, 239, 232)",
-    color: "rgb(43, 39, 36)",
+    background: "rgb(252, 243, 230)",
+    color: "rgb(56, 51, 47)",
     headingLoaded: true,
     headingUsesGeist: true,
     sansLoaded: true,
     monoLoaded: true,
   });
   expect(dark).toEqual({
-    background: "rgb(33, 30, 27)",
-    color: "rgb(238, 231, 220)",
+    background: "rgb(43, 39, 36)",
+    color: "rgb(174, 152, 119)",
     headingLoaded: true,
     headingUsesGeist: true,
     sansLoaded: true,
@@ -429,3 +633,67 @@ async function readTheme(page: import("@playwright/test").Page) {
     };
   });
 }
+
+async function readThemeState(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const root = document.documentElement;
+    const themeColor = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+
+    return {
+      theme: root.dataset.theme,
+      colorScheme: getComputedStyle(root).colorScheme,
+      background: getComputedStyle(root).backgroundColor,
+      themeColor: themeColor?.content,
+    };
+  });
+}
+
+function themeExpectation(theme: "light" | "dark") {
+  return theme === "dark"
+    ? {
+        nextTheme: "light" as const,
+        toggleLabel: "Switch to light theme",
+        state: {
+          theme: "dark",
+          colorScheme: "dark",
+          background: "rgb(43, 39, 36)",
+          themeColor: "#2b2724",
+        },
+      }
+    : {
+        nextTheme: "dark" as const,
+        toggleLabel: "Switch to dark theme",
+        state: {
+          theme: "light",
+          colorScheme: "light",
+          background: "rgb(252, 243, 230)",
+          themeColor: "#fcf3e6",
+        },
+      };
+}
+
+test.describe("without JavaScript", () => {
+  test.use({ colorScheme: "dark", javaScriptEnabled: false });
+
+  test("content remains available and CSS follows the dark system theme", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sky Lu");
+    await expect(page.locator("[data-theme-toggle]")).toBeHidden();
+    await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.+/);
+    expect(
+      await page.locator("html").evaluate((root) => ({
+        colorScheme: getComputedStyle(root).colorScheme,
+        background: getComputedStyle(root).backgroundColor,
+      })),
+    ).toEqual({
+      colorScheme: "dark",
+      background: "rgb(43, 39, 36)",
+    });
+  });
+});

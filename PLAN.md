@@ -40,7 +40,7 @@ The site is both a portfolio and a technical blog. It should feel like a careful
 | Rendering | Static generation by default; no SSR in v1 |
 | Guitar audio | Tone.js synthesized plucks, standard tuning |
 | Animation | Anime.js v4 for authored motion; custom `requestAnimationFrame` for string physics |
-| Theme | Light and dark themes derived from `#2B2724` and `#A59170` |
+| Theme | Warm light palette (`#FCF3E6` / `#38332F`) and brown dark palette (`#2B2724` / `#AE9877`) |
 | Contact | Display Brown and personal email addresses, supplied as deployment secrets, with anti-harvesting measures |
 | Research | ATLAS Group; worked with Nikos Vasilakis; feature Tundra |
 | Social features | None in v1 |
@@ -319,17 +319,17 @@ Include:
 ```css
 :root {
   color-scheme: light;
-  --color-paper: #f3efe8;
-  --color-surface: #faf7f2;
-  --color-surface-raised: #fffdf9;
-  --color-ink: #2b2724;
-  --color-muted: #706861;
-  --color-brass: #a59170;
-  --color-brass-soft: #d8ccba;
-  --color-rule: rgb(43 39 36 / 14%);
-  --color-rule-strong: rgb(43 39 36 / 28%);
-  --color-focus: #806b4d;
-  --color-danger: #9a4c3f;
+  --color-paper: #fcf3e6;
+  --color-surface: #f5e8d6;
+  --color-surface-raised: #fffaf3;
+  --color-ink: #38332f;
+  --color-muted: #38332f;
+  --color-brass: #38332f;
+  --color-brass-soft: #e7d6be;
+  --color-rule: rgb(56 51 47 / 18%);
+  --color-rule-strong: rgb(56 51 47 / 32%);
+  --color-focus: #38332f;
+  --color-danger: #55241f;
 }
 ```
 
@@ -338,16 +338,16 @@ Include:
 ```css
 [data-theme="dark"] {
   color-scheme: dark;
-  --color-paper: #211e1b;
-  --color-surface: #292521;
-  --color-surface-raised: #312c27;
-  --color-ink: #eee7dc;
-  --color-muted: #aaa096;
-  --color-brass: #b9a27f;
-  --color-brass-soft: #594d3e;
-  --color-rule: rgb(238 231 220 / 12%);
-  --color-rule-strong: rgb(238 231 220 / 24%);
-  --color-focus: #ccb58e;
+  --color-paper: #2b2724;
+  --color-surface: #332e2a;
+  --color-surface-raised: #3b3530;
+  --color-ink: #ae9877;
+  --color-muted: #ae9877;
+  --color-brass: #ae9877;
+  --color-brass-soft: #4a4033;
+  --color-rule: rgb(174 152 119 / 18%);
+  --color-rule-strong: rgb(174 152 119 / 32%);
+  --color-focus: #ae9877;
   --color-danger: #d17d6e;
 }
 ```

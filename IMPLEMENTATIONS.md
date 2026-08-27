@@ -1,7 +1,7 @@
 # Sky Lu Personal Website - Implementation Roadmap
 
-Status: Stage 01 foundation in progress
-Last updated: 2026-08-23
+Status: Stage 02 design system in progress
+Last updated: 2026-08-26
 Companion documents: `PLAN.md`, `AGENTS.md`
 
 ## 1. Purpose
@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; second candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commit 02.2 is implemented and unstaged pending review. |
+| 02 | Active; third candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 and 02.2 are committed and pushed; Commit 02.3 is included in this change and Commit 02.4 is next. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -153,8 +153,9 @@ Stage 02 commit ledger:
 | Candidate | Status | Commit or evidence |
 | --- | --- | --- |
 | 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
-| 02.2 blueprint layout | Implemented and unstaged | Current review candidate; proposed message `feat: port blueprint layout system`. |
-| 02.3-02.5 | Not started | Begin after the preceding candidate is reviewed and committed. |
+| 02.2 blueprint layout | Committed and pushed | `0a15bf5` on `origin/codex/feat/design-system`. |
+| 02.3 sticky navigation and themes | Implemented in this change | Proposed message `feat: add sticky navigation and persistent themes`. |
+| 02.4-02.5 | Not started | Commit 02.4 is the next review candidate. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -497,7 +498,7 @@ feat: add color tokens and typography
 
 Scope:
 
-- Light and dark CSS variables derived from `#2B2724` and `#A59170`.
+- Warm light palette built from `#FCF3E6` and `#38332F`, plus a brown dark palette using `#2B2724` and `#AE9877`.
 - IBM Plex Sans and IBM Plex Mono self-hosting after license/source verification.
 - Type scale plus semantic border/rule, focus, and motion tokens.
 - Base document, selection, link, and focus styles.
@@ -511,7 +512,7 @@ Checks:
 
 ### Commit 02.2 - port the blueprint document layout
 
-Proposed message:
+Committed message:
 
 ```text
 feat: port blueprint layout system
@@ -519,30 +520,39 @@ feat: port blueprint layout system
 
 Scope:
 
-- MIT-licensed `BlueprintPage`, Panel family, and striped Separator migrated
-  from `ncdai/chanhdai.com` revision
+- MIT-licensed `BlueprintPage`, `StripeSeparator`, and the `Panel` family
+  (`Panel`, `PanelHeader`, `PanelTitle`, `PanelTitleSup`, `PanelDescription`,
+  `PanelContent`, and `PanelRuleBand`) migrated from `ncdai/chanhdai.com` revision
   `b0f54ff5a6b40e13fa9a9ce6d3458c7833d50321`.
 - Upstream screen-line and diagonal-stripe utilities adapted to Sky's warm
   design tokens.
-- Static React rendering through Astro without hydrated islands.
-- Skip link, semantic landmarks, responsive rail behavior, and a regression
-  keeping ordinary figures within the rail.
-- Tailwind spacing utilities applied directly to responsive inline gutters,
-  section insets, internal text gaps, and a restrained hero scale without a
-  parallel numeric spacing-token layer.
-- Optical alignment for the hero title's first glyph without shifting its
-  layout box off the document rail.
+- Static React rendering through Astro without a client directive, hydrated
+  island, or browser JavaScript.
+- Skip link, semantic landmarks, symmetric mobile gutters, a centered desktop
+  rail, and a regression keeping ordinary figures within that rail.
+- Tailwind-first component layout: panel headers, content, and metadata use a
+  consistent fixed `px-4` inset; content regions use `py-4`; responsive spacing
+  is introduced only for a content-driven layout change such as the hero's
+  vertical scale.
+- No parallel numeric spacing-token layer. Page-specific spacing, layout, type,
+  and color composition stays in Tailwind utilities at the Astro call site.
+- Shared CSS is reserved for semantic tokens, document-level base styles, and
+  reusable blueprint behavior that needs pseudo-elements or adjacency
+  selectors.
 - Self-hosted variable Geist Sans assigned only to the display-heading role,
-  with a preload for the Latin asset used above the fold.
-- Page-specific presentation expressed with Tailwind utilities at the Astro
-  call site; shared CSS remains limited to tokens, base styles, and the
-  blueprint module's reusable rule utilities.
-- Source-faithful paired-rule bands framing content after a panel title or
-  between panel sections.
-- A full-bleed divide stack coordinates normal section boundaries while each
-  direct-child `PanelRuleBand` owns its paired rules. Its internal adjacency
-  contract prevents semitransparent rules from alpha-stacking without
-  requiring call-site edge overrides.
+  paired with IBM Plex Sans body text and IBM Plex Mono metadata, with a preload
+  for the Latin Geist asset used above the fold.
+- The hero's first glyph uses a local Tailwind optical-indent utility so its
+  visible edge aligns with the eyebrow without moving the document rail.
+- A direct-child `PanelRuleBand` can be placed immediately after a panel title
+  header, between sections, or at a panel's end. It renders the source-faithful
+  `h-4` blank band with one full-bleed rule on each edge.
+- The `Panel` stack and each `PanelRuleBand` follow a single-paint-owner
+  adjacency contract. Shared parent/child or sibling boundaries never
+  alpha-stack, and callers do not suppress borders with one-off
+  `screen-line-*-none` overrides.
+- `StripeSeparator` remains the taller diagonal full-bleed separator between
+  panels; it is distinct from a panel's paired rule band.
 - Per-file attribution, `THIRD_PARTY_NOTICES.md`, and a local-only ignored
   reference checkout.
 
@@ -551,23 +561,26 @@ Checks:
 - Responsive screenshots at 360, 768, 1024, and 1440 px.
 - Keyboard skip-link behavior.
 - No horizontal overflow.
-- Shared alignment and vertical-inset geometry across panel sections.
+- Shared `px-4` inline alignment across panel headers, content, and metadata at
+  every tested viewport.
 - Loaded-font glyph metrics keep the hero title optically aligned with its
   eyebrow.
 - Paired-rule band count, height, boundary joins, and compact title-header
-  composition.
+  composition, including a `PanelRuleBand` placed directly after a title.
 - Single visible paint ownership for every physical screen-rule coordinate,
   including sibling and parent-child seams.
 - Panel callers render clean boundaries without `screen-line-*-none` overrides.
+- Unit regression confirms no numeric `--space-*` token scale is reintroduced.
+- Confirm the static layout emits no hydration directive or client bundle.
 - Build and accessibility smoke check.
 - Confirm zero upstream personal data, marks, portraits, or branded assets.
 
-### Commit 02.3 - add theme initialization and control
+### Commit 02.3 - add sticky navigation and theme control
 
 Proposed message:
 
 ```text
-feat: add persistent light and dark themes
+feat: add sticky navigation and persistent themes
 ```
 
 Scope:
@@ -577,6 +590,10 @@ Scope:
 - Persisted explicit choice.
 - Accessible theme control.
 - `theme-color` and `color-scheme` synchronization.
+- MIT-attributed compact sticky header shell adapted from `ncdai/chanhdai.com`.
+- Empty navigation rail with the theme control aligned right; links and command
+  controls remain deferred until their routes and primitives exist.
+- Shared shell-boundary ownership between the sticky header and first panel.
 
 Architectural walkthrough:
 
@@ -590,6 +607,8 @@ Checks:
 - Explicit choice persists across reload.
 - No console/hydration errors.
 - Keyboard and screen-reader label review.
+- Sticky behavior, rail alignment, and clean header-to-panel boundary at mobile
+  and desktop widths.
 
 ### Commit 02.4 - add curated shadcn-compatible controls
 
@@ -602,7 +621,8 @@ feat: add core interactive controls
 Scope:
 
 - Button, Tooltip, Badge, Separator, Collapsible, Dialog/Sheet, and Command primitives only.
-- `cn` utility and variant handling.
+- Reuse the existing `cn` utility; add variant handling only where a component
+  has a real public variant API.
 - Install only dependencies used by these components.
 - Adapt colors and focus behavior to project tokens.
 
@@ -638,6 +658,10 @@ Checks:
 - The visual system is recognizable without copying Chanhdai branding.
 - Themes meet the documented contrast requirements.
 - Static primitives ship no client JavaScript.
+- Panel seams and explicit paired rule bands maintain one paint owner per
+  physical boundary.
+- Component-local layout and spacing remain Tailwind-first without a duplicate
+  numeric spacing-token scale.
 - Only the approved control dependencies are installed.
 - `/lab` is development-only.
 

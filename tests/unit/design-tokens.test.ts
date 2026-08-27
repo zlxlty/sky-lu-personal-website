@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { THEME_COLORS } from "@/lib/theme";
+
 const tokensSource = await readFile(resolve("src/styles/tokens.css"), "utf8");
 const fontsSource = await readFile(resolve("src/styles/fonts.css"), "utf8");
 const blueprintSource = await readFile(
@@ -15,6 +17,7 @@ const packageManifest = JSON.parse(
 
 const lightTokens = extractTokens(extractRule(":root"));
 const darkTokens = extractTokens(extractRule('[data-theme="dark"]'));
+const systemDarkTokens = extractTokens(extractRule(":root:not([data-theme])"));
 
 describe.each([
   ["light", lightTokens],
@@ -78,6 +81,24 @@ describe("self-hosted typography", () => {
 describe("Tailwind-first spacing", () => {
   it("does not maintain a parallel numeric spacing scale", () => {
     expect(tokensSource).not.toMatch(/--space-\d+:/);
+  });
+});
+
+describe("browser theme surfaces", () => {
+  it("keeps metadata colors aligned with the paper tokens", () => {
+    expect(lightTokens["--color-paper"]).toBe(THEME_COLORS.light);
+    expect(darkTokens["--color-paper"]).toBe(THEME_COLORS.dark);
+  });
+
+  it("uses the approved light and dark color pairs", () => {
+    expect(lightTokens["--color-paper"]).toBe("#fcf3e6");
+    expect(lightTokens["--color-ink"]).toBe("#38332f");
+    expect(darkTokens["--color-paper"]).toBe("#2b2724");
+    expect(darkTokens["--color-ink"]).toBe("#ae9877");
+  });
+
+  it("keeps the no-JavaScript system fallback aligned with dark mode", () => {
+    expect(systemDarkTokens).toEqual(darkTokens);
   });
 });
 

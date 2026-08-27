@@ -18,7 +18,7 @@ export function BlueprintPage({
       data-slot="blueprint-page"
       tabIndex={tabIndex}
       className={cn(
-        "group/layout relative isolate min-h-screen max-w-screen overflow-x-clip px-[3px]",
+        "group/layout relative isolate min-h-screen max-w-screen overflow-x-clip px-[3px] blueprint-page-stack",
         className,
       )}
       {...props}

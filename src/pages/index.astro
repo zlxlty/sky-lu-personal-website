@@ -16,7 +16,7 @@ const title = "Sky Lu";
 const description = "Personal website and technical writing by Sky Lu.";
 const buildMetadata = [
   { label: "Rendering", value: "Static Astro" },
-  { label: "Client runtime", value: "Zero islands" },
+  { label: "Client runtime", value: "Theme controller" },
   { label: "Next boundary", value: "Content model" },
 ];
 ---
@@ -44,6 +44,24 @@ const buildMetadata = [
         feature commits.
       </p>
     </PanelContent>
+    <PanelContent>
+      <p
+        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
+      >
+        This static Astro page establishes the build boundary for the personal
+        site. The full design and interactive hero will arrive in reviewed
+        feature commits.
+      </p>
+    </PanelContent>
+    <PanelContent>
+      <p
+        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
+      >
+        This static Astro page establishes the build boundary for the personal
+        site. The full design and interactive hero will arrive in reviewed
+        feature commits.
+      </p>
+    </PanelContent>
   </Panel>
 
   <StripeSeparator />
@@ -55,12 +73,12 @@ const buildMetadata = [
 
     <PanelRuleBand />
 
-    <PanelContent className="flex flex-col gap-6">
+    <PanelContent className="flex flex-col gap-4">
       <p
         class="m-0 max-w-(--size-prose) text-base text-balance text-muted-foreground"
       >
         Astro, React, and MDX currently resolve to one accessible document
-        without shipping a client runtime.
+        without hydrating a component tree.
       </p>
 
       <figure class="m-0">
@@ -83,7 +101,7 @@ const buildMetadata = [
     </PanelContent>
 
     <dl
-      class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(10rem,100%),1fr))] gap-x-8 gap-y-4 px-4 py-6"
+      class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(10rem,100%),1fr))] gap-x-8 gap-y-4 px-4 py-4"
     >
       {
         buildMetadata.map((item) => (
