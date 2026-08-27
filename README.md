@@ -1,8 +1,9 @@
 # Sky Lu's Personal Website
 
 Sky Lu's personal website and technical blog, built as a static-first Astro site
-with narrowly scoped React islands. The project is currently in its foundation
-stage.
+with narrowly scoped React islands. The repository now includes its design system,
+responsive blueprint shell, persistent themes, curated controls, and development
+component lab. Typed content and the core public routes are the next stage.
 
 The production architecture is static by default: Astro renders pages and MDX at
 build time, while React is reserved for behavior that needs a browser runtime. The
@@ -61,7 +62,7 @@ pnpm dev
 
 Open the local URL printed by Astro. Visit `/` for the site and `/lab` for the
 development-only component workshop. No environment variables are required during
-the current design-system stage.
+the current routes or component-lab workflow.
 
 Before proposing a change, run the local CI-equivalent checks:
 
