@@ -190,6 +190,34 @@ rail at the `xl` breakpoint, so review them at 1280 px or wider. Astro's develop
 toolbar remains available during manual use; the lab's automated checks hide that
 overlay so audits and screenshots measure only the application UI.
 
+`RailAnnotation` accepts Tailwind positioning utilities through `className` for
+call-site optical adjustments. Match the utility to the selected alignment:
+
+```tsx
+<RailAnnotation side="left" align="start" className="top-5">
+  Move a start-aligned note down 4px
+</RailAnnotation>
+
+<RailAnnotation side="right" align="end" className="bottom-3">
+  Move an end-aligned note down 4px
+</RailAnnotation>
+
+<RailAnnotation
+  side="right"
+  align="center"
+  className="top-[calc(50%+0.25rem)]"
+>
+  Move a centered note down 4px
+</RailAnnotation>
+```
+
+Use `top-*` with `align="start"`, `bottom-*` with `align="end"`, and adjust the
+`top` calculation with `align="center"`. Mixing `top-*` into an end-aligned note
+leaves both top and bottom constraints active and can stretch its absolute box.
+Annotations remain hidden below the `xl` breakpoint (1280 px) and while printing,
+regardless of these positioning overrides. Avoid passing display utilities such
+as `flex`, which would override that responsive guard.
+
 Start `pnpm dev` and visit `http://localhost:4321/lab`. Source changes update through
 Vite. If a long-running server reports `504 Outdated Optimize Dep` after dependencies
 change, rebuild its optimization cache once:

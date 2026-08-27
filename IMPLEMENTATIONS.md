@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; branch-review cleanup | Commits 02.1 through 02.6 are pushed on `codex/feat/design-system`; Commit 02.7 addresses the branch review's dark-surface contrast finding, followed by annotation-stack isolation and final documentation cleanup. |
+| 02 | Implementation complete; final branch review pending | Commits 02.1 through 02.8 are pushed on `codex/feat/design-system`. Quality and Browser CI passed through `099b11e` in [run 33095846464](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33095846464); Commit 02.9 closes the branch documentation before the rebase-merge review. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -159,8 +159,8 @@ Stage 02 commit ledger:
 | 02.5 component lab | Committed and pushed | `5bd9eee` on `origin/codex/feat/design-system`. |
 | 02.6 rail annotations | Committed and pushed | `fbd8af6` on `origin/codex/feat/design-system`. |
 | 02.7 dark raised-surface contrast | Committed and pushed | `1b5c637` on `origin/codex/feat/design-system`. |
-| 02.8 annotation stack isolation | Implemented, pending review | Current working-tree candidate; proposed message `fix: isolate rail annotations from panel flow`. |
-| 02.9 completion documentation | Planned | Record branch completion and refresh the README project phase after final verification. |
+| 02.8 annotation stack isolation | Committed and pushed; CI passed | `099b11e` on `origin/codex/feat/design-system`; [Quality and Browser CI](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33095846464) passed. |
+| 02.9 completion documentation | Branch-closing documentation | Records the completed implementation, current project phase, review evidence, and developer guidance in the commit containing this row. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -749,6 +749,8 @@ Scope:
 
 - Record the final Stage 02 commit ledger and CI evidence.
 - Refresh the README project phase and component-lab availability.
+- Document responsive visibility and Tailwind-first optical positioning for
+  rail annotations.
 - Capture accepted maintainability follow-ups without expanding Stage 02.
 
 ### Branch acceptance criteria
@@ -765,6 +767,16 @@ Scope:
 - `/lab` is development-only.
 - Rail annotations remain decorative, stay outside the content rail, point
   inward automatically, and disappear before the gutters can hold them.
+
+### Deferred review notes
+
+- Theme-color metadata currently repeats the two paper-color literals from the
+  CSS token source. Consolidate them only when deployment metadata or additional
+  themes make a build-time palette source worthwhile.
+- `LabControls` deliberately keeps all interactive specimens inside one hydrated
+  development island. Split specimen groups into local child modules if later
+  stages make that file materially harder to review; do not create one island
+  per primitive.
 
 ## 8. Stage 03 - Content model and core routes
 
