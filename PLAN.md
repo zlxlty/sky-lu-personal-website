@@ -330,7 +330,9 @@ Include:
   --color-rule-strong: rgb(56 51 47 / 32%);
   --color-overlay: rgb(43 39 36 / 25%);
   --color-focus: #38332f;
-  --color-danger: #55241f;
+  --color-danger: #923b33;
+  --color-danger-emphasis: #96372f;
+  --color-on-danger: #fcf3e6;
 }
 ```
 
@@ -350,7 +352,9 @@ Include:
   --color-rule-strong: rgb(174 152 119 / 32%);
   --color-overlay: rgb(0 0 0 / 50%);
   --color-focus: #ae9877;
-  --color-danger: #d17d6e;
+  --color-danger: #b98279;
+  --color-danger-emphasis: #82443d;
+  --color-on-danger: #e7d6be;
 }
 ```
 

@@ -59,8 +59,9 @@ Start the Astro development server:
 pnpm dev
 ```
 
-Open the local URL printed by Astro. No environment variables are required during
-the current foundation stage.
+Open the local URL printed by Astro. Visit `/` for the site and `/lab` for the
+development-only component workshop. No environment variables are required during
+the current design-system stage.
 
 Before proposing a change, run the local CI-equivalent checks:
 
@@ -84,6 +85,8 @@ right final check for browser-facing changes.
 | `pnpm lint`         | Run ESLint without writing files.                      |
 | `pnpm test`         | Run unit tests once.                                   |
 | `pnpm test:e2e`     | Run Playwright against a production-style server.      |
+| `pnpm test:lab`     | Test `/lab` and compare local visual snapshots.        |
+| `pnpm test:lab:ui`  | Open Playwright UI for component-lab debugging.        |
 | `pnpm verify`       | Run formatting, linting, types, unit tests, and build. |
 | `pnpm verify:full`  | Run `verify` plus browser tests.                       |
 

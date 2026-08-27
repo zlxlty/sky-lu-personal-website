@@ -70,6 +70,9 @@ jobs:
       - name: Run browser verification
         run: pnpm test:e2e
 
+      - name: Run component lab verification
+        run: pnpm test:lab:ci
+
       - name: Upload browser failure artifacts
         if: ${{ failure() }}
         uses: actions/upload-artifact@v5

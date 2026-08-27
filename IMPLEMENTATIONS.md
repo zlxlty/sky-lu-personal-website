@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; fourth candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 through 02.3 are committed and pushed; Commit 02.4 is pending review. |
+| 02 | Active; fifth candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 through 02.3 are pushed; Commit 02.4 is committed locally and Commit 02.5 is implemented pending review. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -155,8 +155,8 @@ Stage 02 commit ledger:
 | 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
 | 02.2 blueprint layout | Committed and pushed | `0a15bf5` on `origin/codex/feat/design-system`. |
 | 02.3 sticky navigation and themes | Committed and pushed | `a52e32e` on `origin/codex/feat/design-system`. |
-| 02.4 interactive controls | Implemented, pending review | Current working-tree candidate; proposed message `feat: add core interactive controls`. |
-| 02.5 component lab | Not started | Begin after Commit 02.4 is reviewed and committed. |
+| 02.4 interactive controls | Committed locally; not pushed | `b61cdfe` on `codex/feat/design-system`. |
+| 02.5 component lab | Implemented, pending review | Current working-tree candidate; proposed message `feat: add development component lab`. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -653,19 +653,24 @@ feat: add development component lab
 Scope:
 
 - `/lab` specimens for tokens, typography, layout, controls, focus, loading, and error states.
-- Environment gate preventing production exposure.
-- Initial visual-regression screenshot targets.
+- Review-driven danger foreground, emphasis, and on-danger roles with WCAG AA contrast in both themes.
+- A development-command integration gate preventing production exposure.
+- A separate Playwright lab workflow for interactions, Axe, responsive behavior,
+  and initial platform-specific visual-regression targets.
 
 Checks:
 
 - `/lab` available in development.
 - `/lab` absent or returns 404 in production build.
-- Light/dark and responsive screenshots.
+- `pnpm test:lab` for interactions, Axe, and reviewed light/dark responsive snapshots.
+- `pnpm test:lab:ci` for the portable CI subset without platform-specific snapshots.
+- `pnpm test:e2e` for the production artifact exclusion and existing homepage contract.
 
 ### Branch acceptance criteria
 
 - The visual system is recognizable without copying Chanhdai branding.
 - Themes meet the documented contrast requirements.
+- Destructive controls use distinct danger foreground, emphasis, and on-danger roles.
 - Static primitives ship no client JavaScript.
 - Panel seams and explicit paired rule bands maintain one paint owner per
   physical boundary.

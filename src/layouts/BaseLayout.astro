@@ -96,12 +96,14 @@ const mainId = "main-content";
     <slot name="head" />
   </head>
   <body>
-    <a
-      class="fixed top-3 left-3 z-[1000] -translate-y-[calc(100%+1.5rem)] rounded-(--radius-small) border border-(--color-rule-strong) bg-(--color-surface-raised) px-3 py-2 font-mono text-(length:--text-small) text-foreground shadow-[0_0.25rem_1rem_rgb(43_39_36/12%)] transition-transform duration-(--duration-feedback) ease-(--ease-standard) focus-visible:translate-y-0"
-      href={`#${mainId}`}
-    >
-      Skip to content
-    </a>
+    <nav aria-label="Skip links">
+      <a
+        class="fixed top-3 left-3 z-[1000] -translate-y-[calc(100%+1.5rem)] rounded-(--radius-small) border border-(--color-rule-strong) bg-(--color-surface-raised) px-3 py-2 font-mono text-(length:--text-small) text-foreground shadow-[0_0.25rem_1rem_rgb(43_39_36/12%)] transition-transform duration-(--duration-feedback) ease-(--ease-standard) focus-visible:translate-y-0"
+        href={`#${mainId}`}
+      >
+        Skip to content
+      </a>
+    </nav>
     <BlueprintNavbar aria-label="Site header">
       <ThemeToggle />
     </BlueprintNavbar>

@@ -1,0 +1,155 @@
+---
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+  PanelTitle,
+  PanelTitleSup,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import { LabControls } from "@/lab/LabControls";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const title = "Component lab · Sky Lu";
+const description =
+  "Development-only specimens for Sky Lu's personal website design system.";
+const colorTokens = [
+  ["Paper", "--color-paper"],
+  ["Surface", "--color-surface"],
+  ["Raised", "--color-surface-raised"],
+  ["Ink", "--color-ink"],
+  ["Brass", "--color-brass"],
+  ["Danger text", "--color-danger"],
+  ["Danger fill", "--color-danger-emphasis"],
+  ["On danger", "--color-on-danger"],
+] as const;
+---
+
+<BaseLayout {title} {description} mainLabel="Development component lab">
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+
+  <Panel id="lab-introduction" aria-labelledby="lab-heading">
+    <PanelHeader className="py-8 sm:py-12">
+      <p
+        data-slot="eyebrow"
+        class="mb-3 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase"
+      >
+        Local development only
+      </p>
+      <h1 id="lab-heading" class="indent-[-0.04em] font-heading">
+        Component lab
+      </h1>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent
+      className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+    >
+      <p
+        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
+      >
+        Inspect the real design tokens and React controls inside Astro. Changes
+        update through Vite without placing workshop content on the homepage.
+      </p>
+      <p
+        class="m-0 w-fit rounded-(--radius-round) border border-line px-2 py-1 font-mono text-xs tracking-wide text-muted-foreground uppercase"
+      >
+        Dev route
+      </p>
+    </PanelContent>
+  </Panel>
+
+  <StripeSeparator />
+
+  <Panel id="lab-foundation" aria-labelledby="lab-foundation-heading">
+    <PanelHeader>
+      <PanelTitle id="lab-foundation-heading">
+        Foundation<PanelTitleSup>01</PanelTitleSup>
+      </PanelTitle>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent className="grid gap-6">
+      <section aria-labelledby="lab-colors-heading" class="grid gap-3">
+        <div class="grid gap-1">
+          <h3 id="lab-colors-heading" class="font-heading text-lg font-medium">
+            Semantic colors
+          </h3>
+          <p class="m-0 text-sm text-muted-foreground">
+            Use the navigation toggle to verify every token in both themes.
+          </p>
+        </div>
+        <ul class="m-0 grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-4">
+          {
+            colorTokens.map(([label, token]) => (
+              <li class="overflow-hidden rounded-(--radius-small) border border-line bg-(--color-surface-raised)">
+                <span
+                  class="block h-14 border-b border-line"
+                  style={`background-color: var(${token})`}
+                  aria-hidden="true"
+                />
+                <span class="grid gap-0.5 p-2">
+                  <strong class="text-sm font-medium">{label}</strong>
+                  <code class="text-xs text-muted-foreground">{token}</code>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section
+        aria-labelledby="lab-type-heading"
+        class="grid gap-4 border-t border-line pt-6"
+      >
+        <div class="grid gap-1">
+          <h3 id="lab-type-heading" class="font-heading text-lg font-medium">
+            Typography
+          </h3>
+          <p class="m-0 text-sm text-muted-foreground">
+            Geist headings, IBM Plex Sans body text, and IBM Plex Mono metadata.
+          </p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid content-start gap-2">
+            <p class="m-0 font-heading text-3xl leading-tight font-medium">
+              Systems, software, and sound
+            </p>
+            <p class="m-0 max-w-(--size-prose) text-base text-muted-foreground">
+              A body specimen for longer technical explanations, research
+              context, and personal writing.
+            </p>
+          </div>
+          <pre
+            aria-label="Static island boundary example"
+            tabindex="0"
+            class="m-0 overflow-x-auto rounded-(--radius-small) border border-line bg-(--color-surface) p-3 font-mono text-sm whitespace-pre-wrap"><code>const boundary = "static-first";
+const island = interaction ? "react" : null;</code></pre>
+        </div>
+      </section>
+    </PanelContent>
+
+    <PanelRuleBand />
+  </Panel>
+
+  <StripeSeparator />
+
+  <Panel id="lab-control-panel" aria-labelledby="lab-controls-heading">
+    <PanelHeader>
+      <PanelTitle id="lab-controls-heading">
+        Controls<PanelTitleSup>02</PanelTitleSup>
+      </PanelTitle>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <LabControls client:load />
+    </PanelContent>
+
+    <PanelRuleBand />
+  </Panel>
+</BaseLayout>
