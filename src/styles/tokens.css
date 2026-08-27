@@ -12,6 +12,7 @@
   --color-link: #38332f;
   --color-rule: rgb(56 51 47 / 18%);
   --color-rule-strong: rgb(56 51 47 / 32%);
+  --color-overlay: rgb(43 39 36 / 25%);
   --color-focus: #38332f;
   --color-danger: #55241f;
 
@@ -61,6 +62,7 @@
   --color-link: #ae9877;
   --color-rule: rgb(174 152 119 / 18%);
   --color-rule-strong: rgb(174 152 119 / 32%);
+  --color-overlay: rgb(0 0 0 / 50%);
   --color-focus: #ae9877;
   --color-danger: #d17d6e;
 }
@@ -80,6 +82,7 @@
     --color-link: #ae9877;
     --color-rule: rgb(174 152 119 / 18%);
     --color-rule-strong: rgb(174 152 119 / 32%);
+    --color-overlay: rgb(0 0 0 / 50%);
     --color-focus: #ae9877;
     --color-danger: #d17d6e;
   }

@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; third candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 and 02.2 are committed and pushed; Commit 02.3 is included in this change and Commit 02.4 is next. |
+| 02 | Active; fourth candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 through 02.3 are committed and pushed; Commit 02.4 is pending review. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -154,8 +154,9 @@ Stage 02 commit ledger:
 | --- | --- | --- |
 | 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
 | 02.2 blueprint layout | Committed and pushed | `0a15bf5` on `origin/codex/feat/design-system`. |
-| 02.3 sticky navigation and themes | Implemented in this change | Proposed message `feat: add sticky navigation and persistent themes`. |
-| 02.4-02.5 | Not started | Commit 02.4 is the next review candidate. |
+| 02.3 sticky navigation and themes | Committed and pushed | `a52e32e` on `origin/codex/feat/design-system`. |
+| 02.4 interactive controls | Implemented, pending review | Current working-tree candidate; proposed message `feat: add core interactive controls`. |
+| 02.5 component lab | Not started | Begin after Commit 02.4 is reviewed and committed. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -620,17 +621,25 @@ feat: add core interactive controls
 
 Scope:
 
-- Button, Tooltip, Badge, Separator, Collapsible, Dialog/Sheet, and Command primitives only.
+- React-source Button, Tooltip, Badge, Separator, Collapsible, Dialog, Sheet, and
+  Command primitives only.
 - Reuse the existing `cn` utility; add variant handling only where a component
   has a real public variant API.
-- Install only dependencies used by these components.
+- Use Base UI for accessible control behavior, CVA for the public Button and
+  Badge variant APIs, and `cmdk` for Command. Use local SVGs rather than adding
+  an icon package.
 - Adapt colors and focus behavior to project tokens.
+- Preserve the Astro island boundary: static React controls render without
+  client JavaScript, while a future interactive feature hydrates one composition
+  island rather than each primitive.
 
 Checks:
 
 - Dependency diff review.
 - Tree/build output inspection.
 - Keyboard, focus, portal, and theme behavior.
+- Static-render checks for non-interactive controls and DOM integration checks
+  for interactive primitives.
 - No wholesale registry import.
 
 ### Commit 02.5 - add the development component lab
