@@ -85,6 +85,21 @@ describe("self-hosted typography", () => {
       "--font-heading: var(--font-heading-family);",
     );
   });
+
+  it("assigns self-hosted Caveat to decorative annotations", () => {
+    expect(fontsSource).toContain(
+      '@import "@fontsource-variable/caveat/wght.css";',
+    );
+    expect(packageManifest.dependencies?.["@fontsource-variable/caveat"]).toBe(
+      "5.3.0",
+    );
+    expect(tokensSource).toContain(
+      '--font-handwritten-family: "Caveat Variable", cursive;',
+    );
+    expect(blueprintSource).toContain(
+      "--font-handwritten: var(--font-handwritten-family);",
+    );
+  });
 });
 
 describe("Tailwind-first spacing", () => {

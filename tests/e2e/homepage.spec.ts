@@ -626,6 +626,9 @@ test("homepage serves both visual themes and local typography", async ({
       (path) => path.startsWith("/fonts/") || path.startsWith("/_astro/geist-"),
     ),
   ).toBe(true);
+  expect(
+    [...fontResponses.keys()].some((path) => path.includes("caveat")),
+  ).toBe(false);
   expect([...fontOrigins]).toEqual([new URL(page.url()).origin]);
 });
 

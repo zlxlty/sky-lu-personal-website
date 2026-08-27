@@ -7,6 +7,7 @@ import {
   PanelTitle,
   PanelTitleSup,
 } from "@/components/blueprint/Panel";
+import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
 import { LabControls } from "@/lab/LabControls";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -64,6 +65,11 @@ const colorTokens = [
   <StripeSeparator />
 
   <Panel id="lab-foundation" aria-labelledby="lab-foundation-heading">
+    <RailAnnotation side="left" align="start" arrowDirection="up">
+      notes can live
+      <span class="block"></span>
+      left of the rail
+    </RailAnnotation>
     <PanelHeader>
       <PanelTitle id="lab-foundation-heading">
         Foundation<PanelTitleSup>01</PanelTitleSup>
@@ -135,12 +141,43 @@ const island = interaction ? "react" : null;</code></pre>
     <PanelRuleBand />
   </Panel>
 
+  <Panel id="lab-annotations" aria-labelledby="lab-annotations-heading">
+    <RailAnnotation side="left" align="start" arrowDirection="down">
+      notes can live
+      <span class="block"></span>
+      left of the rail
+    </RailAnnotation>
+    <RailAnnotation side="right" align="end" arrowDirection="up">
+      or mirror over
+      <span class="block"></span>
+      to the right
+    </RailAnnotation>
+
+    <PanelHeader>
+      <PanelTitle id="lab-annotations-heading">
+        Annotations<PanelTitleSup>02</PanelTitleSup>
+      </PanelTitle>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <p class="m-0 max-w-(--size-prose) text-muted-foreground">
+        Rail annotations own their arrow direction, outer-gutter placement, and
+        responsive visibility. They remain decorative and never replace
+        essential content.
+      </p>
+    </PanelContent>
+
+    <PanelRuleBand />
+  </Panel>
+
   <StripeSeparator />
 
   <Panel id="lab-control-panel" aria-labelledby="lab-controls-heading">
     <PanelHeader>
       <PanelTitle id="lab-controls-heading">
-        Controls<PanelTitleSup>02</PanelTitleSup>
+        Controls<PanelTitleSup>03</PanelTitleSup>
       </PanelTitle>
     </PanelHeader>
 

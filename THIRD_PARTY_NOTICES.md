@@ -7,6 +7,13 @@ which packages the Geist font by the Geist Project Authors. Geist is licensed
 under the SIL Open Font License 1.1; the copyright notice and complete license
 are included in `public/fonts/LICENSE.txt`.
 
+## Caveat
+
+Decorative handwritten annotations use Caveat from
+`@fontsource-variable/caveat` 5.3.0. Caveat is copyright 2014 The Caveat
+Project Authors and is licensed under the SIL Open Font License 1.1; the
+copyright notice and complete license are included in `public/fonts/LICENSE.txt`.
+
 ## chanhdai.com
 
 Portions of the blueprint layout system are adapted from
@@ -15,10 +22,10 @@ Portions of the blueprint layout system are adapted from
 
 The migration is limited to general-purpose source code for the document rail,
 compact sticky header shell, Panel family, screen-line utilities,
-diagonal-stripe separator, class-name utility, and the general structure of the
-curated Base UI-backed control wrappers. Chánh Đại's name, wordmark, mark
-geometry, avatar, personal data, illustrations, and other brand assets are not
-included.
+diagonal-stripe separator, rail-aware handwritten annotation, class-name
+utility, and the general structure of the curated Base UI-backed control
+wrappers. Chánh Đại's name, wordmark, mark geometry, avatar, personal data,
+illustrations, and other brand assets are not included.
 
 MIT License
 

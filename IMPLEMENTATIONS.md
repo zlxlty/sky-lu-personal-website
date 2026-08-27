@@ -155,8 +155,9 @@ Stage 02 commit ledger:
 | 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
 | 02.2 blueprint layout | Committed and pushed | `0a15bf5` on `origin/codex/feat/design-system`. |
 | 02.3 sticky navigation and themes | Committed and pushed | `a52e32e` on `origin/codex/feat/design-system`. |
-| 02.4 interactive controls | Committed locally; not pushed | `b61cdfe` on `codex/feat/design-system`. |
-| 02.5 component lab | Implemented, pending review | Current working-tree candidate; proposed message `feat: add development component lab`. |
+| 02.4 interactive controls | Committed and pushed | `b61cdfe` on `origin/codex/feat/design-system`. |
+| 02.5 component lab | Committed and pushed | `5bd9eee` on `origin/codex/feat/design-system`. |
+| 02.6 rail annotations | Implemented, pending review | Current working-tree candidate; proposed message `feat: add rail annotations`. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -666,6 +667,33 @@ Checks:
 - `pnpm test:lab:ci` for the portable CI subset without platform-specific snapshots.
 - `pnpm test:e2e` for the production artifact exclusion and existing homepage contract.
 
+### Commit 02.6 - add rail annotations
+
+Proposed message:
+
+```text
+feat: add rail annotations
+```
+
+Scope:
+
+- A static `RailAnnotation` blueprint module with left/right gutter placement,
+  start/center/end alignment, up/down arrow direction with matching copy order,
+  an automatically mirrored hand-drawn arrow, and wide-screen visibility
+  guards.
+- Caveat variable font self-hosted through Fontsource and limited to decorative
+  annotation text.
+- Both annotation sides exposed through `/lab` without adding another island.
+- Upstream code and Caveat font attribution.
+
+Checks:
+
+- Static-render interface tests for side, alignment, decorative semantics,
+  inward arrow direction, and copy/arrow ordering.
+- Browser geometry checks at the `xl` breakpoint and reviewed 1440 px visual
+  coverage.
+- Font dependency, local bundling, production build, and output inspection.
+
 ### Branch acceptance criteria
 
 - The visual system is recognizable without copying Chanhdai branding.
@@ -678,6 +706,8 @@ Checks:
   numeric spacing-token scale.
 - Only the approved control dependencies are installed.
 - `/lab` is development-only.
+- Rail annotations remain decorative, stay outside the content rail, point
+  inward automatically, and disappear before the gutters can hold them.
 
 ## 8. Stage 03 - Content model and core routes
 

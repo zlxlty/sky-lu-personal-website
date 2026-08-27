@@ -93,9 +93,60 @@ test("interactive specimens support keyboard and pointer review", async ({
   await expect(commandDialog).toHaveCount(0);
 });
 
+test("rail annotations stay in the outer gutters on wide screens", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1279, height: 900 });
+  await page.goto("/lab");
+  await waitForLabControls(page);
+
+  const annotationPanel = page.locator("#lab-annotations");
+  const annotations = annotationPanel.locator('[data-slot="rail-annotation"]');
+  await expect(annotations).toHaveCount(2);
+  await expect(annotations.first()).toBeHidden();
+  await expect(annotations.last()).toBeHidden();
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(annotations.first()).toBeVisible();
+  await expect(annotations.last()).toBeVisible();
+
+  const panelBox = await annotationPanel.boundingBox();
+  const leftBox = await annotations
+    .filter({ hasText: "left of the rail" })
+    .boundingBox();
+  const rightBox = await annotations
+    .filter({ hasText: "to the right" })
+    .boundingBox();
+  const leftArrowHeadBox = await annotations
+    .filter({ hasText: "left of the rail" })
+    .locator('[data-slot="rail-annotation-arrow"] path')
+    .last()
+    .boundingBox();
+  const rightArrowHeadBox = await annotations
+    .filter({ hasText: "to the right" })
+    .locator('[data-slot="rail-annotation-arrow"] path')
+    .last()
+    .boundingBox();
+
+  expect(panelBox).not.toBeNull();
+  expect(leftBox).not.toBeNull();
+  expect(rightBox).not.toBeNull();
+  expect(leftArrowHeadBox).not.toBeNull();
+  expect(rightArrowHeadBox).not.toBeNull();
+  expect(leftBox!.x + leftBox!.width).toBeLessThanOrEqual(panelBox!.x);
+  expect(rightBox!.x).toBeGreaterThanOrEqual(panelBox!.x + panelBox!.width);
+  expect(
+    panelBox!.x - (leftArrowHeadBox!.x + leftArrowHeadBox!.width),
+  ).toBeLessThanOrEqual(16);
+  expect(
+    rightArrowHeadBox!.x - (panelBox!.x + panelBox!.width),
+  ).toBeLessThanOrEqual(16);
+});
+
 for (const { theme, width } of [
   { theme: "light", width: 360 },
   { theme: "dark", width: 1024 },
+  { theme: "light", width: 1440 },
 ] as const) {
   test(`lab visual target: ${theme} at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
