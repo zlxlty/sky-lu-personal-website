@@ -21,6 +21,7 @@
   --font-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   --font-heading-family: "Geist Variable", var(--font-sans);
+  --font-handwritten-family: "Caveat Variable", cursive;
   --text-meta: 0.75rem;
   --text-small: 0.875rem;
   --text-body: 1rem;

@@ -184,10 +184,11 @@ pnpm exec playwright test --project=chromium
 
 The development-only `/lab` uses the real Astro layout, theme controller, Tailwind
 configuration, and React island boundary. It replaces Storybook initially and
-contains token, typography, static-control, disclosure, tooltip, overlay, and
-command-menu specimens. Astro's development toolbar remains available during manual
-use; the lab's automated checks hide that overlay so audits and screenshots measure
-only the application UI.
+contains token, typography, rail-annotation, static-control, disclosure, tooltip,
+overlay, and command-menu specimens. Rail annotations appear outside the content
+rail at the `xl` breakpoint, so review them at 1280 px or wider. Astro's development
+toolbar remains available during manual use; the lab's automated checks hide that
+overlay so audits and screenshots measure only the application UI.
 
 Start `pnpm dev` and visit `http://localhost:4321/lab`. Source changes update through
 Vite. If a long-running server reports `504 Outdated Optimize Dep` after dependencies

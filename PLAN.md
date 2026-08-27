@@ -63,7 +63,8 @@ without hydration. The imported source revision and license are recorded in
   adapted to Sky's tokens and content.
 - Compact sticky navigation.
 - Large technical illustration near the top.
-- Small figure captions, annotations, keycaps, metadata, and superscript counts.
+- Small figure captions, rail-aware handwritten annotations, keycaps, metadata,
+  and superscript counts.
 - Expandable experience and project records.
 - Command palette, theme switcher, tooltips, badges, separators, and copy buttons.
 - MDX-based content and good code-block presentation.
@@ -371,7 +372,9 @@ Theme behavior:
 - Display headings: Geist Sans, self-hosted variable WOFF2.
 - Body: IBM Plex Sans, self-hosted variable WOFF2.
 - Technical metadata and code-adjacent UI: IBM Plex Mono.
-- Use no more than these three role-specific font families.
+- Decorative rail annotations only: Caveat, self-hosted through Fontsource.
+- Use no more than these four role-specific font families. Handwritten text must
+  remain decorative and cannot carry essential instructions or content.
 - Body: 16 px/1.65.
 - Metadata: 12-13 px/1.45.
 - Hero heading: fluid 40-64 px, restrained rather than oversized.

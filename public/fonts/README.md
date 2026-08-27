@@ -23,3 +23,14 @@ request leaves the site's origin.
 
 Geist is distributed under the SIL Open Font License 1.1. The complete license
 is included in [`LICENSE.txt`](./LICENSE.txt).
+
+## Caveat
+
+Decorative rail annotations use the variable Caveat family supplied by
+`@fontsource-variable/caveat` 5.3.0. Vite emits its Unicode-range WOFF2 subsets
+with the static assets, while the browser fetches only a matching subset when a
+page renders the handwritten role. Caveat is not globally preloaded, and no
+font request leaves the site's origin.
+
+Caveat is distributed under the SIL Open Font License 1.1. The complete license
+is included in [`LICENSE.txt`](./LICENSE.txt).

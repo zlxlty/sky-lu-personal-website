@@ -10,6 +10,7 @@
   --color-line: var(--color-rule);
   --color-muted-foreground: var(--color-muted);
   --font-heading: var(--font-heading-family);
+  --font-handwritten: var(--font-handwritten-family);
 }
 
 @utility screen-line-top {
