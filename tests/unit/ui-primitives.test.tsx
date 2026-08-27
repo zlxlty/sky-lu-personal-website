@@ -104,6 +104,10 @@ describe("static UI primitives", () => {
       expect(html).toContain("text-(--color-on-danger)");
       expect(html).not.toContain("text-(--color-paper)");
     }
+
+    expect(button).toContain("hover:border-(--color-danger)");
+    expect(button).not.toContain("hover:bg-transparent");
+    expect(button).not.toContain("hover:text-(--color-danger)");
   });
 
   it("preserves separator orientation semantics", () => {

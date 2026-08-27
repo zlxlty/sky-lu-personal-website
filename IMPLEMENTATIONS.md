@@ -1,7 +1,7 @@
 # Sky Lu Personal Website - Implementation Roadmap
 
-Status: Stage 02 design system in progress
-Last updated: 2026-08-26
+Status: Stage 02 design system in final branch review
+Last updated: 2026-08-27
 Companion documents: `PLAN.md`, `AGENTS.md`
 
 ## 1. Purpose
@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Implementation complete; final branch review pending | Commits 02.1 through 02.8 are pushed on `codex/feat/design-system`. Quality and Browser CI passed through `099b11e` in [run 33095846464](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33095846464); Commit 02.9 closes the branch documentation before the rebase-merge review. |
+| 02 | Implementation complete; final branch review pending | Commits 02.1 through 02.9 are pushed on `codex/feat/design-system`. Quality and Browser CI passed through `b10e04d` in [run 33096704296](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33096704296). The branch-tip audit candidate below resolves the final code and documentation findings before rebase-merge authorization. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -160,7 +160,8 @@ Stage 02 commit ledger:
 | 02.6 rail annotations | Committed and pushed | `fbd8af6` on `origin/codex/feat/design-system`. |
 | 02.7 dark raised-surface contrast | Committed and pushed | `1b5c637` on `origin/codex/feat/design-system`. |
 | 02.8 annotation stack isolation | Committed and pushed; CI passed | `099b11e` on `origin/codex/feat/design-system`; [Quality and Browser CI](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33095846464) passed. |
-| 02.9 completion documentation | Branch-closing documentation | Records the completed implementation, current project phase, review evidence, and developer guidance in the commit containing this row. |
+| 02.9 completion documentation | Committed and pushed; CI passed | `b10e04d` on `origin/codex/feat/design-system`; [Quality and Browser CI](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33096704296) passed. |
+| 02.10 final branch audit | Branch-tip audit | The commit containing this row keeps destructive hover content on its tested emphasis pair and synchronizes the plan with the implemented palette. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -752,6 +753,27 @@ Scope:
 - Document responsive visibility and Tailwind-first optical positioning for
   rail annotations.
 - Capture accepted maintainability follow-ups without expanding Stage 02.
+
+### Commit 02.10 - close final design-system review gaps
+
+Proposed message:
+
+```text
+fix: close design system review gaps
+```
+
+Scope:
+
+- Keep destructive-button hover content on the accessible danger-emphasis pair
+  instead of exposing danger text against an arbitrary host surface.
+- Add a component-contract regression for the destructive hover classes.
+- Synchronize the approved dark raised-surface value and final Stage 02 ledger
+  with the implemented branch.
+
+Checks:
+
+- Focused unit tests for design tokens and UI primitives.
+- Full repository verification and browser suite before merge review.
 
 ### Branch acceptance criteria
 

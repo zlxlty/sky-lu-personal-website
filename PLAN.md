@@ -1,7 +1,7 @@
 # Sky Lu Personal Website - Implementation Plan
 
-Status: approved direction, ready for scaffolding
-Last updated: 2026-08-21
+Status: approved direction, Stage 02 in final branch review
+Last updated: 2026-08-27
 Primary priorities, in order: implementation simplicity, load speed, expressiveness, accessibility
 
 ## 1. Product definition
@@ -344,7 +344,7 @@ Include:
   color-scheme: dark;
   --color-paper: #2b2724;
   --color-surface: #332e2a;
-  --color-surface-raised: #3b3530;
+  --color-surface-raised: #38322d;
   --color-ink: #ae9877;
   --color-muted: #ae9877;
   --color-brass: #ae9877;
