@@ -133,7 +133,7 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Active; fifth candidate implemented | Branch `codex/feat/design-system` is based on merged Stage 01. Commits 02.1 through 02.3 are pushed; Commit 02.4 is committed locally and Commit 02.5 is implemented pending review. |
+| 02 | Active; branch-review cleanup | Commits 02.1 through 02.6 are pushed on `codex/feat/design-system`; Commit 02.7 addresses the branch review's dark-surface contrast finding, followed by annotation-stack isolation and final documentation cleanup. |
 | 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -157,7 +157,10 @@ Stage 02 commit ledger:
 | 02.3 sticky navigation and themes | Committed and pushed | `a52e32e` on `origin/codex/feat/design-system`. |
 | 02.4 interactive controls | Committed and pushed | `b61cdfe` on `origin/codex/feat/design-system`. |
 | 02.5 component lab | Committed and pushed | `5bd9eee` on `origin/codex/feat/design-system`. |
-| 02.6 rail annotations | Implemented, pending review | Current working-tree candidate; proposed message `feat: add rail annotations`. |
+| 02.6 rail annotations | Committed and pushed | `fbd8af6` on `origin/codex/feat/design-system`. |
+| 02.7 dark raised-surface contrast | Implemented, pending review | Current working-tree candidate; proposed message `fix: meet dark surface contrast requirements`. |
+| 02.8 annotation stack isolation | Planned | Exclude decorative absolute overlays from panel adjacency ownership. |
+| 02.9 completion documentation | Planned | Record branch completion and refresh the README project phase after final verification. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -693,6 +696,60 @@ Checks:
 - Browser geometry checks at the `xl` breakpoint and reviewed 1440 px visual
   coverage.
 - Font dependency, local bundling, production build, and output inspection.
+
+### Commit 02.7 - meet dark raised-surface contrast requirements
+
+Proposed message:
+
+```text
+fix: meet dark surface contrast requirements
+```
+
+Scope:
+
+- Keep the approved dark foreground while darkening the raised-surface token
+  enough for normal text to meet WCAG AA.
+- Apply the same token to explicit and system-preference dark themes.
+- Exercise normal foreground and muted text across every semantic surface.
+- Run the component lab accessibility audit in both visual themes.
+
+Checks:
+
+- Token-level WCAG contrast assertions for paper, surface, and raised surface.
+- Light- and dark-theme Axe audits in `/lab`.
+
+### Commit 02.8 - isolate annotations from panel stack ownership
+
+Proposed message:
+
+```text
+fix: isolate rail annotations from panel flow
+```
+
+Scope:
+
+- Mark decorative absolute overlays as outside the Panel adjacency contract.
+- Preserve absolute start/center/end placement with multiple annotations.
+- Ensure overlays never acquire screen rules or become paint owners.
+
+Checks:
+
+- Browser geometry and computed-style assertions with multiple annotations.
+- Single-paint-owner regression coverage at annotated panel boundaries.
+
+### Commit 02.9 - record design-system completion
+
+Proposed message:
+
+```text
+docs: record design system completion
+```
+
+Scope:
+
+- Record the final Stage 02 commit ledger and CI evidence.
+- Refresh the README project phase and component-lab availability.
+- Capture accepted maintainability follow-ups without expanding Stage 02.
 
 ### Branch acceptance criteria
 
