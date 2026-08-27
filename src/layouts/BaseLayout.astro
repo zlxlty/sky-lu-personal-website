@@ -1,5 +1,13 @@
 ---
 import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
+import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
+import ThemeToggle from "@/components/theme/ThemeToggle.astro";
+import {
+  DARK_THEME_QUERY,
+  THEME_COLORS,
+  THEME_COLOR_SCHEMES,
+  THEME_STORAGE_KEY,
+} from "@/lib/theme";
 import "@/styles/global.css";
 import geistLatinUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 
@@ -21,6 +29,48 @@ const mainId = "main-content";
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content={THEME_COLORS.light}
+      data-theme-light={THEME_COLORS.light}
+      data-theme-dark={THEME_COLORS.dark}
+    />
+    <script
+      is:inline
+      define:vars={{
+        darkThemeQuery: DARK_THEME_QUERY,
+        darkThemeColorScheme: THEME_COLOR_SCHEMES.dark,
+        lightThemeColorScheme: THEME_COLOR_SCHEMES.light,
+        storageKey: THEME_STORAGE_KEY,
+      }}
+    >
+      (() => {
+        const root = document.documentElement;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        let storedTheme = null;
+
+        try {
+          const value = localStorage.getItem(storageKey);
+          if (value === "light" || value === "dark") storedTheme = value;
+        } catch {
+          // System preference remains available when storage is blocked.
+        }
+
+        const theme =
+          storedTheme ??
+          (window.matchMedia(darkThemeQuery).matches ? "dark" : "light");
+        const metaColor =
+          theme === "dark"
+            ? themeColor?.dataset.themeDark
+            : themeColor?.dataset.themeLight;
+
+        root.dataset.theme = theme;
+        root.style.colorScheme =
+          theme === "dark" ? darkThemeColorScheme : lightThemeColorScheme;
+        if (metaColor) themeColor?.setAttribute("content", metaColor);
+      })();
+    </script>
     <link
       rel="preload"
       href="/fonts/ibm-plex-sans-latin.woff2"
@@ -52,6 +102,9 @@ const mainId = "main-content";
     >
       Skip to content
     </a>
+    <BlueprintNavbar aria-label="Site header">
+      <ThemeToggle />
+    </BlueprintNavbar>
     <BlueprintPage id={mainId} aria-label={mainLabel}>
       <slot />
     </BlueprintPage>

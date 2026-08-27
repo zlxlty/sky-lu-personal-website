@@ -67,7 +67,7 @@ export function PanelDescription({
     <div
       data-slot="panel-description"
       className={cn(
-        "py-6 text-base text-balance text-muted-foreground",
+        "py-4 text-base text-balance text-muted-foreground",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ export function PanelContent({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="panel-body"
-      className={cn("px-4 py-6", className)}
+      className={cn("px-4 py-4", className)}
       {...props}
     />
   );

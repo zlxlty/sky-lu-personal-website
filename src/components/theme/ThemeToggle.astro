@@ -1,0 +1,147 @@
+<div data-slot="theme-control" class="flex shrink-0">
+  <button
+    type="button"
+    data-theme-toggle
+    hidden
+    aria-label="Switch to dark theme"
+    class="group inline-flex size-10 appearance-none items-center justify-center rounded-(--radius-small) border-0 bg-transparent p-0 text-foreground"
+  >
+    <svg
+      data-theme-icon="dark"
+      class="group/theme-icon size-5 in-data-[theme=dark]:hidden"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+      <path
+        data-theme-icon-fill
+        class="opacity-0 transition-opacity duration-(--duration-disclosure) ease-(--ease-standard) group-hover/theme-icon:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+        d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"
+        fill="currentColor"
+        stroke="none"></path>
+    </svg>
+    <svg
+      data-theme-icon="light"
+      class="group/theme-icon hidden size-5 in-data-[theme=dark]:block"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <circle
+        data-theme-icon-fill
+        class="opacity-0 transition-opacity duration-(--duration-disclosure) ease-(--ease-standard) group-hover/theme-icon:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+        cx="12"
+        cy="12"
+        fill="currentColor"
+        r="4"
+        stroke="none"></circle>
+      <path
+        d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"
+      ></path>
+    </svg>
+  </button>
+  <span data-theme-status class="sr-only" aria-live="polite"></span>
+</div>
+
+<script>
+  import type { Theme } from "@/lib/theme";
+  import {
+    DARK_THEME_QUERY,
+    getNextTheme,
+    parseTheme,
+    resolveTheme,
+    THEME_COLOR_SCHEMES,
+    THEME_STORAGE_KEY,
+  } from "@/lib/theme";
+
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>(
+    "[data-theme-toggle]",
+  );
+  const status = document.querySelector<HTMLElement>("[data-theme-status]");
+  const themeColor = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]',
+  );
+  const systemPreference = window.matchMedia(DARK_THEME_QUERY);
+
+  let explicitTheme = readStoredTheme();
+
+  applyTheme(
+    parseTheme(root.dataset.theme) ??
+      resolveTheme(explicitTheme, systemPreference.matches),
+    false,
+  );
+
+  toggle?.addEventListener("click", () => {
+    const theme = getNextTheme(
+      parseTheme(root.dataset.theme) ??
+        resolveTheme(explicitTheme, systemPreference.matches),
+    );
+
+    explicitTheme = theme;
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // The current page can still switch themes when storage is unavailable.
+    }
+    applyTheme(theme, true);
+  });
+
+  systemPreference.addEventListener("change", ({ matches }) => {
+    if (explicitTheme === null) {
+      applyTheme(resolveTheme(null, matches), true);
+    }
+  });
+
+  window.addEventListener("storage", ({ key, newValue }) => {
+    if (key !== THEME_STORAGE_KEY) return;
+
+    explicitTheme = parseTheme(newValue);
+    applyTheme(resolveTheme(explicitTheme, systemPreference.matches), true);
+  });
+
+  function readStoredTheme() {
+    try {
+      return parseTheme(localStorage.getItem(THEME_STORAGE_KEY));
+    } catch {
+      return null;
+    }
+  }
+
+  function applyTheme(theme: Theme, announce: boolean) {
+    const nextTheme = getNextTheme(theme);
+
+    root.dataset.theme = theme;
+    root.style.colorScheme = THEME_COLOR_SCHEMES[theme];
+
+    const metaColor =
+      theme === "dark"
+        ? themeColor?.dataset.themeDark
+        : themeColor?.dataset.themeLight;
+    if (metaColor) themeColor?.setAttribute("content", metaColor);
+
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.ariaLabel = `Switch to ${nextTheme} theme`;
+      toggle.title = `Switch to ${nextTheme} theme`;
+    }
+
+    if (status) {
+      status.textContent = announce ? `${capitalize(theme)} theme active.` : "";
+    }
+  }
+
+  function capitalize(value: Theme) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+</script>
