@@ -22,7 +22,7 @@ const buttonVariants = cva(
         ghost:
           "border-transparent bg-transparent text-foreground hover:bg-(--color-surface)",
         destructive:
-          "border-(--color-danger-emphasis) bg-(--color-danger-emphasis) text-(--color-on-danger) hover:border-(--color-danger) hover:bg-transparent hover:text-(--color-danger)",
+          "border-(--color-danger-emphasis) bg-(--color-danger-emphasis) text-(--color-on-danger) hover:border-(--color-danger)",
         link: "border-transparent bg-transparent px-0 text-foreground underline decoration-current decoration-[0.08em] underline-offset-[0.18em] active:translate-y-0",
       },
       size: {
