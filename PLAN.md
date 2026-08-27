@@ -328,6 +328,7 @@ Include:
   --color-brass-soft: #e7d6be;
   --color-rule: rgb(56 51 47 / 18%);
   --color-rule-strong: rgb(56 51 47 / 32%);
+  --color-overlay: rgb(43 39 36 / 25%);
   --color-focus: #38332f;
   --color-danger: #55241f;
 }
@@ -347,6 +348,7 @@ Include:
   --color-brass-soft: #4a4033;
   --color-rule: rgb(174 152 119 / 18%);
   --color-rule-strong: rgb(174 152 119 / 32%);
+  --color-overlay: rgb(0 0 0 / 50%);
   --color-focus: #ae9877;
   --color-danger: #d17d6e;
 }
@@ -618,7 +620,11 @@ Start with only:
 - Dialog or Sheet
 - Command
 
-Do not install a full registry. Static visual primitives should be implemented as Astro components when React behavior is unnecessary. A React/shadcn component rendered without a `client:*` directive should remain server-rendered HTML with no client runtime.
+Do not install a full registry. Keep the curated shadcn-compatible primitives as
+React source so their composition API stays familiar and reusable. Astro renders
+any React primitive used without a `client:*` directive to static HTML with no
+client runtime. When interaction is required, hydrate the feature composition
+island (for example, one command-menu island) rather than each primitive.
 
 ## 10. Proposed source structure
 

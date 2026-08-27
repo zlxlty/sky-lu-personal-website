@@ -15,9 +15,10 @@ Portions of the blueprint layout system are adapted from
 
 The migration is limited to general-purpose source code for the document rail,
 compact sticky header shell, Panel family, screen-line utilities,
-diagonal-stripe separator, and class-name utility. Chánh Đại's name, wordmark,
-mark geometry, avatar, personal data, illustrations, and other brand assets are
-not included.
+diagonal-stripe separator, class-name utility, and the general structure of the
+curated Base UI-backed control wrappers. Chánh Đại's name, wordmark, mark
+geometry, avatar, personal data, illustrations, and other brand assets are not
+included.
 
 MIT License
 

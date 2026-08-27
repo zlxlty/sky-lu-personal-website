@@ -68,6 +68,10 @@ not repository files.
   edge overrides.
 - React components become client islands only when an explicit `client:*` directive
   is necessary.
+- `src/components/ui/` contains the curated shadcn-compatible React primitives.
+  Static uses render through Astro without hydration; interactive features should
+  compose the primitives inside one feature-level island instead of adding a
+  `client:*` directive to each control.
 - Markdown and MDX content will live in Astro content collections rather than a
   database or CMS.
 - Browser APIs, Tone.js, and per-frame guitar state remain behind client boundaries.
@@ -128,7 +132,8 @@ install, build, preview, verify, or Git hook command deploys the website.
 2. Run `pnpm install --frozen-lockfile` when dependencies changed.
 3. Run `pnpm dev` for browser feedback and `pnpm test:watch` for pure logic.
 4. Compose static content in Astro, extend the migrated blueprint modules at their
-   existing seam, and hydrate only the smallest required island.
+   existing seam, and hydrate only the smallest required feature island. React UI
+   primitives may be server-rendered without hydration when they are static.
 5. Run the smallest relevant checks while working.
 6. Before review, run `pnpm verify`; run `pnpm verify:full` for browser-facing work.
 7. Inspect the complete diff, check privacy, and follow the approval process below.
