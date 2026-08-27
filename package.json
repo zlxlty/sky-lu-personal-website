@@ -23,6 +23,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:update": "playwright test --update-snapshots",
+    "test:lab": "playwright test --config=playwright.lab.config.ts",
+    "test:lab:ci": "playwright test --config=playwright.lab.config.ts --grep-invert \"visual target\"",
+    "test:lab:ui": "playwright test --config=playwright.lab.config.ts --ui",
+    "test:lab:update": "playwright test --config=playwright.lab.config.ts --update-snapshots",
     "verify": "pnpm format:check && pnpm lint && pnpm check && pnpm test && pnpm build",
     "verify:full": "pnpm verify && pnpm test:e2e",
     "prepare": "simple-git-hooks"

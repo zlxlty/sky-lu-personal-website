@@ -43,6 +43,15 @@ describe.each([
       contrast(tokens["--color-on-brass"], tokens["--color-brass"]),
     ).toBeGreaterThanOrEqual(4.5);
   });
+
+  it("keeps danger text and emphasis content above WCAG AA contrast", () => {
+    expect(
+      contrast(tokens["--color-danger"], tokens["--color-paper"]),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrast(tokens["--color-on-danger"], tokens["--color-danger-emphasis"]),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
 });
 
 describe("self-hosted typography", () => {
@@ -95,6 +104,16 @@ describe("browser theme surfaces", () => {
     expect(lightTokens["--color-ink"]).toBe("#38332f");
     expect(darkTokens["--color-paper"]).toBe("#2b2724");
     expect(darkTokens["--color-ink"]).toBe("#ae9877");
+  });
+
+  it("uses distinct foreground and emphasis roles for danger", () => {
+    expect(lightTokens["--color-danger"]).toBe("#923b33");
+    expect(lightTokens["--color-danger-emphasis"]).toBe("#96372f");
+    expect(lightTokens["--color-on-danger"]).toBe("#fcf3e6");
+    expect(lightTokens["--color-on-danger"]).toBe(lightTokens["--color-paper"]);
+    expect(darkTokens["--color-danger"]).toBe("#b98279");
+    expect(darkTokens["--color-danger-emphasis"]).toBe("#82443d");
+    expect(darkTokens["--color-on-danger"]).toBe("#e7d6be");
   });
 
   it("keeps the no-JavaScript system fallback aligned with dark mode", () => {

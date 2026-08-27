@@ -91,6 +91,21 @@ describe("static UI primitives", () => {
     expect(html).not.toContain("<span");
   });
 
+  it("uses paired semantic tokens for destructive controls", () => {
+    const button = renderToStaticMarkup(
+      <Button variant="destructive">Delete</Button>,
+    );
+    const badge = renderToStaticMarkup(
+      <Badge variant="destructive">Unavailable</Badge>,
+    );
+
+    for (const html of [button, badge]) {
+      expect(html).toContain("bg-(--color-danger-emphasis)");
+      expect(html).toContain("text-(--color-on-danger)");
+      expect(html).not.toContain("text-(--color-paper)");
+    }
+  });
+
   it("preserves separator orientation semantics", () => {
     const html = renderToStaticMarkup(<Separator orientation="vertical" />);
 

@@ -35,9 +35,9 @@ If `nvm` is unavailable, use another version manager to install the exact versio
 in `.nvmrc`. `pnpm install --frozen-lockfile` also runs the root `prepare` script,
 which installs the local pre-commit hook.
 
-Astro prints the local URL when the server is ready. The site is currently at `/`.
-The development-only `/lab` route arrives in Stage 02 and does not exist during the
-foundation stage.
+Astro prints the local URL when the server is ready. Visit `/` for the site and
+`/lab` for the development-only component workshop. Astro injects the lab only for
+the development command, so production builds and previews do not expose it.
 
 ## Environment variables
 
@@ -118,6 +118,10 @@ personal content, portraits, illustrations, or branded assets.
 | `pnpm test:e2e`        | Build and run Playwright against a production-style server.   |
 | `pnpm test:e2e:ui`     | Open Playwright UI mode for local browser-test debugging.     |
 | `pnpm test:e2e:update` | Update reviewed browser snapshots when snapshots exist.       |
+| `pnpm test:lab`        | Run `/lab` interaction, accessibility, and visual checks.     |
+| `pnpm test:lab:ci`     | Run portable non-visual `/lab` checks used in CI.             |
+| `pnpm test:lab:ui`     | Open Playwright UI against the development component lab.     |
+| `pnpm test:lab:update` | Update reviewed macOS `/lab` visual snapshots.                |
 | `pnpm verify`          | Run formatting, linting, type checks, unit tests, and build.  |
 | `pnpm verify:full`     | Run `pnpm verify` followed by Playwright.                     |
 | `pnpm run prepare`     | Reinstall the local pre-commit hook.                          |
@@ -178,10 +182,28 @@ pnpm exec playwright test --project=chromium
 
 ### Component lab
 
-Stage 02 adds a development-only `/lab` for component states, themes, responsive
-behavior, focus, reduced motion, and the guitar. It replaces Storybook initially.
-Until then, use the homepage foundation smoke route and do not document `/lab` as an
-available page.
+The development-only `/lab` uses the real Astro layout, theme controller, Tailwind
+configuration, and React island boundary. It replaces Storybook initially and
+contains token, typography, static-control, disclosure, tooltip, overlay, and
+command-menu specimens. Astro's development toolbar remains available during manual
+use; the lab's automated checks hide that overlay so audits and screenshots measure
+only the application UI.
+
+Start `pnpm dev` and visit `http://localhost:4321/lab`. Source changes update through
+Vite. If a long-running server reports `504 Outdated Optimize Dep` after dependencies
+change, rebuild its optimization cache once:
+
+```bash
+pnpm exec astro dev stop
+pnpm exec astro dev --force
+```
+
+Use `pnpm test:lab` for the interaction, Axe, responsive, and reviewed visual targets.
+Use `pnpm test:lab:ui` to step through them. Run `pnpm test:lab:update` only after
+visually reviewing an intentional change; snapshot files are platform-specific.
+Production Playwright independently verifies that the build contains no `/lab`
+artifact. Astro's local Vite preview may rewrite an unknown path to `/`, while the
+deployed Cloudflare 404 policy is verified in Stage 09.
 
 ### Production preview
 
@@ -253,8 +275,8 @@ GitHub Actions uses two stable required jobs:
 
 - **Quality** installs the frozen lockfile, runs `pnpm verify`, and reports unit
   coverage.
-- **Browser** waits for Quality, installs Chromium, runs `pnpm test:e2e`, and uploads
-  seven-day failure artifacts.
+- **Browser** waits for Quality, installs Chromium, runs the production suite and the
+  non-visual `/lab` checks, and uploads seven-day failure artifacts.
 
 Run `pnpm verify:full` for the closest local equivalent. CI has read-only repository
 contents permission and no deployment credentials or deployment step.

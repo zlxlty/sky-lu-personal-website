@@ -235,6 +235,10 @@ These scripts form the stable lifecycle contract. Stage 01 provides all of them 
 | `pnpm test:e2e` | Run Playwright against a production-style local server. |
 | `pnpm test:e2e:ui` | Open Playwright's local UI for debugging tests. |
 | `pnpm test:e2e:update` | Update reviewed visual snapshots; never run blindly. |
+| `pnpm test:lab` | Run the development-only component-lab browser suite and local visual targets. |
+| `pnpm test:lab:ci` | Run portable `/lab` interaction and accessibility checks without platform-specific snapshots. |
+| `pnpm test:lab:ui` | Open Playwright UI against `/lab` for component debugging. |
+| `pnpm test:lab:update` | Update reviewed, platform-specific `/lab` snapshots. |
 | `pnpm verify` | Run formatting, linting, type/content checks, unit tests, and the production build. |
 | `pnpm verify:full` | Run `pnpm verify` plus the complete Playwright suite. |
 
@@ -265,8 +269,9 @@ The application should print a local URL. Visit `/` for the site and `/lab` for 
 4. Start `pnpm dev`.
 5. Use `pnpm test:watch` for pure logic such as guitar geometry and content utilities.
 6. Use `/lab` for component states, themes, responsive behavior, motion, and the guitar.
-7. Before presenting a commit, run the smallest relevant checks followed by `pnpm verify`; use `pnpm verify:full` for browser-facing changes.
-8. Inspect the full Git diff and present the mandatory review package.
+7. Run `pnpm test:lab`; use `pnpm test:lab:update` only after visually reviewing changed snapshots.
+8. Before presenting a commit, run the smallest relevant checks followed by `pnpm verify`; use `pnpm verify:full` for browser-facing changes.
+9. Inspect the full Git diff and present the mandatory review package.
 
 Use `pnpm preview` before reviewing production-only behavior such as static route output, asset URLs, hydration, and draft filtering. Use `pnpm cf:preview` for Cloudflare-specific headers, routing, bindings, or runtime behavior after it exists.
 

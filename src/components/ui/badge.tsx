@@ -12,7 +12,7 @@ const badgeVariants = cva(
         secondary: "border-line bg-(--color-surface) text-muted-foreground",
         outline: "border-(--color-rule-strong) bg-transparent text-foreground",
         destructive:
-          "border-(--color-danger) bg-(--color-danger) text-(--color-paper)",
+          "border-(--color-danger-emphasis) bg-(--color-danger-emphasis) text-(--color-on-danger)",
       },
     },
     defaultVariants: {

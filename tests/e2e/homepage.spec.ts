@@ -1,5 +1,18 @@
+import { existsSync } from "node:fs";
+
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+
+test("development lab is absent from the production build", async ({
+  page,
+}) => {
+  expect(existsSync("dist/lab")).toBe(false);
+
+  await page.goto("/lab");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Component lab" }),
+  ).toHaveCount(0);
+});
 
 test("homepage satisfies the production smoke contract", async ({ page }) => {
   const runtimeErrors: string[] = [];
