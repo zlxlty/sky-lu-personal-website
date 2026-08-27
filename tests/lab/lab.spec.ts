@@ -10,34 +10,40 @@ const waitForLabControls = async (page: Page) => {
   return controls;
 };
 
-test("lab exposes the real design system without accessibility errors", async ({
-  page,
-}) => {
-  const runtimeErrors: string[] = [];
-  page.on("console", (message) => {
-    if (message.type() === "error") runtimeErrors.push(message.text());
+for (const theme of ["light", "dark"] as const) {
+  test(`lab exposes the real design system without ${theme}-theme accessibility errors`, async ({
+    page,
+  }) => {
+    const runtimeErrors: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") runtimeErrors.push(message.text());
+    });
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    await page.addInitScript((selectedTheme) => {
+      localStorage.setItem("theme", selectedTheme);
+    }, theme);
+
+    const response = await page.goto("/lab");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Component lab",
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      "content",
+      "noindex,nofollow",
+    );
+    await expect(page.locator("astro-island")).toHaveCount(1);
+    await expect(await waitForLabControls(page)).toBeVisible();
+
+    const accessibility = await new AxeBuilder({ page })
+      .exclude("astro-dev-toolbar")
+      .analyze();
+
+    expect(response?.status()).toBe(200);
+    expect(runtimeErrors).toEqual([]);
+    expect(accessibility.violations).toEqual([]);
   });
-  page.on("pageerror", (error) => runtimeErrors.push(error.message));
-
-  const response = await page.goto("/lab");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Component lab",
-  );
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    "content",
-    "noindex,nofollow",
-  );
-  await expect(page.locator("astro-island")).toHaveCount(1);
-  await expect(await waitForLabControls(page)).toBeVisible();
-
-  const accessibility = await new AxeBuilder({ page })
-    .exclude("astro-dev-toolbar")
-    .analyze();
-
-  expect(response?.status()).toBe(200);
-  expect(runtimeErrors).toEqual([]);
-  expect(accessibility.violations).toEqual([]);
-});
+}
 
 test("interactive specimens support keyboard and pointer review", async ({
   page,

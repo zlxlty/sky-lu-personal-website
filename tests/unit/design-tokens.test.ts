@@ -35,6 +35,21 @@ describe.each([
     ).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("keeps normal text readable across every semantic surface", () => {
+    for (const background of [
+      "--color-paper",
+      "--color-surface",
+      "--color-surface-raised",
+    ]) {
+      expect(
+        contrast(tokens["--color-ink"], tokens[background]),
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrast(tokens["--color-muted"], tokens[background]),
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
   it("keeps focus and brass foreground pairs visible", () => {
     expect(
       contrast(tokens["--color-focus"], tokens["--color-paper"]),
