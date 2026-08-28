@@ -1,7 +1,7 @@
 # Sky Lu Personal Website - Implementation Roadmap
 
-Status: Stage 02 design system in final branch review
-Last updated: 2026-08-27
+Status: Stage 03 content model in progress
+Last updated: 2026-08-28
 Companion documents: `PLAN.md`, `AGENTS.md`
 
 ## 1. Purpose
@@ -113,7 +113,7 @@ The work is intentionally sequential even where branches could be parallelized. 
 | 00 | `codex/docs/project-governance` | Versioned product plan and working rules | Root commit |
 | 01 | `codex/chore/foundation` | Buildable Astro project with quality tooling | 00 |
 | 02 | `codex/feat/design-system` | Light/dark visual system, shell primitives, `/lab` | 01 |
-| 03 | `codex/feat/content-model` | Typed profile/blog/project data and core routes | 02 |
+| 03 | `codex/feat/content-model` | Shared portfolio facts, content collections, and core routes | 02 |
 | 04 | `codex/feat/homepage` | Complete static homepage without signature animations | 03 |
 | 05 | `codex/feat/rich-mdx` | Code, math, Mermaid, figures, forms, article layout | 04 |
 | 06 | `codex/feat/systems-motion` | Original research-section network diagram and authored motion | 05 |
@@ -133,8 +133,9 @@ progress until it passes the approval gate.
 | ---: | --- | --- |
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
-| 02 | Implementation complete; final branch review pending | Commits 02.1 through 02.9 are pushed on `codex/feat/design-system`. Quality and Browser CI passed through `b10e04d` in [run 33096704296](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33096704296). The branch-tip audit candidate below resolves the final code and documentation findings before rebase-merge authorization. |
-| 03-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
+| 02 | Complete on `main` | PR [#2](https://github.com/zlxlty/sky-lu-personal-website/pull/2) passed Quality and Browser CI, then rebase-merged as ten preserved commits through `046b5d1`. |
+| 03 | In progress on `codex/feat/content-model` | Commit 03.1 shared portfolio facts is the active, uncommitted review candidate. |
+| 04-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
 
@@ -152,16 +153,16 @@ Stage 02 commit ledger:
 
 | Candidate | Status | Commit or evidence |
 | --- | --- | --- |
-| 02.1 tokens and typography | Committed and pushed | `8bbe220` on `origin/codex/feat/design-system`. |
-| 02.2 blueprint layout | Committed and pushed | `0a15bf5` on `origin/codex/feat/design-system`. |
-| 02.3 sticky navigation and themes | Committed and pushed | `a52e32e` on `origin/codex/feat/design-system`. |
-| 02.4 interactive controls | Committed and pushed | `b61cdfe` on `origin/codex/feat/design-system`. |
-| 02.5 component lab | Committed and pushed | `5bd9eee` on `origin/codex/feat/design-system`. |
-| 02.6 rail annotations | Committed and pushed | `fbd8af6` on `origin/codex/feat/design-system`. |
-| 02.7 dark raised-surface contrast | Committed and pushed | `1b5c637` on `origin/codex/feat/design-system`. |
-| 02.8 annotation stack isolation | Committed and pushed; CI passed | `099b11e` on `origin/codex/feat/design-system`; [Quality and Browser CI](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33095846464) passed. |
-| 02.9 completion documentation | Committed and pushed; CI passed | `b10e04d` on `origin/codex/feat/design-system`; [Quality and Browser CI](https://github.com/zlxlty/sky-lu-personal-website/actions/runs/33096704296) passed. |
-| 02.10 final branch audit | Branch-tip audit | The commit containing this row keeps destructive hover content on its tested emphasis pair and synchronizes the plan with the implemented palette. |
+| 02.1 tokens and typography | Rebase-merged | `ab098ba` |
+| 02.2 blueprint layout | Rebase-merged | `bf0c9ae` |
+| 02.3 sticky navigation and themes | Rebase-merged | `d29bff9` |
+| 02.4 interactive controls | Rebase-merged | `4f8bd60` |
+| 02.5 component lab | Rebase-merged | `381eb80` |
+| 02.6 rail annotations | Rebase-merged | `005064c` |
+| 02.7 dark raised-surface contrast | Rebase-merged | `d51c3bf` |
+| 02.8 annotation stack isolation | Rebase-merged | `050a1ba` |
+| 02.9 completion documentation | Rebase-merged | `790dda9` |
+| 02.10 final branch audit | Rebase-merged; CI passed | `046b5d1`; PR [#2](https://github.com/zlxlty/sky-lu-personal-website/pull/2) passed Quality and Browser CI. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -808,30 +809,41 @@ Checks:
 
 ### Goal
 
-Create typed, reusable content sources and static route skeletons without embedding personal contact values in Git.
+Create lightweight shared facts, typed collections where content drives routes,
+and static route skeletons without embedding personal contact values in Git.
 
-### Commit 03.1 - add typed profile and portfolio data
+### Commit 03.1 - add shared portfolio facts
 
 Proposed message:
 
 ```text
-feat: add typed profile and portfolio data
+feat: add shared portfolio facts
 ```
 
 Scope:
 
-- Typed profile, education, experience, research, skills, and project data.
+- Small, directly imported `as const` modules for stable profile, education,
+  experience, research, and skill facts.
 - Approved public claims from the résumé.
 - ATLAS Group and Nikos Vasilakis references.
-- Tundra and KVonset project data.
-- Contact fields represented as environment-backed values or typed unavailable states, never literals.
+- Tests for durable identity, ordering, link, and privacy invariants.
+
+Boundaries:
+
+- Page-specific headlines, summaries, and narrative stay close to their Astro
+  templates so editorial layout can change without widening a shared schema.
+- Project records belong to the project content collection in Commit 03.2 rather
+  than a parallel TypeScript model.
+- Contact delivery belongs to its feature boundary; this commit contains no
+  contact values or placeholder contact-state abstraction.
+- Add explicit types or a barrel export only when multiple real consumers make
+  that interface useful.
 
 Checks:
 
 - Typecheck.
 - Content-fact walkthrough against `PLAN.md` and the résumé.
 - Secret/email search.
-- No invented canonical Tundra URL.
 
 ### Commit 03.2 - configure blog and project content collections
 
@@ -846,7 +858,9 @@ Scope:
 - `src/content.config.ts`.
 - Strict blog and project schemas.
 - Draft/featured/tag/date fields.
-- One minimal fixture article and one project case-study fixture.
+- One minimal fixture article.
+- Initial collection entries for Dynamic Pages, efficient LLM serving, Tundra,
+  and KVonset, with no invented canonical Tundra URL.
 - Draft filtering utility with tests.
 
 Checks:
@@ -868,18 +882,22 @@ Scope:
 - `/writing` index.
 - `/projects` index.
 - `/projects/[slug]` static route.
-- `/cv` accessible web résumé.
+- `/cv` redirect to `public/sky-lu-resume.pdf`.
+- Sanitized public PDF with raw email addresses removed and a contact-form or
+  website reference in their place.
 - Shared empty and not-found states.
 
 Non-goals:
 
 - Rich article rendering arrives in Stage 05.
-- No PDF publishing.
+- No separately maintained HTML résumé.
+- Never copy the supplied contact-bearing PDF into the repository.
 - No dynamic filtering API.
 
 Checks:
 
 - Static route generation.
+- PDF content-type, redirect, caching, and external raw-email checks.
 - No-JavaScript navigation.
 - Heading/landmark order.
 - Responsive visual review.
@@ -910,7 +928,9 @@ Checks:
 
 ### Branch acceptance criteria
 
-- All public facts are typed and centrally maintained.
+- Durable shared facts use inferred TypeScript modules without a parallel schema
+  hierarchy; page-specific prose stays with its Astro template.
+- Route-generating blog and project content is validated by content collections.
 - Blog and project schema errors fail the build.
 - Draft content never reaches production artifacts.
 - Core routes are static and accessible.
@@ -1823,9 +1843,9 @@ Potential branch: `codex/feat/sentry-observability`
 
 Start only if public interactive errors justify it. Require a privacy and source-map review first.
 
-### Contact form
+### Contact form (confirmed future work)
 
-Potential branch: `codex/feat/contact-form`
+Planned branch: `codex/feat/contact-form`
 
 Would require:
 
@@ -1835,6 +1855,11 @@ Would require:
 - Route-specific rate limit.
 - Delivery provider and privacy decision.
 - Accessible non-JavaScript response.
+
+This is the first planned public write endpoint. Its branch must explicitly
+reconcile the narrow Worker runtime with the otherwise static site architecture;
+recipient email addresses remain server-side configuration and are never exposed
+to the browser.
 
 ### Large media library
 
