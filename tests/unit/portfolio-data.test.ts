@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { experience } from "@/data/experience";
 import { education, profile, skills } from "@/data/profile";
-import { research } from "@/data/research";
 
 describe("public portfolio data", () => {
   it("captures the approved identity and education facts", () => {
@@ -27,37 +25,15 @@ describe("public portfolio data", () => {
     ]);
   });
 
-  it("keeps the approved research affiliation precise", () => {
-    expect(research).toMatchObject({
-      group: "ATLAS Group",
-      institution: "Brown University",
-      collaborator: "Nikos Vasilakis",
-    });
-    expect(
-      research.links.every(({ href }) => href.startsWith("https://")),
-    ).toBe(true);
-  });
-
-  it("preserves the approved experience order", () => {
-    expect(experience.map(({ organization }) => organization)).toEqual([
-      "Cloudflare",
-      "Z.ai",
-      "Flowith",
-      "QuantInfinite",
-    ]);
-  });
-
   it("keeps contact values out of shared public facts", () => {
-    expect(
-      JSON.stringify({ profile, education, experience, research }),
-    ).not.toMatch(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i);
+    expect(JSON.stringify({ profile, education })).not.toMatch(
+      /[\w.+-]+@[\w.-]+\.[a-z]{2,}/i,
+    );
   });
 
   it("uses stable identifiers and HTTPS social links", () => {
-    for (const records of [education, experience]) {
-      const ids = records.map(({ id }) => id);
-      expect(new Set(ids).size).toBe(ids.length);
-    }
+    const educationIds = education.map(({ id }) => id);
+    expect(new Set(educationIds).size).toBe(educationIds.length);
 
     for (const link of profile.socialLinks) {
       expect(link.href).toMatch(/^https:\/\//);

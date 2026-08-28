@@ -134,7 +134,7 @@ progress until it passes the approval gate.
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
 | 02 | Complete on `main` | PR [#2](https://github.com/zlxlty/sky-lu-personal-website/pull/2) passed Quality and Browser CI, then rebase-merged as ten preserved commits through `046b5d1`. |
-| 03 | In progress on `codex/feat/content-model` | Commit 03.1 shared portfolio facts is the active, uncommitted review candidate. |
+| 03 | In progress on `codex/feat/content-model` | Commit 03.1 and the isolated lab follow-up are pushed; Commit 03.2 content collections is the active, uncommitted review candidate. |
 | 04-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -163,6 +163,14 @@ Stage 02 commit ledger:
 | 02.8 annotation stack isolation | Rebase-merged | `050a1ba` |
 | 02.9 completion documentation | Rebase-merged | `790dda9` |
 | 02.10 final branch audit | Rebase-merged; CI passed | `046b5d1`; PR [#2](https://github.com/zlxlty/sky-lu-personal-website/pull/2) passed Quality and Browser CI. |
+
+Stage 03 commit ledger:
+
+| Candidate | Status | Commit or evidence |
+| --- | --- | --- |
+| 03.1 shared portfolio facts | Committed and pushed | `d9668f2` on `origin/codex/feat/content-model`. |
+| Lab annotation position follow-up | Committed and pushed | `ea64d56` on `origin/codex/feat/content-model`. |
+| 03.2 content collections | Active review candidate | Uncommitted implementation and verification in progress. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -822,8 +830,8 @@ feat: add shared portfolio facts
 
 Scope:
 
-- Small, directly imported `as const` modules for stable profile, education,
-  experience, research, and skill facts.
+- A small, directly imported `as const` module for stable profile, education,
+  and skill facts.
 - Approved public claims from the résumé.
 - ATLAS Group and Nikos Vasilakis references.
 - Tests for durable identity, ordering, link, and privacy invariants.
@@ -857,10 +865,14 @@ Scope:
 
 - `src/content.config.ts`.
 - Strict blog and project schemas.
-- Draft/featured/tag/date fields.
+- Draft, tag, and date fields used by the planned routes.
 - One minimal fixture article.
 - Initial collection entries for Dynamic Pages, efficient LLM serving, Tundra,
   and KVonset, with no invented canonical Tundra URL.
+- Project frontmatter limited to route/index metadata, with detailed case-study
+  content in each Markdown body and no homepage card schema.
+- Removal of the one-use research and experience data modules; Stage 04 owns
+  those homepage records directly in Astro.
 - Draft filtering utility with tests.
 
 Checks:
@@ -869,7 +881,7 @@ Checks:
 - Draft filtering tests.
 - `astro check`, unit tests, and build.
 
-### Commit 03.3 - add writing, projects, and CV routes
+### Commit 03.3 - add writing, project detail, and CV routes
 
 Proposed message:
 
@@ -880,8 +892,7 @@ feat: add core content routes
 Scope:
 
 - `/writing` index.
-- `/projects` index.
-- `/projects/[slug]` static route.
+- `/project/[slug]` static detail route; the homepage is the project index.
 - `/cv` redirect to `public/sky-lu-resume.pdf`.
 - Sanitized public PDF with raw email addresses removed and a contact-form or
   website reference in their place.
@@ -982,7 +993,7 @@ Scope:
 - Static six-string hero placeholder with realistic gauge variation.
 - Sky Lu identity copy and four identity labels.
 - Portrait placeholder that cannot be mistaken for a real photograph.
-- Primary calls to writing, projects, GitHub, and CV.
+- Primary calls to writing, selected homepage work, GitHub, and CV.
 
 Checks:
 
@@ -1005,6 +1016,8 @@ Scope:
 - Nikos Vasilakis attribution.
 - Dynamic Pages, efficient LLM serving, Tundra, and KVonset records.
 - Project metrics and approved public claims.
+- Homepage-specific project summaries and ordering authored in the Astro
+  template rather than derived from project case-study frontmatter.
 
 Checks:
 

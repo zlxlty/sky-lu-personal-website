@@ -3,8 +3,8 @@
 Sky Lu's personal website and technical blog, built as a static-first Astro site
 with narrowly scoped React islands. The repository now includes its design system,
 responsive blueprint shell, persistent themes, curated controls, and development
-component lab. Shared public portfolio facts are now underway; typed content
-collections and core public routes follow in the same stage.
+component lab. Shared public portfolio facts and typed content collections now
+form the content foundation; core public routes follow in the same stage.
 
 The production architecture is static by default: Astro renders pages and MDX at
 build time, while React is reserved for behavior that needs a browser runtime. The

@@ -97,8 +97,7 @@ If substantial source code is ported from the reference repository, preserve the
 | `/` | Curated homepage and portfolio | Static |
 | `/writing` | Filterable article index | Static |
 | `/writing/[slug]` | MDX article | Static |
-| `/projects` | All systems and software projects | Static |
-| `/projects/[slug]` | Project case study where available | Static |
+| `/project/[slug]` | Detailed project case study | Static |
 | `/cv` | Redirect to the sanitized public résumé PDF | Static redirect |
 | `/rss.xml` | Blog feed | Build output |
 | `/sitemap-index.xml` | Search sitemap | Build output |
@@ -201,6 +200,11 @@ Use the phrase "student researcher in the ATLAS Group" rather than implying a fa
 ### 5.5 Selected systems work
 
 Show four editorial project records. Each record has a short summary, measurable outcome, technology tags, and optional details disclosure.
+
+These homepage records are authored directly in the homepage Astro template and
+may use different summaries, emphasis, or ordering from the standalone project
+case studies. The `projects` content collection owns route metadata and detailed
+project-page bodies; it is not the homepage card-data source.
 
 #### Dynamic Pages at Cloudflare
 
@@ -510,14 +514,19 @@ Content placement follows the narrowest useful boundary:
   imported TypeScript modules with inferred `as const` types.
 - Keep page-specific headlines, summaries, and editorial layout copy in the
   owning Astro template so revisions do not require a shared schema migration.
+- Author homepage-only research and experience records in the homepage Astro
+  template; `/cv` is a PDF, so these records do not need a shared data module.
 - Use Astro content collections for blog posts and project records because they
   generate routes, indexes, feeds, and search entries.
+- Keep project frontmatter limited to project-page and index metadata. Detailed
+  case-study prose belongs in the Markdown/MDX body, while homepage-specific
+  project copy remains in the homepage Astro template.
 - Do not add a glossary, barrel module, or explicit interface hierarchy until
   multiple real consumers make that abstraction useful.
 
 ### 8.1 Content collections
 
-Create `blog` and `project` collections in `src/content.config.ts` with strict
+Create `blog` and `projects` collections in `src/content.config.ts` with strict
 schemas. The blog schema starts with:
 
 ```ts
@@ -528,7 +537,6 @@ schemas. The blog schema starts with:
   updatedAt?: Date;
   tags: string[];
   draft: boolean;
-  featured: boolean;
   image?: string;
   canonicalUrl?: string;
   series?: string;
@@ -672,9 +680,7 @@ island (for example, one command-menu island) rather than each primitive.
 │   │   ├── blog/
 │   │   └── projects/
 │   ├── data/
-│   │   ├── experience.ts
-│   │   ├── profile.ts
-│   │   └── research.ts
+│   │   └── profile.ts
 │   ├── islands/
 │   │   ├── command-menu/
 │   │   ├── guitar/
@@ -683,7 +689,7 @@ island (for example, one command-menu island) rather than each primitive.
 │   ├── layouts/
 │   ├── pages/
 │   │   ├── writing/
-│   │   ├── projects/
+│   │   ├── project/
 │   │   ├── cv.astro
 │   │   └── index.astro
 │   ├── styles/
@@ -960,7 +966,7 @@ Acceptance:
 ### Phase 2 - Content model and primary pages
 
 - Add typed profile, education, experience, research, and project data.
-- Create home, writing index, project index, and CV routes.
+- Create home, writing index, project-detail, and CV routes.
 - Create MDX collection and one fixture article demonstrating code, math, Mermaid, figure, and callout.
 - Add RSS, sitemap, robots, canonical metadata, and JSON-LD without email addresses.
 
