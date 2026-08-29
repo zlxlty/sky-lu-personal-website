@@ -134,7 +134,7 @@ progress until it passes the approval gate.
 | 00 | Complete on `main` | Bootstrap `4868a3f`; governance commits `5e47956` and `08e99b8`; merged as `da99c11`. |
 | 01 | Complete on `main` | PR [#1](https://github.com/zlxlty/sky-lu-personal-website/pull/1) passed Quality and Browser CI, then rebase-merged as seven preserved commits through `3681ca7`. |
 | 02 | Complete on `main` | PR [#2](https://github.com/zlxlty/sky-lu-personal-website/pull/2) passed Quality and Browser CI, then rebase-merged as ten preserved commits through `046b5d1`. |
-| 03 | In progress on `codex/feat/content-model` | Commit 03.1 and the isolated lab follow-up are pushed; Commit 03.2 content collections is the active, uncommitted review candidate. |
+| 03 | In progress on `codex/feat/content-model` | Commits through 03.2 are pushed; Commit 03.3 core content routes is the active, uncommitted review candidate. |
 | 04-11 | Not started | Begin each stage only after its dependency is reviewed and rebase-merged into `main`. |
 
 Stage 01 commit ledger:
@@ -170,7 +170,8 @@ Stage 03 commit ledger:
 | --- | --- | --- |
 | 03.1 shared portfolio facts | Committed and pushed | `d9668f2` on `origin/codex/feat/content-model`. |
 | Lab annotation position follow-up | Committed and pushed | `ea64d56` on `origin/codex/feat/content-model`. |
-| 03.2 content collections | Active review candidate | Uncommitted implementation and verification in progress. |
+| 03.2 content collections | Committed and pushed | `7de35be` on `origin/codex/feat/content-model`. |
+| 03.3 core content routes | Active review candidate | Uncommitted implementation and verification in progress. |
 
 ## 5. Stage 00 - Repository governance
 
@@ -870,7 +871,7 @@ Scope:
 - Initial collection entries for Dynamic Pages, efficient LLM serving, Tundra,
   and KVonset, with no invented canonical Tundra URL.
 - Project frontmatter limited to route/index metadata, with detailed case-study
-  content in each Markdown body and no homepage card schema.
+  content initially kept in each entry body and no homepage card schema.
 - Removal of the one-use research and experience data modules; Stage 04 owns
   those homepage records directly in Astro.
 - Draft filtering utility with tests.
@@ -893,16 +894,35 @@ Scope:
 
 - `/writing` index.
 - `/project/[slug]` static detail route; the homepage is the project index.
+- Singular `src/content/project/` directory and `project` collection key to
+  match the public route vocabulary.
+- Full-page project MDX compositions that own `BaseLayout`, panels, rule bands,
+  separators, and prose locally; the dynamic Astro route only resolves the
+  entry and renders its `Content` component.
+- Horizontal-only `StripeSeparator` composition inside project prose and at
+  direct panel/page boundaries, with shared-edge ownership instead of
+  call-site border suppression.
+- Continuous page-owned vertical rail overlays that remain above diagonal
+  separators and reach the viewport bottom on short pages without adding
+  vertical borders to the separator itself.
+- Semantic decorative rules use 10% standard and 25% strong opacity consistently
+  in light and dark themes.
+- Small static home icon aligned left in the shared sticky navbar, opposite the
+  theme control, so project and content routes always expose a no-JavaScript
+  return path.
 - `/cv` redirect to `public/sky-lu-resume.pdf`.
-- Sanitized public PDF with raw email addresses removed and a contact-form or
-  website reference in their place.
-- Shared empty and not-found states.
+- Cloudflare Workers Static Assets `_redirects` policy for the real HTTP 302,
+  with Astro's generated redirect page retained as a local static-host fallback.
+- Approved `Sky Lu Resume (15).pdf` copied byte-for-byte to the stable public
+  asset path, with a fixed SHA-256 regression check.
+- Writing empty state and branded not-found page, authored directly in their
+  Astro routes rather than abstracted before another consumer exists.
 
 Non-goals:
 
 - Rich article rendering arrives in Stage 05.
 - No separately maintained HTML résumé.
-- Never copy the supplied contact-bearing PDF into the repository.
+- Do not replace the approved PDF without another privacy review.
 - No dynamic filtering API.
 
 Checks:
@@ -911,6 +931,8 @@ Checks:
 - PDF content-type, redirect, caching, and external raw-email checks.
 - No-JavaScript navigation.
 - Heading/landmark order.
+- Nested, direct-panel, and between-panel separator boundary ownership.
+- Full-height rail geometry without short-page overflow.
 - Responsive visual review.
 
 ### Commit 03.4 - add metadata, feeds, and crawler artifacts

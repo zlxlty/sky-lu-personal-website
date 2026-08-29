@@ -61,19 +61,30 @@ not repository files.
 - `src/components/blueprint/` preserves the attributed React module seam migrated
   from `ncdai/chanhdai.com`; Astro renders these modules statically without a
   `client:*` directive.
-- `Panel` is a boundary-owning divided stack: normal direct children are
-  sections, `PanelHeader` owns the compact title row, and a sibling
-  `PanelRuleBand` may follow it or separate later sections. The module
-  reconciles shared edges; do not coordinate adjoining rules with call-site
-  edge overrides.
+- `BlueprintPage` owns the continuous vertical content rails as foreground
+  overlays. Its flex rail fills the viewport below the fixed-height navbar and
+  grows with longer content. `Panel` owns the horizontal divided stack: normal
+  direct children are sections, `PanelHeader` owns the compact title row, and a
+  sibling `PanelRuleBand` may follow it or separate later sections. The modules
+  reconcile shared edges; do not coordinate adjoining rules with call-site edge
+  overrides.
+- `StripeSeparator` is a full-bleed diagonal band with horizontal rules only;
+  it never paints vertical rails. The panel and page stacks reconcile its
+  shared edges whether it is nested in panel content, used directly in a panel,
+  or placed between sibling panels.
+- Decorative borders use the semantic `--color-rule` and
+  `--color-rule-strong` tokens rather than per-component opacity. Their approved
+  opacities are 10% and 25% in both themes.
 - React components become client islands only when an explicit `client:*` directive
   is necessary.
 - `src/components/ui/` contains the curated shadcn-compatible React primitives.
   Static uses render through Astro without hydration; interactive features should
   compose the primitives inside one feature-level island instead of adding a
   `client:*` directive to each control.
-- Markdown and MDX content will live in Astro content collections rather than a
-  database or CMS.
+- Markdown and MDX content lives in Astro content collections rather than a
+  database or CMS. Project entries use full-page MDX compositions under
+  `src/content/project/`; each entry owns its layout and decorative component
+  placement, while `src/pages/project/[slug].astro` only resolves the route.
 - Browser APIs, Tone.js, and per-frame guitar state remain behind client boundaries.
 - Tailwind CSS and custom properties provide styling without requiring a client
   runtime.

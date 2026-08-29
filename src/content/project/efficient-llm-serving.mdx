@@ -1,0 +1,101 @@
+---
+title: Efficient LLM serving
+description: A cost-aware model router and inference evaluation stack for efficient large-language-model serving.
+kind: professional
+affiliation: Cloudflare
+tags:
+  - Python
+  - ModernBERT
+  - SGLang
+  - Mooncake
+  - Kubernetes
+draft: false
+---
+
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+<BaseLayout
+  title={`${frontmatter.title} — Sky Lu`}
+  description={frontmatter.description}
+  mainLabel={`${frontmatter.title} project case study`}
+>
+  <Panel id="project" aria-labelledby="project-heading">
+    <PanelHeader className="py-8 sm:py-12">
+      <p className="mt-6 mb-2 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase">
+        {frontmatter.kind} project
+      </p>
+      <h1
+        id="project-heading"
+        className="font-heading text-4xl font-medium tracking-tight"
+      >
+        {frontmatter.title}
+      </h1>
+      <p className="mt-3 mb-0 max-w-(--size-prose) text-lg text-muted-foreground">
+        {frontmatter.description}
+      </p>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <dl className="m-0 grid gap-4 sm:grid-cols-2">
+        <div>
+          <dt className="font-mono text-(length:--text-meta) tracking-(--tracking-meta) text-muted-foreground uppercase">
+            Affiliation
+          </dt>
+          <dd className="m-0 mt-1">{frontmatter.affiliation}</dd>
+        </div>
+        <div>
+          <dt className="font-mono text-(length:--text-meta) tracking-(--tracking-meta) text-muted-foreground uppercase">
+            Topics
+          </dt>
+          <dd className="m-0 mt-1">{frontmatter.tags.join(" · ")}</dd>
+        </div>
+      </dl>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+    <StripeSeparator />
+
+    <PanelContent>
+      <article
+        data-slot="project-body"
+        className="max-w-(--size-prose) space-y-4 text-base leading-7"
+      >
+        <p className="m-0">
+          The work combines routing policy, quality prediction, and systems
+          benchmarking to make model serving faster and more cost-aware.
+        </p>
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">
+          Quality-aware routing
+        </h2>
+        <p className="m-0">
+          A ModernBERT-based quality predictor ran as a serverless GPU service
+          with sub-200 ms inference latency, providing a signal for cost-aware
+          model routing.
+        </p>
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">
+          Systems evaluation
+        </h2>
+        <p className="m-0">
+          The evaluation covered Kimi K3, DSpark, SGLang, and Mooncake on B300
+          Kubernetes clusters. Speculative decoding and prefill/decode
+          disaggregation improved tokens per second by 108%.
+        </p>
+      </article>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+  </Panel>
+</BaseLayout>

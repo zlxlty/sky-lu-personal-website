@@ -18,12 +18,15 @@ export function BlueprintPage({
       data-slot="blueprint-page"
       tabIndex={tabIndex}
       className={cn(
-        "group/layout relative isolate min-h-screen max-w-screen overflow-x-clip px-[3px] blueprint-page-stack",
+        "group/layout relative isolate flex min-h-[calc(100dvh-3.25rem)] max-w-screen flex-col overflow-x-clip blueprint-page-stack px-[3px]",
         className,
       )}
       {...props}
     >
-      <div data-slot="blueprint-rail" className="mx-auto md:max-w-3xl">
+      <div
+        data-slot="blueprint-rail"
+        className="relative mx-auto w-full flex-1 before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:z-10 before:w-px before:bg-line before:content-[''] after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:z-10 after:w-px after:bg-line after:content-[''] md:max-w-3xl"
+      >
         {children}
       </div>
     </main>

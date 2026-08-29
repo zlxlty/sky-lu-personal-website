@@ -8,14 +8,15 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * A full-bleed divided stack. Normal adjacent sections share one separator;
- * a direct-child PanelRuleBand owns its paired separators.
+ * A horizontally divided stack. BlueprintPage owns the continuous vertical
+ * rails; normal adjacent sections share one horizontal separator, and a
+ * direct-child PanelRuleBand owns its paired separators.
  */
 export function Panel({ className, ...props }: ComponentProps<"section">) {
   return (
     <section
       data-slot="panel"
-      className={cn("panel-stack border-x border-line", className)}
+      className={cn("panel-stack border-x border-transparent", className)}
       {...props}
     />
   );

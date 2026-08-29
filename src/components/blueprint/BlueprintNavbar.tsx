@@ -23,9 +23,8 @@ export function BlueprintNavbar({
     >
       <div
         data-slot="site-header-rail"
-        className="screen-line-top screen-line-bottom mx-auto flex h-13 items-center border-x border-line px-2 md:max-w-3xl"
+        className="screen-line-top screen-line-bottom mx-auto flex h-13 items-center justify-between border-x border-line px-2 md:max-w-3xl"
       >
-        <div className="flex-1" aria-hidden="true" />
         {children}
       </div>
     </header>

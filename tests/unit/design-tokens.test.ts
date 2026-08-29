@@ -136,6 +136,13 @@ describe("browser theme surfaces", () => {
     expect(darkTokens["--color-ink"]).toBe("#ae9877");
   });
 
+  it("uses the approved decorative rule opacity", () => {
+    expect(lightTokens["--color-rule"]).toBe("rgb(56 51 47 / 10%)");
+    expect(lightTokens["--color-rule-strong"]).toBe("rgb(56 51 47 / 25%)");
+    expect(darkTokens["--color-rule"]).toBe("rgb(174 152 119 / 10%)");
+    expect(darkTokens["--color-rule-strong"]).toBe("rgb(174 152 119 / 25%)");
+  });
+
   it("uses distinct foreground and emphasis roles for danger", () => {
     expect(lightTokens["--color-danger"]).toBe("#923b33");
     expect(lightTokens["--color-danger-emphasis"]).toBe("#96372f");
@@ -168,9 +175,10 @@ function extractRule(selector: string): string {
 
 function extractTokens(rule: string): Record<string, string> {
   return Object.fromEntries(
-    [...rule.matchAll(/(--[\w-]+):\s*(#[\da-f]{6});/gi)].map(
-      ([, name, value]) => [name, value],
-    ),
+    [...rule.matchAll(/(--[\w-]+):\s*([^;]+);/gi)].map(([, name, value]) => [
+      name,
+      value,
+    ]),
   );
 }
 

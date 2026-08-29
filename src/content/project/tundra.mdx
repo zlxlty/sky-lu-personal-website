@@ -1,0 +1,99 @@
+---
+title: Tundra
+description: A Rust communication library composed from message-stream transformations.
+kind: research
+affiliation: Brown ATLAS Group
+tags:
+  - Rust
+  - Network systems
+  - Distributed systems
+draft: false
+---
+
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+<BaseLayout
+  title={`${frontmatter.title} — Sky Lu`}
+  description={frontmatter.description}
+  mainLabel={`${frontmatter.title} project case study`}
+>
+  <Panel id="project" aria-labelledby="project-heading">
+    <PanelHeader className="pt-8 pb-2 sm:pt-12 sm:pb-4">
+      <p className="mt-6 mb-2 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase">
+        {frontmatter.kind} project
+      </p>
+      <h1
+        id="project-heading"
+        className="font-heading text-4xl font-medium tracking-tight"
+      >
+        {frontmatter.title}
+      </h1>
+      <p className="mb-0 max-w-(--size-prose) text-lg text-muted-foreground">
+        {frontmatter.description}
+      </p>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <dl className="m-0 grid gap-4 sm:grid-cols-2">
+        <div>
+          <dt className="font-mono text-(length:--text-meta) tracking-(--tracking-meta) text-muted-foreground uppercase">
+            Affiliation
+          </dt>
+          <dd className="m-0 mt-1">{frontmatter.affiliation}</dd>
+        </div>
+        <div>
+          <dt className="font-mono text-(length:--text-meta) tracking-(--tracking-meta) text-muted-foreground uppercase">
+            Topics
+          </dt>
+          <dd className="m-0 mt-1">{frontmatter.tags.join(" · ")}</dd>
+        </div>
+      </dl>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <article
+        data-slot="project-body"
+        className="max-w-(--size-prose) space-y-4 text-base leading-7"
+      >
+        <p className="m-0">
+          My work with Nikos Vasilakis in Brown’s ATLAS Group focused on making
+          communication behavior explicit, composable, and optimizable. A
+          canonical public project link will be added only after it is verified.
+        </p>
+
+        <StripeSeparator />
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">Design</h2>
+        <p className="m-0">
+          Tundra expresses communication behavior as composable message-stream
+          transformations. The approach gives developers explicit control over
+          networking guarantees while keeping the implementation in Rust.
+        </p>
+
+        <PanelRuleBand />
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">
+          Evaluation
+        </h2>
+        <p className="m-0">
+          In the Memcached evaluation, Tundra increased throughput by 30%,
+          reduced latency by 20%, and reduced networking code by 5x.
+        </p>
+      </article>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+  </Panel>
+</BaseLayout>

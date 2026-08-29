@@ -1,0 +1,49 @@
+---
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+Astro.response.status = 404;
+---
+
+<BaseLayout
+  title="Page not found — Sky Lu"
+  description="The requested page could not be found."
+  mainLabel="Page not found"
+>
+  <Panel id="not-found" aria-labelledby="not-found-heading">
+    <PanelHeader className="py-8 sm:py-12">
+      <p
+        class="mb-3 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase"
+      >
+        Error 404
+      </p>
+      <h1
+        id="not-found-heading"
+        class="font-heading text-4xl font-medium tracking-tight"
+      >
+        Page not found
+      </h1>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <StripeSeparator />
+
+    <PanelContent>
+      <div class="max-w-(--size-prose) py-4 sm:py-8">
+        <p class="mt-0 mb-4 text-muted-foreground">
+          This route does not exist, or the document has moved somewhere else.
+        </p>
+        <a href="/">Return to the homepage</a>
+      </div>
+    </PanelContent>
+
+    <PanelRuleBand />
+  </Panel>
+</BaseLayout>

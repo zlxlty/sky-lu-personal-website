@@ -40,8 +40,16 @@
    * adjacency contract whether or not an overlay layer is present.
    */
   &
-    > :not([data-panel-overlay], [data-slot="panel-rule-band"])
-    + :not([data-panel-overlay], [data-slot="panel-rule-band"]) {
+    > :not(
+      [data-panel-overlay],
+      [data-slot="panel-rule-band"],
+      [data-slot="stripe-separator"]
+    )
+    + :not(
+      [data-panel-overlay],
+      [data-slot="panel-rule-band"],
+      [data-slot="stripe-separator"]
+    ) {
     @apply screen-line-top;
   }
 
@@ -55,11 +63,61 @@
   & > [data-slot="panel-rule-band"]:last-child::after {
     content: none;
   }
+
+  /*
+   * Stripe separators own horizontal edges, never vertical rails. When a
+   * direct-child stripe meets another edge-owning element, one side yields so
+   * the shared boundary is painted exactly once.
+   */
+  &
+    > [data-slot="panel-rule-band"]
+    + [data-slot="stripe-separator"]
+    > [data-slot="stripe-pattern"],
+  & > [data-slot="stripe-separator"]:first-child > [data-slot="stripe-pattern"],
+  &
+    > [data-slot="stripe-separator"]
+    + [data-slot="stripe-separator"]
+    > [data-slot="stripe-pattern"] {
+    @apply border-t-0;
+  }
+
+  & > [data-slot="stripe-separator"] + [data-slot="panel-rule-band"]::before {
+    content: none;
+  }
+
+  & > [data-slot="stripe-separator"]:last-child > [data-slot="stripe-pattern"] {
+    @apply border-b-0;
+  }
 }
 
 @utility blueprint-page-stack {
   /* The sticky header owns the shell boundary above the first panel. */
   & > [data-slot="blueprint-rail"] > [data-slot="panel"]:first-child::before {
+    content: none;
+  }
+
+  /*
+   * A page-level stripe sits between two boundary-owning panels. The previous
+   * panel paints the stripe's top edge, and the stripe paints the next panel's
+   * top edge, so neither physical coordinate is alpha-stacked.
+   */
+  &
+    > [data-slot="blueprint-rail"]
+    > [data-slot="panel"]
+    + [data-slot="stripe-separator"]
+    > [data-slot="stripe-pattern"],
+  &
+    > [data-slot="blueprint-rail"]
+    > [data-slot="stripe-separator"]
+    + [data-slot="stripe-separator"]
+    > [data-slot="stripe-pattern"] {
+    @apply border-t-0;
+  }
+
+  &
+    > [data-slot="blueprint-rail"]
+    > [data-slot="stripe-separator"]
+    + [data-slot="panel"]::before {
     content: none;
   }
 }
@@ -82,9 +140,4 @@
 
 @utility stripe-divider {
   @apply relative h-8;
-
-  &::before {
-    content: "";
-    @apply absolute left-[-100vw] -z-1 h-full w-[200vw] diagonal-stripes;
-  }
 }

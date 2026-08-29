@@ -99,6 +99,85 @@ test("interactive specimens support keyboard and pointer review", async ({
   await expect(commandDialog).toHaveCount(0);
 });
 
+test("page-level stripe separators share adjacent panel boundaries", async ({
+  page,
+}) => {
+  await page.goto("/lab");
+
+  const separator = page.locator(
+    '#lab-introduction + [data-slot="stripe-separator"]',
+  );
+  await expect(separator).toBeVisible();
+
+  const boundary = await separator.evaluate((element) => {
+    const previousPanel = element.previousElementSibling;
+    const nextPanel = element.nextElementSibling;
+    const rail = element.parentElement;
+    const pattern = element.querySelector<HTMLElement>(
+      '[data-slot="stripe-pattern"]',
+    );
+    if (!previousPanel || !nextPanel || !rail || !pattern) {
+      throw new Error("Missing page-level stripe boundary");
+    }
+
+    const separatorStyle = getComputedStyle(element);
+    const patternStyle = getComputedStyle(pattern);
+    const previousPanelStyle = getComputedStyle(previousPanel);
+    const railBefore = getComputedStyle(rail, "::before");
+    const railAfter = getComputedStyle(rail, "::after");
+
+    return {
+      previousPanelRule: getComputedStyle(previousPanel, "::after").content,
+      stripe: {
+        top: patternStyle.borderTopWidth,
+        right: patternStyle.borderRightWidth,
+        bottom: patternStyle.borderBottomWidth,
+        left: patternStyle.borderLeftWidth,
+      },
+      separatorRails: {
+        right: separatorStyle.borderRightWidth,
+        left: separatorStyle.borderLeftWidth,
+      },
+      panelRails: {
+        right: previousPanelStyle.borderRightWidth,
+        left: previousPanelStyle.borderLeftWidth,
+        rightColor: previousPanelStyle.borderRightColor,
+        leftColor: previousPanelStyle.borderLeftColor,
+      },
+      railOverlay: {
+        beforeContent: railBefore.content,
+        beforeWidth: railBefore.width,
+        beforeZIndex: railBefore.zIndex,
+        afterContent: railAfter.content,
+        afterWidth: railAfter.width,
+        afterZIndex: railAfter.zIndex,
+      },
+      nextPanelRule: getComputedStyle(nextPanel, "::before").content,
+    };
+  });
+
+  expect(boundary).toEqual({
+    previousPanelRule: '""',
+    stripe: { top: "0px", right: "0px", bottom: "1px", left: "0px" },
+    separatorRails: { right: "0px", left: "0px" },
+    panelRails: {
+      right: "1px",
+      left: "1px",
+      rightColor: "rgba(0, 0, 0, 0)",
+      leftColor: "rgba(0, 0, 0, 0)",
+    },
+    railOverlay: {
+      beforeContent: '""',
+      beforeWidth: "1px",
+      beforeZIndex: "10",
+      afterContent: '""',
+      afterWidth: "1px",
+      afterZIndex: "10",
+    },
+    nextPanelRule: "none",
+  });
+});
+
 test("rail annotations stay in the outer gutters on wide screens", async ({
   page,
 }) => {
@@ -141,8 +220,8 @@ test("rail annotations stay in the outer gutters on wide screens", async ({
     { position: "absolute", beforeContent: "none" },
   ]);
   expect(annotatedPanelStyles).toEqual([
-    { panelBeforeContent: '""', headerBeforeContent: "none" },
-    { panelBeforeContent: '""', headerBeforeContent: "none" },
+    { panelBeforeContent: "none", headerBeforeContent: "none" },
+    { panelBeforeContent: "none", headerBeforeContent: "none" },
   ]);
 
   const panelBox = await annotationPanel.boundingBox();

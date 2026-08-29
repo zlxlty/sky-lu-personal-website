@@ -11,12 +11,12 @@ const blog = defineCollection({
   schema: blogSchema,
 });
 
-const projects = defineCollection({
+const project = defineCollection({
   loader: glob({
-    base: "./src/content/projects",
-    pattern: "**/*.{md,mdx}",
+    base: "./src/content/project",
+    pattern: "**/*.mdx",
   }),
   schema: projectSchema,
 });
 
-export const collections = { blog, projects };
+export const collections = { blog, project };

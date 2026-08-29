@@ -186,18 +186,31 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
       '[data-slot="blueprint-rail"]',
     );
     const firstPanel = document.querySelector<HTMLElement>("#hero-panel");
+    const homeLink = document.querySelector<HTMLElement>(
+      '[data-slot="home-link"]',
+    );
+    const homeIcon = homeLink?.querySelector<SVGElement>("svg");
     const toggle = document.querySelector<HTMLElement>("[data-theme-toggle]");
-    if (!header || !headerRail || !pageRail || !firstPanel || !toggle) {
+    if (
+      !header ||
+      !headerRail ||
+      !pageRail ||
+      !firstPanel ||
+      !homeLink ||
+      !homeIcon ||
+      !toggle
+    ) {
       throw new Error("Missing sticky shell elements");
     }
 
-    const rect = (element: HTMLElement) => {
+    const rect = (element: Element) => {
       const bounds = element.getBoundingClientRect();
       return {
         top: bounds.top,
         bottom: bounds.bottom,
         left: bounds.left,
         right: bounds.right,
+        width: bounds.width,
         height: bounds.height,
       };
     };
@@ -207,6 +220,8 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
       headerRail: rect(headerRail),
       pageRail: rect(pageRail),
       firstPanel: rect(firstPanel),
+      homeLink: rect(homeLink),
+      homeIcon: rect(homeIcon),
       toggle: rect(toggle),
       position: getComputedStyle(header).position,
       headerBottomRule: getComputedStyle(headerRail, "::after").content,
@@ -220,11 +235,20 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
   expect(shell.headerRail.left).toBeCloseTo(shell.pageRail.left, 3);
   expect(shell.headerRail.right).toBeCloseTo(shell.pageRail.right, 3);
   expect(shell.firstPanel.top).toBeCloseTo(shell.header.bottom, 3);
+  expect(shell.homeLink.left - shell.headerRail.left).toBeCloseTo(
+    shell.headerRail.right - shell.toggle.right,
+    3,
+  );
+  expect(shell.homeIcon.width).toBe(20);
+  expect(shell.homeIcon.height).toBe(20);
   expect(shell.toggle.right).toBeLessThan(shell.headerRail.right);
   expect(shell.headerBottomRule).toBe('""');
   expect(shell.firstPanelTopRule).toBe("none");
   expect(shell.headerText).toBe("");
-  await expect(page.locator('[data-slot="site-header"] a')).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Home" })).toHaveAttribute(
+    "href",
+    "/",
+  );
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect

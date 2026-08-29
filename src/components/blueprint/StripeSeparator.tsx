@@ -15,8 +15,13 @@ export function StripeSeparator({
     <div
       aria-hidden="true"
       data-slot="stripe-separator"
-      className={cn("stripe-divider w-full border-x border-line", className)}
+      className={cn("stripe-divider w-full", className)}
       {...props}
-    />
+    >
+      <span
+        data-slot="stripe-pattern"
+        className="pointer-events-none absolute inset-y-0 left-[-100vw] -z-1 w-[200vw] border-y border-line diagonal-stripes"
+      />
+    </div>
   );
 }

@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { filterDraftEntries } from "@/lib/content";
+
+const entries = filterDraftEntries(await getCollection("blog")).toSorted(
+  (left, right) =>
+    right.data.publishedAt.getTime() - left.data.publishedAt.getTime(),
+);
+---
+
+<BaseLayout
+  title="Writing — Sky Lu"
+  description="Technical writing by Sky Lu about systems, infrastructure, and software engineering."
+  mainLabel="Sky Lu writing"
+>
+  <Panel id="writing" aria-labelledby="writing-heading">
+    <PanelHeader className="py-8 sm:py-12">
+      <p
+        class="mb-3 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase"
+      >
+        Notes from the systems boundary
+      </p>
+      <h1
+        id="writing-heading"
+        class="font-heading text-4xl font-medium tracking-tight"
+      >
+        Writing
+      </h1>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    {
+      entries.length > 0 ? (
+        <ol class="m-0 list-none p-0">
+          {entries.map((entry) => (
+            <li class="last:screen-line-bottom-none screen-line-bottom px-4 py-5">
+              <article>
+                <p class="m-0 font-mono text-(length:--text-meta) text-muted-foreground uppercase">
+                  {entry.data.publishedAt.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </p>
+                <h2 class="mt-1 mb-2 font-heading text-2xl font-medium">
+                  <a href={`/writing/${entry.id}`}>{entry.data.title}</a>
+                </h2>
+                <p class="m-0 max-w-(--size-prose) text-muted-foreground">
+                  {entry.data.description}
+                </p>
+              </article>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <PanelContent>
+          <div
+            data-slot="empty-state"
+            class="max-w-(--size-prose) py-4 sm:py-8"
+          >
+            <h2 class="mb-2 font-heading text-2xl font-medium">
+              No published notes yet
+            </h2>
+            <p class="m-0 text-muted-foreground">
+              Longer notes on network systems, distributed infrastructure, and
+              software engineering are being prepared.
+            </p>
+          </div>
+        </PanelContent>
+      )
+    }
+
+    <PanelRuleBand />
+  </Panel>
+
+  <StripeSeparator />
+</BaseLayout>

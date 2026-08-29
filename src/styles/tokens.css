@@ -10,8 +10,8 @@
   --color-brass-soft: #e7d6be;
   --color-on-brass: #fcf3e6;
   --color-link: #38332f;
-  --color-rule: rgb(56 51 47 / 18%);
-  --color-rule-strong: rgb(56 51 47 / 32%);
+  --color-rule: rgb(56 51 47 / 10%);
+  --color-rule-strong: rgb(56 51 47 / 25%);
   --color-overlay: rgb(43 39 36 / 25%);
   --color-focus: #38332f;
   --color-danger: #923b33;
@@ -63,8 +63,8 @@
   --color-brass-soft: #4a4033;
   --color-on-brass: #2b2724;
   --color-link: #ae9877;
-  --color-rule: rgb(174 152 119 / 18%);
-  --color-rule-strong: rgb(174 152 119 / 32%);
+  --color-rule: rgb(174 152 119 / 10%);
+  --color-rule-strong: rgb(174 152 119 / 25%);
   --color-overlay: rgb(0 0 0 / 50%);
   --color-focus: #ae9877;
   --color-danger: #b98279;
@@ -85,8 +85,8 @@
     --color-brass-soft: #4a4033;
     --color-on-brass: #2b2724;
     --color-link: #ae9877;
-    --color-rule: rgb(174 152 119 / 18%);
-    --color-rule-strong: rgb(174 152 119 / 32%);
+    --color-rule: rgb(174 152 119 / 10%);
+    --color-rule-strong: rgb(174 152 119 / 25%);
     --color-overlay: rgb(0 0 0 / 50%);
     --color-focus: #ae9877;
     --color-danger: #b98279;

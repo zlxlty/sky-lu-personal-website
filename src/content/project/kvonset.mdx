@@ -1,0 +1,93 @@
+---
+title: KVonset
+description: A high-performance in-memory key-value store built around nonblocking Linux I/O and concurrent storage.
+kind: independent
+tags:
+  - Rust
+  - epoll
+  - Lock-free concurrency
+  - Systems programming
+draft: false
+---
+
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+<BaseLayout
+  title={`${frontmatter.title} — Sky Lu`}
+  description={frontmatter.description}
+  mainLabel={`${frontmatter.title} project case study`}
+>
+  <Panel id="project" aria-labelledby="project-heading">
+    <PanelHeader className="py-8 sm:py-12">
+      <p className="mt-6 mb-2 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase">
+        {frontmatter.kind} project
+      </p>
+      <h1
+        id="project-heading"
+        className="font-heading text-4xl font-medium tracking-tight"
+      >
+        {frontmatter.title}
+      </h1>
+      <p className="mt-3 mb-0 max-w-(--size-prose) text-lg text-muted-foreground">
+        {frontmatter.description}
+      </p>
+    </PanelHeader>
+
+    <PanelRuleBand />
+
+    <PanelContent>
+      <dl className="m-0 grid gap-4 sm:grid-cols-2">
+        <div>
+          <dt className="font-mono text-(length:--text-meta) tracking-(--tracking-meta) text-muted-foreground uppercase">
+            Topics
+          </dt>
+          <dd className="m-0 mt-1">{frontmatter.tags.join(" · ")}</dd>
+        </div>
+      </dl>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+    <StripeSeparator />
+
+    <PanelContent>
+      <article
+        data-slot="project-body"
+        className="max-w-(--size-prose) space-y-4 text-base leading-7"
+      >
+        <p className="m-0">
+          KVonset explores how a small Rust server can combine explicit I/O
+          state with concurrent storage while keeping its latency profile
+          predictable.
+        </p>
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">
+          Event-driven I/O
+        </h2>
+        <p className="m-0">
+          The server uses edge-triggered epoll, multithreaded accept, and a
+          nonblocking I/O state machine.
+        </p>
+
+        <h2 className="mt-8 mb-3 font-heading text-2xl font-medium">
+          Concurrent storage
+        </h2>
+        <p className="m-0">
+          A hot-key cache fronts a sharded concurrent hash map. The resulting
+          system reached 335,000 keys per second with p95 latency below 170
+          microseconds.
+        </p>
+      </article>
+    </PanelContent>
+
+    <PanelRuleBand />
+
+  </Panel>
+</BaseLayout>

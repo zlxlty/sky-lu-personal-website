@@ -1,0 +1,23 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+import { filterDraftEntries } from "@/lib/content";
+
+interface Props {
+  project: CollectionEntry<"project">;
+}
+
+export async function getStaticPaths() {
+  const projects = filterDraftEntries(await getCollection("project"));
+
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Content />

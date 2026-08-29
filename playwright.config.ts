@@ -24,8 +24,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      "corepack pnpm build && corepack pnpm exec vite preview --host 127.0.0.1 --port 4322 --strictPort",
+    command: "corepack pnpm build && node tests/support/preview-server.mjs",
     url: baseURL,
     reuseExistingServer: false,
     stdout: "pipe",
