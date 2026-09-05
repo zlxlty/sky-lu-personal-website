@@ -1,6 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = "http://127.0.0.1:4322";
+import { createBrowserServer } from "./tests/support/browser-server";
+
+const { baseURL, webServer } = createBrowserServer(
+  "e2e",
+  process.env.PLAYWRIGHT_E2E_PORT,
+);
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
@@ -10,7 +15,7 @@ export default defineConfig({
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
   reporter: isCI ? "github" : "list",
-  outputDir: "test-results",
+  outputDir: "test-results/e2e",
   preserveOutput: "failures-only",
   use: {
     baseURL,
@@ -23,12 +28,5 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command:
-      "corepack pnpm build && corepack pnpm exec vite preview --host 127.0.0.1 --port 4322 --strictPort",
-    url: baseURL,
-    reuseExistingServer: false,
-    stdout: "pipe",
-    timeout: 120_000,
-  },
+  webServer,
 });

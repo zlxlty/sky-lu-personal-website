@@ -806,7 +806,7 @@ Branch: `codex/fix/ui-maintainability`, based on reviewed `main` at `046b5d1`
 in a separate worktree. This is a corrective follow-up to Stage 02, not the start
 of a later feature stage.
 
-Commit candidate (uncommitted):
+Commit approved and created locally as `1227b5b`:
 
 ```text
 fix: keep shared overlays accessible on small screens
@@ -836,6 +836,43 @@ Checks:
 - Run the focused overlay browser tests, `pnpm verify:full`, and `pnpm test:lab`.
 - Inspect light/dark, mobile/desktop, keyboard, and reduced-motion states; keep
   review screenshots outside tracked source.
+
+### Supplemental DX review - reliable browser verification
+
+Continue on `codex/fix/ui-maintainability` in the same separate worktree after
+the approved overlay commit. This candidate improves the Stage 01 development
+workflow and does not start a dependent product stage.
+
+Commit candidate (uncommitted):
+
+```text
+chore: isolate browser verification across worktrees
+```
+
+Scope:
+
+- Give each browser suite a dedicated server with validated port overrides and
+  refuse to reuse an unrelated server. Keep server commands and browser URLs
+  together in one test-support module, with an explicit environment for each suite.
+- Run the lab alongside the developer's interactive Astro server without changing
+  its CLI lock or Vite optimization cache.
+- Separate production and lab failure artifacts so one suite does not erase the
+  other's results or downloaded CI traces.
+- Include the portable lab suite in `verify:full` to match CI's required checks.
+- Document the worktree workflow, port conflicts, and test configuration ownership.
+
+Non-goals:
+
+- No production source changes, new dependencies, new test framework, or changes
+  to the content branch. Simultaneous builds in one checkout remain unsupported.
+
+Checks:
+
+- Unit-test default and overridden ports and rejection of invalid values.
+- Exercise both suites with overridden ports and confirm occupied ports fail.
+- Run `pnpm verify:full`, `pnpm test:lab`, and the portable lab command in CI mode.
+- Confirm the interactive dev server survives test startup and teardown, and that
+  test servers release their ports.
 
 ## 8. Stage 03 - Content model and core routes
 
