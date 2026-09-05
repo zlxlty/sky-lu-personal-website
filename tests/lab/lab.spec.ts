@@ -45,6 +45,36 @@ for (const theme of ["light", "dark"] as const) {
   });
 }
 
+test("the lab theme command and header share the same preference", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/lab");
+  await waitForLabControls(page);
+
+  const commandInput = page.getByRole("combobox", {
+    name: "Filter lab destinations",
+  });
+  await commandInput.fill("toggle theme");
+  await commandInput.press("Enter");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("[data-theme-toggle]")).toHaveAccessibleName(
+    "Switch to light theme",
+  );
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
+
+  await page.getByRole("button", { name: "Switch to light theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+
+  // The command must work without finding or clicking the header control.
+  await page
+    .locator("[data-slot=theme-control]")
+    .evaluate((node) => node.remove());
+  await commandInput.press("Enter");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
+});
+
 test("interactive specimens support keyboard and pointer review", async ({
   page,
 }) => {
