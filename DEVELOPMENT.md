@@ -72,6 +72,18 @@ not repository files.
   Static uses render through Astro without hydration; interactive features should
   compose the primitives inside one feature-level island instead of adding a
   `client:*` directive to each control.
+  Dialog and Sheet own viewport bounds and vertical scrolling so longer content
+  remains reachable on short screens. Use their header components to reserve
+  space for the optional close button. CommandDialog composes the shared Dialog
+  with the cmdk menu; it uses the same focus lifecycle rather than a second modal
+  implementation. Its `open` and `onOpenChange` props control visibility;
+  `initialFocus` and `finalFocus` accept the shared Dialog focus options when a
+  shortcut or other programmatic opener needs an explicit focus destination.
+  CommandInput uses a focus line along the search row instead of a rectangular
+  input outline. The line uses the shared focus tokens and system Highlight in
+  forced colors; it adds no layout shift and disappears when focus leaves the input.
+  Dialog and Sheet reserve the outline's width and offset in scroll padding so
+  keyboard focus reveals the complete indicator around footer controls too.
 - Markdown and MDX content will live in Astro content collections rather than a
   database or CMS.
 - Browser APIs, Tone.js, and per-frame guitar state remain behind client boundaries.

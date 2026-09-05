@@ -253,7 +253,7 @@ describe("interactive UI primitives", () => {
     ).toBe("W");
   });
 
-  it("uses the command package's own dialog portal", async () => {
+  it("labels the command dialog and associates its description", async () => {
     await mount(
       <CommandDialog
         open
@@ -267,10 +267,16 @@ describe("interactive UI primitives", () => {
       </CommandDialog>,
     );
 
-    const dialog = getRequired(document, "[cmdk-dialog]");
+    const dialog = getRequired(document, '[data-slot="command-dialog"]');
     expect(dialog.getAttribute("role")).toBe("dialog");
-    expect(dialog.getAttribute("aria-label")).toBe("Navigate the site");
-    expect(dialog.textContent).toContain("Choose a destination.");
+    const titleId = dialog.getAttribute("aria-labelledby");
+    const descriptionId = dialog.getAttribute("aria-describedby");
+    expect(titleId && document.getElementById(titleId)?.textContent).toBe(
+      "Navigate the site",
+    );
+    expect(
+      descriptionId && document.getElementById(descriptionId)?.textContent,
+    ).toBe("Choose a destination.");
   });
 });
 
