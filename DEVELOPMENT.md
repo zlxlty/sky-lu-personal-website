@@ -135,7 +135,7 @@ personal content, portraits, illustrations, or branded assets.
 | `pnpm test:lab:ui`     | Open Playwright UI against the development component lab.     |
 | `pnpm test:lab:update` | Update reviewed macOS `/lab` visual snapshots.                |
 | `pnpm verify`          | Run formatting, linting, type checks, unit tests, and build.  |
-| `pnpm verify:full`     | Run `pnpm verify` followed by Playwright.                     |
+| `pnpm verify:full`     | Run `verify`, production browser, and portable lab checks.    |
 | `pnpm run prepare`     | Reinstall the local pre-commit hook.                          |
 
 `pnpm cf:preview` is intentionally unavailable until Stage 09 adds Wrangler. No
@@ -191,6 +191,39 @@ Run a particular Playwright test or browser project with:
 pnpm exec playwright test -g "homepage satisfies"
 pnpm exec playwright test --project=chromium
 ```
+
+### Browser servers and worktrees
+
+Each browser suite starts and stops its own server from the current checkout.
+Production tests build first and use port 4322; lab tests use port 4323. Your
+interactive `pnpm dev` server can keep running on its usual port 4321. Tests refuse
+to reuse an occupied port, so another worktree cannot silently supply the page
+being tested.
+
+When another checkout is already running browser tests, choose free ports through
+these optional shell environment variables:
+
+```bash
+PLAYWRIGHT_E2E_PORT=4422 PLAYWRIGHT_LAB_PORT=4423 pnpm verify:full
+```
+
+The same overrides apply to the individual suites and their UI/snapshot commands.
+Pass decimal integers from 1 to 65535. These are test-runner settings read from the
+shell, not application settings loaded from `.env.local`. An invalid value fails
+before server startup; an occupied port fails instead of selecting a different one.
+
+`tests/support/browser-server.ts` owns port validation, loopback URLs, and server
+startup policy. The two Playwright configs retain their suite-specific test,
+retry, and reporting settings. Servers explicitly use production or development
+`NODE_ENV` to match their suite, including when started from an editor terminal.
+The lab launcher in `scripts/serve-lab.ts` uses
+Astro's programmatic dev API so it leaves the interactive CLI server's lock alone.
+It also has a separate Vite optimization cache. Playwright manages its lifetime.
+
+Failure artifacts live in `test-results/e2e/` and `test-results/lab/`. Running one
+suite no longer clears the other's results or downloaded CI traces. Keep concurrent
+runs in separate worktrees: builds and generated Astro state still belong to one
+checkout, even when server ports differ.
 
 ### Component lab
 
@@ -319,8 +352,11 @@ GitHub Actions uses two stable required jobs:
 - **Browser** waits for Quality, installs Chromium, runs the production suite and the
   non-visual `/lab` checks, and uploads seven-day failure artifacts.
 
-Run `pnpm verify:full` for the closest local equivalent. CI has read-only repository
-contents permission and no deployment credentials or deployment step.
+Run `pnpm verify:full` for the same required quality, production-browser, and portable
+lab checks. CI also runs `pnpm test:coverage` for reporting. Local visual snapshots
+remain a separate `pnpm test:lab` check because they are platform-specific. CI has
+read-only repository contents permission and no deployment credentials or deployment
+step.
 
 ## Git and review workflow
 
@@ -513,8 +549,11 @@ Stop an Astro development server started by this project:
 pnpm exec astro dev stop
 ```
 
-Playwright reserves `127.0.0.1:4322` and intentionally refuses to reuse an existing
-server so its production-style run remains isolated.
+Browser tests use port 4322 for production and 4323 for the lab. Leave another
+checkout's server running and choose free `PLAYWRIGHT_E2E_PORT` and
+`PLAYWRIGHT_LAB_PORT` values as shown under
+[Browser servers and worktrees](#browser-servers-and-worktrees). Both suites refuse
+to reuse an existing server.
 
 ### Local checks pass but CI fails
 

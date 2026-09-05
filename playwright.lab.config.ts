@@ -1,6 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = "http://127.0.0.1:4321";
+import { createBrowserServer } from "./tests/support/browser-server";
+
+const { baseURL, webServer } = createBrowserServer(
+  "lab",
+  process.env.PLAYWRIGHT_LAB_PORT,
+);
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
@@ -13,7 +18,6 @@ export default defineConfig({
   outputDir: "test-results/lab",
   preserveOutput: "failures-only",
   use: {
-    ...devices["Desktop Chrome"],
     baseURL,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
@@ -24,11 +28,5 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command: "corepack pnpm exec astro dev --host 127.0.0.1 --port 4321",
-    url: `${baseURL}/lab`,
-    reuseExistingServer: !isCI,
-    stdout: "pipe",
-    timeout: 120_000,
-  },
+  webServer,
 });

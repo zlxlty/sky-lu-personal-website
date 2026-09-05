@@ -71,8 +71,10 @@ pnpm verify
 pnpm verify:full
 ```
 
-`pnpm verify:full` includes the production-style Playwright browser test and is the
-right final check for browser-facing changes.
+`pnpm verify:full` includes the production browser suite and portable component-lab
+checks that CI runs. Tests manage dedicated servers, so `pnpm dev` can stay open.
+See [browser servers and worktrees](./DEVELOPMENT.md#browser-servers-and-worktrees)
+when testing another checkout at the same time.
 
 ## Commands
 
@@ -89,7 +91,7 @@ right final check for browser-facing changes.
 | `pnpm test:lab`     | Test `/lab` and compare local visual snapshots.        |
 | `pnpm test:lab:ui`  | Open Playwright UI for component-lab debugging.        |
 | `pnpm verify`       | Run formatting, linting, types, unit tests, and build. |
-| `pnpm verify:full`  | Run `verify` plus browser tests.                       |
+| `pnpm verify:full`  | Run all required quality and browser checks.           |
 
 See [DEVELOPMENT.md](./DEVELOPMENT.md) for every command, test selection,
 debugging, CI behavior, editor setup, and Git workflow. `pnpm cf:preview` is
