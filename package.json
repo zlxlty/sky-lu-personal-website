@@ -70,6 +70,7 @@
     "vitest": "^4.1.11"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged"
+    "pre-commit": "pnpm exec lint-staged",
+    "preserveUnused": true
   }
 }

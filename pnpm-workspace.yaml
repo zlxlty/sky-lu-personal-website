@@ -2,3 +2,5 @@ allowBuilds:
   esbuild: true
   # The root prepare script installs the hook after dependencies are available.
   simple-git-hooks: false
+patchedDependencies:
+  simple-git-hooks@2.13.1: patches/simple-git-hooks@2.13.1.patch
