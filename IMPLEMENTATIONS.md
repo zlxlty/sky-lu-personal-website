@@ -879,7 +879,7 @@ Checks:
 Continue on `codex/fix/ui-maintainability` after the approved browser-tooling
 commit. This is one corrective candidate for the existing Stage 01 hook workflow.
 
-Commit candidate (uncommitted):
+Committed as `3e30ecc` after explicit approval:
 
 ```text
 fix: install git hooks correctly in linked worktrees
@@ -904,6 +904,39 @@ Checks:
   and after and confirm they remain unchanged.
 - Verify a fresh frozen-lockfile install applies the patch and installs the hook.
 - Confirm no dependency versions, unrelated files, or hook commands change.
+
+### Supplemental maintainability review - shared browser theme control
+
+Continue on `codex/fix/ui-maintainability` after the approved hook-installation
+commit. This candidate makes the existing theme behavior reusable by feature
+handlers while preserving the static shell and synchronous first-paint bootstrap.
+
+Commit candidate (uncommitted):
+
+```text
+refactor: share theme control across browser features
+```
+
+Scope:
+
+- Move the header's browser behavior into one page-scoped module with
+  `initializeTheme()` and `toggleTheme()` entry points; keep imports safe during
+  static rendering and avoid a React provider or new dependency.
+- Connect the lab's existing theme command to the shared behavior without
+  finding or clicking the header. The global production palette stays in Stage 08.
+- Handle local-storage clear events and ignore session-storage events; preserve
+  in-page theme switching when storage access or writes fail.
+- Document theme ownership and extend real-browser regression coverage for
+  multiple tabs, blocked storage, and the command/header integration.
+
+Checks:
+
+- Reproduce the two storage failures and inactive lab command before changing code.
+- Run focused theme and command browser tests, then `pnpm verify:full`.
+- Run the lab's existing visual targets without updating snapshots; inspect
+  light/dark desktop/mobile states and keyboard behavior.
+- Confirm the production shell retains its no-JavaScript fallback, pre-paint
+  bootstrap ordering, and lack of React hydration.
 
 ## 8. Stage 03 - Content model and core routes
 

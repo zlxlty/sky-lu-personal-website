@@ -98,6 +98,31 @@ Do not introduce SSR, a Worker binding, or a hydrated React wrapper for static
 content as a convenience. Cloudflare Workers Static Assets remains the production
 target.
 
+### Theme behavior
+
+`src/lib/theme.ts` owns the supported themes, tokens, and pure preference policy.
+`BaseLayout.astro` keeps the small inline bootstrap before styles so the initial
+theme does not wait for a downloaded module. Keep that synchronous first-paint
+step when extending theme behavior.
+
+`src/lib/theme-controller.ts` owns browser state, persistence, system changes,
+cross-tab updates, metadata, and the header's accessible labels. The Astro theme
+control calls `initializeTheme()` after the document is parsed. Repeated calls
+reuse the same controller for the current document. This lifecycle follows the
+site's normal full-page navigation; there is no client router.
+
+Feature handlers, including the lab's theme command, call `toggleTheme()` from
+that module. Do not click the header programmatically or write theme attributes
+and storage independently. The import has no browser side effects, so React
+islands can import it during static rendering and call it from browser events.
+
+An explicit choice overrides the system theme. Removing, clearing, or invalidating
+the saved choice in another tab restores the live system preference. Unrelated
+keys and session storage events are ignored. If storage is blocked, switching
+still works for the current page. `tests/e2e/theme.spec.ts` covers these browser
+cases, while the homepage suite retains first-paint, reload, and no-JavaScript
+checks. The lab suite exercises the shared command and header behavior.
+
 ### Optional design-reference checkout
 
 The production build does not depend on the upstream repository. For source

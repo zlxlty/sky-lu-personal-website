@@ -45,6 +45,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/cn";
+import { toggleTheme } from "@/lib/theme-controller";
 
 export function LabControls() {
   const [commandOpen, setCommandOpen] = useState(false);
@@ -228,7 +229,9 @@ export function LabControls() {
                 heading="Actions"
                 className="border-t border-line pt-1"
               >
-                <CommandItem value="toggle theme">Toggle theme</CommandItem>
+                <CommandItem value="toggle theme" onSelect={toggleTheme}>
+                  Toggle theme
+                </CommandItem>
               </CommandGroup>
             </CommandList>
           </Command>
