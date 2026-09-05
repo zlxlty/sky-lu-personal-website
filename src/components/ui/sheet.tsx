@@ -56,11 +56,12 @@ function SheetContent({
         data-slot="sheet-content"
         data-side={side}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 border-line bg-(--color-surface-raised) text-sm text-foreground shadow-[0_1rem_4rem_rgb(0_0_0/20%)] transition-transform duration-(--duration-disclosure) ease-(--ease-standard) outline-none motion-reduce:transition-none",
-          "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:max-h-[85vh] data-[side=top]:border-b data-[side=top]:data-ending-style:-translate-y-full data-[side=top]:data-starting-style:-translate-y-full",
+          "fixed z-50 flex max-h-dvh scroll-p-[calc(var(--focus-width)+var(--focus-offset))] flex-col gap-4 overflow-y-auto overscroll-contain border-line bg-(--color-surface-raised) text-sm text-foreground shadow-[0_1rem_4rem_rgb(0_0_0/20%)] transition-transform duration-(--duration-disclosure) ease-(--ease-standard) outline-none *:shrink-0 motion-reduce:transition-none",
+          "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:max-h-[85dvh] data-[side=top]:border-b data-[side=top]:data-ending-style:-translate-y-full data-[side=top]:data-starting-style:-translate-y-full",
           "data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:w-4/5 data-[side=right]:border-l data-[side=right]:data-ending-style:translate-x-full data-[side=right]:data-starting-style:translate-x-full sm:data-[side=right]:max-w-sm",
-          "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:max-h-[85vh] data-[side=bottom]:border-t data-[side=bottom]:data-ending-style:translate-y-full data-[side=bottom]:data-starting-style:translate-y-full",
+          "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:max-h-[85dvh] data-[side=bottom]:border-t data-[side=bottom]:data-ending-style:translate-y-full data-[side=bottom]:data-starting-style:translate-y-full",
           "data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:w-4/5 data-[side=left]:border-r data-[side=left]:data-ending-style:-translate-x-full data-[side=left]:data-starting-style:-translate-x-full sm:data-[side=left]:max-w-sm",
+          showCloseButton && "[&>[data-slot=sheet-header]]:pr-14",
           className,
         )}
         {...props}

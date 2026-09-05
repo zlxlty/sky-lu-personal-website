@@ -6,6 +6,12 @@
 import type { ComponentProps } from "react";
 import { Command as CommandPrimitive } from "cmdk";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { SearchIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
@@ -17,7 +23,7 @@ function Command({
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        "flex size-full flex-col overflow-hidden text-foreground",
+        "flex size-full min-h-0 flex-col overflow-hidden text-foreground",
         className,
       )}
       {...props}
@@ -28,31 +34,40 @@ function Command({
 function CommandDialog({
   children,
   contentClassName,
+  defaultOpen,
   description = "Search for a command to run.",
-  overlayClassName,
+  finalFocus,
+  initialFocus,
+  onOpenChange,
+  open,
   title = "Command palette",
   ...props
-}: ComponentProps<typeof CommandPrimitive.Dialog> & {
-  description?: string;
-  title?: string;
-}) {
+}: ComponentProps<typeof Command> &
+  Pick<ComponentProps<typeof Dialog>, "open" | "defaultOpen" | "onOpenChange"> &
+  Pick<ComponentProps<typeof DialogContent>, "initialFocus" | "finalFocus"> & {
+    contentClassName?: string;
+    description?: string;
+    title?: string;
+  }) {
   return (
-    <CommandPrimitive.Dialog
-      data-slot="command-dialog"
-      label={title}
-      overlayClassName={cn(
-        "fixed inset-0 z-50 bg-(--color-overlay) opacity-100 transition-opacity duration-(--duration-disclosure) ease-(--ease-standard) data-[state=closed]:opacity-0 motion-reduce:transition-none",
-        overlayClassName,
-      )}
-      contentClassName={cn(
-        "fixed top-1/2 left-1/2 z-50 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-(--radius-medium) border border-(--color-rule-strong) bg-(--color-surface-raised) text-foreground shadow-[0_1rem_4rem_rgb(0_0_0/20%)] outline-none sm:max-w-lg",
-        contentClassName,
-      )}
-      {...props}
-    >
-      <p className="sr-only">{description}</p>
-      {children}
-    </CommandPrimitive.Dialog>
+    <Dialog open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+      <DialogContent
+        data-slot="command-dialog"
+        initialFocus={initialFocus}
+        finalFocus={finalFocus}
+        showCloseButton={false}
+        className={cn(
+          "flex flex-col gap-0 overflow-hidden p-0 sm:max-w-lg",
+          contentClassName,
+        )}
+      >
+        <DialogTitle className="sr-only">{title}</DialogTitle>
+        <DialogDescription className="sr-only">{description}</DialogDescription>
+        <Command label={title} {...props}>
+          {children}
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -63,13 +78,13 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex h-11 items-center gap-2 border-b border-line px-3"
+      className="relative flex h-11 shrink-0 items-center gap-2 border-b border-line px-3 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:border-(--color-focus) has-[:focus-visible]:after:border-b-(length:--focus-width) forced-colors:after:border-[Highlight]"
     >
       <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          "h-10 w-full bg-transparent py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+          "h-10 w-full bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         {...props}
@@ -86,7 +101,7 @@ function CommandList({
     <CommandPrimitive.List
       data-slot="command-list"
       className={cn(
-        "max-h-80 scroll-py-2 overflow-x-hidden overflow-y-auto p-1 outline-none",
+        "max-h-80 min-h-0 scroll-py-2 overflow-x-hidden overflow-y-auto overscroll-contain p-1 outline-none",
         className,
       )}
       {...props}

@@ -366,6 +366,8 @@ Theme behavior:
 - Apply an inline, CSP-compatible bootstrap before paint to avoid a theme flash.
 - Update `color-scheme` and `theme-color` metadata.
 - Both themes must meet WCAG AA contrast for normal text and visible focus indicators.
+- Command inputs use a focus line along the search row instead of a rectangular
+  input outline, retaining a visible keyboard cue in both themes and forced colors.
 
 ### 6.4 Typography
 

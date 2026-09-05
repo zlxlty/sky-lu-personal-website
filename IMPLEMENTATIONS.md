@@ -800,6 +800,43 @@ Checks:
   stages make that file materially harder to review; do not create one island
   per primitive.
 
+### Supplemental UI review - accessible overlay behavior
+
+Branch: `codex/fix/ui-maintainability`, based on reviewed `main` at `046b5d1`
+in a separate worktree. This is a corrective follow-up to Stage 02, not the start
+of a later feature stage.
+
+Commit candidate (uncommitted):
+
+```text
+fix: keep shared overlays accessible on small screens
+```
+
+Scope:
+
+- Constrain Dialog and all Sheet directions to the viewport, with internal
+  scrolling and space between header text and the optional close button.
+- Compose CommandDialog from the existing Dialog and cmdk menu so modal focus,
+  labeling, and viewport behavior have one implementation to maintain.
+- Keep the command input visible while a constrained results list scrolls.
+- Replace the command input's rectangular outline with a focus line along its
+  row, as requested in design review; verify light, dark, and forced-colors modes.
+- Reserve focus-outline clearance when Dialog and Sheet scroll to footer actions.
+- Document the composition and focus API and add browser regressions for short
+  screens, keyboard dismissal, selection, focus restoration, and accessibility.
+
+Non-goals:
+
+- No homepage redesign, new routes, search feature, dependency changes, or new
+  production islands. Content-model changes remain owned by their feature branch.
+
+Checks:
+
+- Reproduce short-screen clipping and command focus loss before the fix.
+- Run the focused overlay browser tests, `pnpm verify:full`, and `pnpm test:lab`.
+- Inspect light/dark, mobile/desktop, keyboard, and reduced-motion states; keep
+  review screenshots outside tracked source.
+
 ## 8. Stage 03 - Content model and core routes
 
 ### Branch
