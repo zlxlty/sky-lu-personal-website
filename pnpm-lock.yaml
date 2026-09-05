@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  simple-git-hooks@2.13.1: ecd7b2b32bcbcec6f72f8ed3ed22396252d9b0195a69973b098534296b64aee8
+
 importers:
 
   .:
@@ -95,7 +98,7 @@ importers:
         version: 0.8.1(prettier-plugin-astro@0.14.1)(prettier@3.9.6)
       simple-git-hooks:
         specifier: ^2.13.1
-        version: 2.13.1
+        version: 2.13.1(patch_hash=ecd7b2b32bcbcec6f72f8ed3ed22396252d9b0195a69973b098534296b64aee8)
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
@@ -7001,7 +7004,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  simple-git-hooks@2.13.1: {}
+  simple-git-hooks@2.13.1(patch_hash=ecd7b2b32bcbcec6f72f8ed3ed22396252d9b0195a69973b098534296b64aee8): {}
 
   sisteransi@1.0.5: {}
 

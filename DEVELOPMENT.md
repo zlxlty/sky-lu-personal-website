@@ -13,6 +13,8 @@ installed globally:
 - `package.json#engines` accepts compatible Node.js 24 and pnpm 11 releases.
 - `package.json#packageManager` pins pnpm 11.22.0.
 - `pnpm-lock.yaml` makes dependency resolution reproducible.
+- Git 2.36 or later supports the hook-installation regression tests, which invoke
+  hooks directly without creating commits.
 
 Use pnpm for all dependency and script operations. Do not use npm, Yarn, or Bun to
 change the dependency graph or lockfile.
@@ -315,6 +317,18 @@ staged for the proposed commit:
 - Prettier checks supported source, content, configuration, and documentation.
 - ESLint checks staged Astro, JavaScript, and TypeScript source.
 
+The installer asks Git for the effective hook directory, so linked worktrees and
+relative, global, or worktree-specific `core.hooksPath` settings work correctly.
+The project manages `pre-commit` and preserves unrelated hooks. Default hooks are
+shared by linked worktrees; the hook runs `pnpm exec lint-staged` in whichever
+worktree invokes it. Installation failures now return a failing exit status.
+
+A small, version-specific pnpm patch fixes these behaviors in `simple-git-hooks`
+2.13.1. `pnpm install --frozen-lockfile` applies it automatically; do not edit
+installed dependencies by hand. See [patch maintenance](./patches/README.md) before
+upgrading that package. The dependency's own postinstall remains blocked; only
+the root `prepare` command installs project hooks.
+
 Both tasks are check-only: they do not format, fix, or intentionally stage files.
 If either task fails, the commit stops. Fix the reported file, run the relevant
 repository command, review the new diff, and ask for commit approval again before
@@ -340,8 +354,15 @@ If a fresh install did not activate the hook, run:
 pnpm run prepare
 ```
 
-Then confirm that `.git/hooks/pre-commit` exists. A GUI Git client launched outside
-your shell may also need the pinned Node and pnpm binaries on its `PATH`.
+Then ask Git where the hook should exist:
+
+```bash
+git rev-parse --path-format=absolute --git-path hooks/pre-commit
+```
+
+Inspect that path instead of assuming `.git` is a directory. A GUI Git client
+launched outside your shell may also need the pinned Node and pnpm binaries on
+its `PATH`.
 
 ## CI parity
 

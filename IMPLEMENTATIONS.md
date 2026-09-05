@@ -843,7 +843,7 @@ Continue on `codex/fix/ui-maintainability` in the same separate worktree after
 the approved overlay commit. This candidate improves the Stage 01 development
 workflow and does not start a dependent product stage.
 
-Commit candidate (uncommitted):
+Commit approved and created locally as `eaf2fea`:
 
 ```text
 chore: isolate browser verification across worktrees
@@ -873,6 +873,37 @@ Checks:
 - Run `pnpm verify:full`, `pnpm test:lab`, and the portable lab command in CI mode.
 - Confirm the interactive dev server survives test startup and teardown, and that
   test servers release their ports.
+
+### Supplemental DX review - worktree-aware hook installation
+
+Continue on `codex/fix/ui-maintainability` after the approved browser-tooling
+commit. This is one corrective candidate for the existing Stage 01 hook workflow.
+
+Commit candidate (uncommitted):
+
+```text
+fix: install git hooks correctly in linked worktrees
+```
+
+Scope:
+
+- Keep simple-git-hooks 2.13.1 and the existing pre-commit command. Apply a small
+  pnpm patch so Git resolves its effective hook directory and the CLI reports
+  installation errors with a failing exit status.
+- Preserve hooks not managed by the project through the existing package option.
+- Test the installed CLI with real disposable repositories and linked worktrees,
+  including custom hook paths, unrelated hooks, and failure/skip behavior.
+- Document hook discovery, the patch's purpose and removal criteria, and the Git
+  version required to exercise hooks directly in tests.
+
+Checks:
+
+- Reproduce the six failing regression cases before applying the patch.
+- Run the focused hook tests and `pnpm verify`.
+- Run `pnpm run prepare` in this worktree; compare existing hook contents before
+  and after and confirm they remain unchanged.
+- Verify a fresh frozen-lockfile install applies the patch and installs the hook.
+- Confirm no dependency versions, unrelated files, or hook commands change.
 
 ## 8. Stage 03 - Content model and core routes
 

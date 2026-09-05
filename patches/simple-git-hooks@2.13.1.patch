@@ -1,0 +1,54 @@
+diff --git a/cli.js b/cli.js
+index 211150928d463a9613e216e64d988765a452402b..77030966bbd557c9a6b0e0c018c6000d26ee14f8 100755
+--- a/cli.js
++++ b/cli.js
+@@ -8,4 +8,7 @@ if(skipInstall()) {
+ 
+ setHooksFromConfig(process.cwd(), process.argv)
+     .then(() => console.log('[INFO] Successfully set all git hooks'))
+-    .catch(e => console.log('[ERROR], Was not able to set git hooks. Error: ' + e))
++    .catch(e => {
++        console.error('[ERROR], Was not able to set git hooks. Error: ' + e)
++        process.exitCode = 1
++    })
+diff --git a/simple-git-hooks.js b/simple-git-hooks.js
+index 093890d21800c9feb34cb6da5b997b947da812cd..96a3aaf46aa287a0af9fd846f7e803b950d17fa2 100644
+--- a/simple-git-hooks.js
++++ b/simple-git-hooks.js
+@@ -1,7 +1,7 @@
+ const fs = require('fs')
+ const path = require('path')
+ const url = require('url')
+-const { execSync } = require('child_process');
++const { execFileSync } = require('child_process');
+ const CONFIG_ERROR = '[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details'
+ const VALID_GIT_HOOKS = [
+     'applypatch-msg',
+@@ -155,23 +155,10 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
+     }
+ }
+ function _getHooksDirPath(projectRoot) {
+-    const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
+-    try {
+-        const customHooksDirPath = execSync('git config --local core.hooksPath', {
+-            cwd: projectRoot,
+-            encoding: 'utf8'
+-        }).trim()
+-
+-        if (!customHooksDirPath) {
+-            return defaultHooksDirPath
+-        }
+-
+-        return path.isAbsolute(customHooksDirPath)
+-            ? customHooksDirPath
+-            : path.resolve(projectRoot, customHooksDirPath)
+-    } catch {
+-        return defaultHooksDirPath
+-    }
++    return execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-path', 'hooks'], {
++        cwd: projectRoot,
++        encoding: 'utf8'
++    }).trim()
+ }
+ 
+ function _setHook(hook, command, projectRoot=process.cwd()) {

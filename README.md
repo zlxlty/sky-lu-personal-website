@@ -17,7 +17,7 @@ and the staged delivery roadmap lives in [IMPLEMENTATIONS.md](./IMPLEMENTATIONS.
 
 ## Prerequisites
 
-- Git.
+- Git 2.36 or later (the test suite invokes hooks without creating commits).
 - A Node.js version manager such as `nvm`.
 - Corepack, which activates the pnpm version pinned by `package.json`.
 
@@ -44,6 +44,7 @@ cp .env.example .env.local
 
 `pnpm install` runs the repository's `prepare` script and installs the local
 pre-commit hook automatically. No additional hook command is normally required.
+Installation also works in linked worktrees and preserves unrelated hooks.
 If the hook is missing from an existing checkout, reinstall it with:
 
 ```bash
