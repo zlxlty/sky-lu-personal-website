@@ -1,0 +1,128 @@
+---
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
+import { profile } from "@/data/profile";
+import { listeningTracks } from "@/data/listening";
+import { buildInfo } from "@/lib/build-info.server";
+import FooterListening from "./FooterListening.astro";
+---
+
+<div class="grid sm:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
+  <div class="self-center px-4 py-[30px] sm:px-5 sm:pt-9">
+    <p
+      class="m-0 font-mono text-[10px] leading-normal tracking-[0.085em] text-muted-foreground uppercase"
+    >
+      A personal notebook / {profile.name}
+    </p>
+    <h2
+      class="mt-[22px] mb-[18px] font-(family-name:--font-heading-family) text-[42px] leading-[1.05] font-medium tracking-[-0.04em] sm:text-[44px]"
+    >
+      Systems,<br />software <span class="font-[350]">& sound.</span>
+    </h2>
+    <p
+      class="m-0 origin-left -rotate-3 font-(family-name:--font-handwritten-family) text-[27px]"
+    >
+      Thanks for stopping by.
+    </p>
+  </div>
+  <div
+    class="relative border-t border-(--color-blueprint-rule) px-4 py-6 sm:border-s sm:border-t-0 sm:px-5 sm:py-7"
+  >
+    <FooterListening />
+    {
+      listeningTracks.length > 0 && (
+        <RailAnnotation side="right" align="center" arrowDirection="up">
+          {listeningTracks.length > 1 && (
+            <span class="mb-2 block">Swipe vinyl to switch</span>
+          )}
+          Drag the arm to play
+        </RailAnnotation>
+      )
+    }
+  </div>
+</div>
+
+<div
+  class="screen-line-top grid gap-6 px-4 py-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] sm:px-5 sm:py-[26px]"
+>
+  <div>
+    <p
+      class="m-0 font-mono text-[10px] leading-normal tracking-[0.085em] text-muted-foreground uppercase"
+    >
+      Find me elsewhere
+    </p>
+    <nav aria-label="Social links" class="mt-3 flex flex-wrap gap-x-7 gap-y-2">
+      {
+        Object.values(profile.links).map(({ label, href }) => (
+          <a
+            href={href}
+            class="inline-flex min-h-10 items-center gap-2 text-sm"
+          >
+            <SketchUnderline text={label} seed={`footer:${label}`} />
+            <span aria-hidden="true">↗</span>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  <div>
+    <p
+      class="m-0 font-mono text-[10px] leading-normal tracking-[0.085em] text-muted-foreground uppercase"
+    >
+      The making of this site
+    </p>
+    <p class="mt-3 mb-0 text-xs leading-[1.85]">
+      Made with{" "}
+      <a href="https://astro.build/"
+        ><SketchUnderline text="Astro" seed="footer:astro" /></a
+      >, <a href="https://workers.cloudflare.com/"
+        ><SketchUnderline text="Cloudflare" seed="footer:cloudflare" /></a
+      >, and an eye for the details.<br />
+      Design system inspired in part by <a href="https://chanhdai.com/"
+        ><SketchUnderline text="chanhdai.com" seed="footer:design" /></a
+      >.
+    </p>
+  </div>
+</div>
+
+<div
+  class="screen-line-top relative flex flex-wrap items-start justify-between gap-4 px-4 py-5 sm:items-center sm:gap-5 sm:px-5"
+>
+  <p
+    class="m-0 font-mono text-[10px] leading-normal tracking-[0.085em] text-muted-foreground uppercase"
+  >
+    Built <time datetime={buildInfo.dateTime}>{buildInfo.dateLabel}</time>
+    {
+      buildInfo.revision && (
+        <span>
+          {" "}
+          · <code>{buildInfo.revision}</code>
+        </span>
+      )
+    }
+  </p>
+  <div class="ms-auto flex shrink-0 items-center gap-3">
+    <a href="/privacy" class="inline-flex min-h-10 items-center text-xs">
+      <SketchUnderline text="Privacy" seed="footer:privacy" />
+    </a>
+    <a
+      href="#top"
+      class="inline-flex min-h-10 items-center gap-1.5 text-xs whitespace-nowrap lg:absolute lg:top-1/2 lg:left-full lg:ml-4 lg:-translate-y-1/2"
+    >
+      <SketchUnderline text="Back to top" seed="footer:top" />
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-3.5 shrink-0"
+      >
+        <path d="m4 7 4-4 4 4M8 3v10"></path>
+      </svg>
+    </a>
+  </div>
+</div>

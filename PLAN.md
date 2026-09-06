@@ -124,7 +124,7 @@ The lab contains:
 
 Desktop navigation:
 
-- Sky monogram/home link.
+- Lowercase `sky lu.` wordmark/home link.
 - `Work`, `Research`, `Writing`, and `Jazz` anchor links.
 - Command/search button with `Cmd/Ctrl + K` hint.
 - GitHub link.
@@ -132,12 +132,18 @@ Desktop navigation:
 
 Mobile navigation:
 
-- Monogram/home link.
+- The same wordmark/home link.
 - Command/search button.
 - Menu button opening a shadcn Sheet or Dialog.
 - Theme toggle remains directly reachable.
 
 The header is approximately 52 px tall, sticky, and uses a lightly translucent paper background with `backdrop-filter` only where supported.
+
+The approved header identity is an editorial `sky lu.` wordmark in the existing
+Geist font, with a semibold first name, lighter surname, and tight optical spacing.
+It inherits the theme's text color and renders as static text. Its home link has
+the accessible name `Sky Lu — Home`. The navbar owns its left inset, aligning the
+wordmark with standard panel content at every viewport width.
 
 ### 5.2 Hero: interactive six-string guitar
 
@@ -296,13 +302,44 @@ Initial topic taxonomy:
 
 Include:
 
-- Short site description.
+- Editorial notebook sign-off: "Systems, software & sound." and a handwritten
+  "Thanks for stopping by."
+- A minimal vinyl, tonearm, and cartridge drawing beside the sign-off, stacked
+  below it on mobile. Play Sky's uploaded covers from the authored playlist.
+  The enlarged disc has asymmetric
+  label details and a centered cartridge and needle. A native audio player uses
+  owner-hosted files served through Cloudflare R2. Drag the arm through a
+  fixed 0–34° arc: picking it up pauses; releasing over the grooves resumes;
+  releasing outside parks it. The vinyl follows actual audio playback, without
+  visible playing/paused text. The tonearm also supports keyboard input; the
+  native audio controls are hidden. No Spotify embed, SDK, or sign-in is used.
+- Swipe the vinyl up/down to select next/previous records with a short eased
+  exit and entrance. Selection wraps; changing records pauses and parks the arm,
+  without automatically starting the next track. The vinyl itself is keyboard
+  focusable, with Up/Down to switch; omit selection buttons and counters.
+  Keep URLs, titles, authors, and record/album names in
+  one typed playlist. No publication date is shown. A single-track playlist hides
+  switching controls; empty playlists show a static drawing.
+- Use a small CC0 jazz demo only in the development lab. No audio is fetched
+  before a listening action. Motion respects reduced motion and pauses while
+  offscreen; navigation releases playback.
+- A bottom-row Privacy link to a dedicated static statement about browser
+  preferences, connection information, and external services.
 - Git commit/build identifier when available.
 - Build date.
 - Astro, Cloudflare, and relevant open-source attribution.
 - GitHub, LinkedIn, Brown email, and personal email.
-- Theme toggle and back-to-top control.
+- Back-to-top link outside the right rail on desktop, inside the footer row when
+  the viewport has no room for a gutter. Keep the theme toggle in the header only.
 - Explicit attribution: "Design system inspired in part by chanhdai.com" with a link.
+
+The static homepage phase first completes navigation for the existing public
+routes and adds this shared footer. Homepage section anchors arrive with their
+target sections; menu and search controls arrive with their functional behavior.
+The header uses the existing theme controller and one live status region.
+Build metadata uses a UTC build date and an optional validated public
+`GITHUB_SHA`; no Git command or browser request is required. Contact values remain
+deferred to the environment-backed contact phase.
 
 ## 6. Visual design system
 
@@ -386,7 +423,7 @@ Theme behavior:
 - Display headings: Geist Sans, self-hosted variable WOFF2.
 - Body: IBM Plex Sans, self-hosted variable WOFF2.
 - Technical metadata and code-adjacent UI: IBM Plex Mono.
-- Decorative rail annotations only: Caveat, self-hosted through Fontsource.
+- Decorative annotations and the footer sign-off: Caveat, self-hosted through Fontsource.
 - Use no more than these four role-specific font families. Handwritten text must
   remain decorative and cannot carry essential instructions or content.
 - Body: 16 px/1.65.

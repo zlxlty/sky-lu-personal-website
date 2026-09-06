@@ -10,7 +10,7 @@ import {
 
 let controller: ReturnType<typeof createThemeController> | undefined;
 
-/** Bind the static header after parsing. Repeated calls reuse this page's state. */
+/** Bind static controls after parsing. Repeated calls reuse this page's state. */
 export function initializeTheme() {
   getController();
 }
@@ -26,7 +26,7 @@ function getController() {
 
 function createThemeController() {
   const root = document.documentElement;
-  const toggle = document.querySelector<HTMLButtonElement>(
+  const toggles = document.querySelectorAll<HTMLButtonElement>(
     "[data-theme-toggle]",
   );
   const status = document.querySelector<HTMLElement>("[data-theme-status]");
@@ -50,7 +50,7 @@ function createThemeController() {
     false,
   );
 
-  toggle?.addEventListener("click", toggleTheme);
+  toggles.forEach((toggle) => toggle.addEventListener("click", toggleTheme));
 
   systemPreference.addEventListener("change", ({ matches }) => {
     if (explicitTheme === null) {
@@ -98,7 +98,7 @@ function createThemeController() {
         : themeColor?.dataset.themeLight;
     if (metaColor) themeColor?.setAttribute("content", metaColor);
 
-    if (toggle) {
+    for (const toggle of toggles) {
       toggle.hidden = false;
       toggle.ariaLabel = `Switch to ${nextTheme} theme`;
       toggle.title = `Switch to ${nextTheme} theme`;

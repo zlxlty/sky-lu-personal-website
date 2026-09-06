@@ -1,0 +1,110 @@
+---
+import TurntableDrawing from "./TurntableDrawing.astro";
+import { definePlaylist, type RecordTrack } from "@/lib/record-playlist";
+interface Props {
+  tracks: readonly RecordTrack[];
+  id: string;
+}
+const { tracks: input, id } = Astro.props;
+const tracks = definePlaylist(input);
+const first = tracks[0];
+const instructionsId = `${id}-instructions`;
+const multiple = tracks.length > 1;
+---
+
+<local-record data-src={first?.audioSrc} class="block">
+  <figure class="m-0">
+    {
+      first ? (
+        <turntable-control class="block touch-none" selectable={multiple}>
+          <TurntableDrawing
+            interactive
+            selectable={multiple}
+            {instructionsId}
+          />
+        </turntable-control>
+      ) : (
+        <TurntableDrawing />
+      )
+    }
+    <!-- Reserve the tallest caption so changing records never shifts the footer. -->
+    <figcaption class="grid">
+      {
+        tracks.map((track, index) => (
+          <div
+            data-record-track
+            data-src={track.audioSrc}
+            data-title={track.title}
+            data-track-id={track.id}
+            data-active={index === 0 ? "" : undefined}
+            inert={index !== 0}
+            class="invisible col-start-1 row-start-1 data-[active]:visible"
+          >
+            <p class="m-0 font-(family-name:--font-heading-family) text-base leading-tight font-medium tracking-[-0.025em]">
+              {track.title}
+            </p>
+            <div class="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+              <p class="m-0 text-xs leading-snug">{track.author}</p>
+              <p class="m-0 flex flex-wrap items-baseline gap-x-[5px] font-mono text-[10px] leading-normal text-muted-foreground">
+                {track.record &&
+                  (track.recordUrl ? (
+                    <a href={track.recordUrl}>{track.record}</a>
+                  ) : (
+                    <span>{track.record}</span>
+                  ))}
+                {track.license && (
+                  <a href={track.license.href}>{track.license.label}</a>
+                )}
+              </p>
+            </div>
+            {track.videoUrl && (
+              <a
+                href={track.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2 inline-block text-[10px] text-muted-foreground"
+              >
+                Watch my cover <span aria-hidden="true">↗</span>
+                <span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
+          </div>
+        ))
+      }
+    </figcaption>
+  </figure>
+  {
+    first && (
+      <div>
+        <p id={instructionsId} class="sr-only">
+          Drag the arm onto the record and release to play. Lift it to pause, or
+          move it off the record to stop. Arrow keys move the arm; Home returns
+          it to rest; Enter places or lifts it.
+          {multiple &&
+            " Focus the vinyl and press Up for the next record or Down for the previous one; Enter also selects the next record. You can swipe the vinyl in the same directions. Changing records pauses playback and parks the arm."}
+        </p>
+        <p data-audio-status role="status" class="sr-only" />
+        <p
+          data-audio-error
+          role="alert"
+          hidden
+          class="mt-2 text-xs text-muted-foreground"
+        />
+        <audio preload="none" hidden />
+      </div>
+    )
+  }
+  <noscript>
+    {
+      tracks.map((track) => (
+        <a href={track.audioSrc} class="mt-2 block text-xs underline">
+          Listen to {track.title}
+        </a>
+      ))
+    }
+  </noscript>
+</local-record>
+
+<script>
+  import "@/lib/local-record";
+</script>

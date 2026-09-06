@@ -1,0 +1,104 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import RecordPlayer from "@/components/site/RecordPlayer.astro";
+import TurntableDrawing from "@/components/site/TurntableDrawing.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { listeningDemo } from "./listening-demo";
+import { definePlaylist } from "@/lib/record-playlist";
+const tracks = definePlaylist([
+  {
+    id: "jazz-demo",
+    audioSrc: listeningDemo.audioSrc,
+    title: listeningDemo.title,
+    author: listeningDemo.artist,
+    record: "Development demo",
+    recordUrl: listeningDemo.source,
+    license: { label: "CC0", href: listeningDemo.license },
+  },
+  {
+    id: "swap-demo",
+    audioSrc: listeningDemo.audioSrc,
+    title: "Second record · swap specimen",
+    author: listeningDemo.artist,
+    record: "Same CC0 recording",
+    recordUrl: listeningDemo.source,
+    license: { label: "CC0", href: listeningDemo.license },
+  },
+]);
+---
+
+<BaseLayout
+  title="Turntable · Component lab"
+  description="Constrained tonearm interaction specimen."
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <IndexHeading
+    title="Turntable"
+    eyebrow="Interaction specimen / Your audio"
+    description="Drag the cartridge onto the grooves and let go. Lift it and return it to its rest to stop. The arm follows a fixed arc."
+  />
+  <Panel
+    ><PanelContent className="py-10">
+      <div class="mx-auto max-w-sm">
+        <RecordPlayer {tracks} id="lab-record" />
+        <label class="mt-6 block text-sm"
+          >Choose audio from your computer
+          <input
+            data-audio-file
+            type="file"
+            accept="audio/*"
+            class="mt-3 block w-full text-xs file:mr-3 file:rounded file:border file:border-(--color-blueprint-rule) file:bg-transparent file:px-3 file:py-2"
+          />
+        </label>
+        <p class="mt-3 text-xs text-muted-foreground">
+          The file stays in your browser. This preview does not upload or save
+          it. Keyboard: arrows move the arm, Home returns it, and Enter places
+          or lifts it.
+        </p>
+      </div>
+    </PanelContent></Panel
+  >
+  <Panel
+    ><PanelContent className="py-8">
+      <h2 class="font-heading text-xl">Five record labels</h2>
+      <p class="mt-2 text-sm text-muted-foreground">
+        The playlist cycles through these prints in order. Each record keeps its
+        own design.
+      </p>
+      <div class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+        {
+          Array.from({ length: 5 }, (_, index) => (
+            <figure class="m-0">
+              <TurntableDrawing labelDesign={index} />
+              <figcaption class="text-center font-mono text-xs text-muted-foreground">
+                0{index + 1}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </PanelContent></Panel
+  >
+</BaseLayout>
+
+<script>
+  const player = document.querySelector("main local-record");
+  const input = document.querySelector<HTMLInputElement>("[data-audio-file]");
+  let source: string | undefined;
+  input?.addEventListener("change", () => {
+    const file = input.files?.[0];
+    if (!file || !player) return;
+    const previous = source;
+    source = URL.createObjectURL(file);
+    player.setAttribute("data-src", source);
+    if (previous) URL.revokeObjectURL(previous);
+  });
+  window.addEventListener(
+    "pagehide",
+    () => {
+      if (source) URL.revokeObjectURL(source);
+    },
+    { once: true },
+  );
+</script>

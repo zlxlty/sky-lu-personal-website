@@ -7,7 +7,10 @@ for (const change of ["clear", "remove", "invalid"] as const) {
   }) => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/");
-    await page.getByRole("button", { name: "Switch to dark theme" }).click();
+    await page
+      .getByRole("banner")
+      .getByRole("button", { name: "Switch to dark theme" })
+      .click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 
     const otherTab = await context.newPage();
@@ -37,14 +40,22 @@ test("explicit theme choices stay synchronized across tabs", async ({
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  await expect(page.locator("[data-theme-toggle]")).toBeVisible();
+  await expect(
+    page.getByRole("banner").locator("[data-theme-toggle]"),
+  ).toBeVisible();
   const otherTab = await context.newPage();
   await otherTab.emulateMedia({ colorScheme: "light" });
   await otherTab.goto("/");
-  await otherTab.getByRole("button", { name: "Switch to dark theme" }).click();
+  await otherTab
+    .getByRole("banner")
+    .getByRole("button", { name: "Switch to dark theme" })
+    .click();
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page.getByRole("button", { name: "Switch to light theme" }).click();
+  await page
+    .getByRole("banner")
+    .getByRole("button", { name: "Switch to light theme" })
+    .click();
   await expect(otherTab.locator("html")).toHaveAttribute("data-theme", "light");
   await otherTab.emulateMedia({ colorScheme: "dark" });
   await expect(otherTab.locator("html")).toHaveAttribute("data-theme", "light");
@@ -55,7 +66,9 @@ test("session storage events from a same-origin frame do not change the theme", 
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  await expect(page.locator("[data-theme-toggle]")).toBeVisible();
+  await expect(
+    page.getByRole("banner").locator("[data-theme-toggle]"),
+  ).toBeVisible();
 
   await page.evaluate(async () => {
     const frame = document.createElement("iframe");
@@ -101,7 +114,10 @@ for (const failure of ["access", "write"] as const) {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await page.emulateMedia({ colorScheme: "dark" });
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await page.getByRole("button", { name: "Switch to light theme" }).click();
+    await page
+      .getByRole("banner")
+      .getByRole("button", { name: "Switch to light theme" })
+      .click();
     await page.emulateMedia({ colorScheme: "light" });
     await page.emulateMedia({ colorScheme: "dark" });
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");

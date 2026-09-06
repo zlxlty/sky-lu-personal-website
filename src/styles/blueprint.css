@@ -76,10 +76,11 @@
     content: none;
   }
 
-  /* Empty containers and the sticky-header join add no extra rules. */
+  /* The page's header and footer own their joins with the content stack. */
   &:empty::before,
   &:empty::after,
-  &[data-has-header]::before {
+  &[data-has-header]::before,
+  &[data-has-footer]::after {
     content: none;
   }
 }

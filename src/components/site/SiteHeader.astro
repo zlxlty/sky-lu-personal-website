@@ -1,0 +1,50 @@
+---
+import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import ThemeToggle from "@/components/theme/ThemeToggle.astro";
+import { profile } from "@/data/profile";
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const navigation = [
+  { href: "/writing", label: "Writing" },
+  { href: "/projects", label: "Projects" },
+  { href: "/cv.pdf", label: "CV", accessibleLabel: "CV (PDF)" },
+];
+---
+
+<BlueprintNavbar aria-label="Site header">
+  <div class="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
+    <a
+      href="/"
+      aria-label={`${profile.name} — Home`}
+      class="inline-flex min-h-10 shrink-0 items-center"
+      ><span
+        aria-hidden="true"
+        class="font-(family-name:--font-heading-family) text-2xl leading-none font-semibold tracking-[-0.065em] whitespace-nowrap"
+        >sky<span class="ml-[0.16em] font-[350]">lu</span><span
+          class="ml-[0.025em]">.</span
+        ></span
+      ></a
+    >
+    <nav aria-label="Main navigation" class="flex items-center gap-3 sm:gap-5">
+      {
+        navigation.map(({ href, label, accessibleLabel }) => (
+          <a
+            href={href}
+            aria-label={accessibleLabel}
+            aria-current={
+              currentPath === href
+                ? "page"
+                : currentPath.startsWith(`${href}/`)
+                  ? "location"
+                  : undefined
+            }
+            class="inline-flex min-h-10 items-center text-sm"
+          >
+            <SketchUnderline text={label} seed={`navigation:${href}`} />
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  <ThemeToggle />
+</BlueprintNavbar>

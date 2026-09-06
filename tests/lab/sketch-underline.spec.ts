@@ -78,7 +78,10 @@ test("cached paths survive hover, theme changes, and responsive reflow", async (
       .hover();
   }
   expect(await path.getAttribute("d")).toBe(original);
-  await page.getByRole("button", { name: /Switch to .* theme/ }).click();
+  await page
+    .getByRole("banner")
+    .getByRole("button", { name: /Switch to .* theme/ })
+    .click();
   await page.setViewportSize({ width: 320, height: 1000 });
   await page.locator("[data-wrapped-specimen]").evaluate((element) => {
     if (element instanceof HTMLElement) element.style.maxWidth = "11rem";

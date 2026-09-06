@@ -58,16 +58,20 @@ test("the lab theme command and header share the same preference", async ({
   await commandInput.fill("toggle theme");
   await commandInput.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("[data-theme-toggle]")).toHaveAccessibleName(
-    "Switch to light theme",
-  );
+  await expect(
+    page.getByRole("banner").locator("[data-theme-toggle]"),
+  ).toHaveAccessibleName("Switch to light theme");
   expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe("dark");
 
-  await page.getByRole("button", { name: "Switch to light theme" }).click();
+  await page
+    .getByRole("banner")
+    .getByRole("button", { name: "Switch to light theme" })
+    .click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
   // The command must work without finding or clicking the header control.
   await page
+    .getByRole("banner")
     .locator("[data-slot=theme-control]")
     .evaluate((node) => node.remove());
   await commandInput.press("Enter");
@@ -220,6 +224,10 @@ for (const { theme, width } of [
     }, theme);
     await page.goto("/lab");
     await waitForLabControls(page);
+    // The build date changes independently of layout; keep daily runs stable.
+    await page.addStyleTag({
+      content: "footer time { visibility: hidden !important; }",
+    });
     await page.evaluate(() => document.fonts.ready.then(() => undefined));
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
 

@@ -63,9 +63,9 @@ not repository files.
 - `src/components/blueprint/` preserves the attributed React module seam migrated
   from `ncdai/chanhdai.com`; Astro renders these modules statically without a
   `client:*` directive.
-- `BlueprintPage` owns the continuous vertical rail around its header and main
-  content. `Panel` owns a divided vertical stack; panels and horizontal dividers
-  share those rails. The composition rules below keep joins consistent without
+- `BlueprintPage` owns the continuous vertical rail around its header, main
+  content, and footer. `Panel` owns a divided vertical stack; panels and horizontal
+  dividers share those rails. The composition rules below keep joins consistent without
   call-site border overrides.
 - React components become client islands only when an explicit `client:*` directive
   is necessary.
@@ -100,9 +100,12 @@ target.
 ### Blueprint composition
 
 `BlueprintPage` creates one frame at least as tall as the viewport. Pass
-`BlueprintNavbar` in its `header` slot, as `BaseLayout.astro` does, so the header
-and content share the same two vertical rails. Standard main-element props,
-including `id`, accessible labels, `tabIndex`, and `className`, still apply to
+`BlueprintNavbar` in its `header` slot and footer content in its `footer` slot,
+as the site modules in `BaseLayout.astro` do. The footer landmark sits outside
+`main` while sharing the same two vertical rails. It owns the horizontal join
+after main content; the content stack suppresses its closing rule automatically.
+Without a footer, the stack still owns its own closing rule. Standard main-element
+props, including `id`, accessible labels, `tabIndex`, and `className`, still apply to
 the main landmark. The shell owns width, clipping, and rail geometry. Its frame
 paints above section backgrounds, while the sticky header's backdrop spans the
 viewport so scrolling stripes do not show through the side gutters.
@@ -166,10 +169,12 @@ theme does not wait for a downloaded module. Keep that synchronous first-paint
 step when extending theme behavior.
 
 `src/lib/theme-controller.ts` owns browser state, persistence, system changes,
-cross-tab updates, metadata, and the header's accessible labels. The Astro theme
-control calls `initializeTheme()` after the document is parsed. Repeated calls
+cross-tab updates, metadata, and all theme controls' accessible labels. The Astro
+theme control calls `initializeTheme()` after the document is parsed. Repeated calls
 reuse the same controller for the current document. This lifecycle follows the
-site's normal full-page navigation; there is no client router.
+site's normal full-page navigation; there is no client router. The theme toggle
+lives in the header. `BaseLayout.astro` owns one live announcement region for the
+page.
 
 Feature handlers, including the lab's theme command, call `toggleTheme()` from
 that module. Do not click the header programmatically or write theme attributes
@@ -182,6 +187,62 @@ keys and session storage events are ignored. If storage is blocked, switching
 still works for the current page. `tests/e2e/theme.spec.ts` covers these browser
 cases, while the homepage suite retains first-paint, reload, and no-JavaScript
 checks. The lab suite exercises the shared command and header behavior.
+
+### Shared site navigation and footer
+
+`src/components/site/SiteHeader.astro` owns the static `sky lu.` wordmark, public
+navigation records, and current-page labels. The wordmark reuses the preloaded
+Geist font and needs no client code. `SiteFooter.astro` consumes the shared profile's
+social links and renders the notebook sign-off, design attribution, and native
+back-to-top link. The link sits outside the right rail from the `lg` breakpoint
+and stays in the footer row on smaller screens. `FooterListening.astro` reads song metadata from
+`src/data/listening.ts` and composes the shared `TurntableDrawing.astro` SVG.
+No Spotify embed, redirect, SDK, or account connection is used.
+`RecordPlayer.astro` accepts a readonly playlist and renders its metadata statically.
+`record-playlist.ts` validates authored IDs, titles, and URLs during the build.
+The bottom-row
+Privacy link opens `src/pages/privacy.astro`, a static statement about theme
+storage, ordinary connection information, and external links. Update that page
+when the site's data practices change.
+
+The audio boundary is `src/lib/local-record.ts`: it loads the source only after
+a gesture, handles native playback events and failed/interrupted play promises,
+and releases the audio on navigation or disconnect. Only one record plays at a
+time. `src/lib/turntable-control.ts` owns pointer capture, keyboard input, and a
+constrained SVG rotation. `turntable-geometry.ts` defines its pivot and allowed
+arc. The control emits playback requests; only actual media events set its
+`playing` attribute. `vinyl-selector.ts` handles vertical vinyl gestures and
+eased record transitions independently of audio and metadata. Translation and
+spin use nested SVG groups so their transforms cannot overwrite each other.
+Selection parks the arm, pauses playback, resets the source, and leaves the new
+record ready for an explicit play gesture. Metadata and no-JavaScript links come
+from the same static playlist; a grid reserves the tallest caption's space.
+Anime.js's WAAPI module loads on the first spin or record transition;
+native transforms do the per-frame work. Reduced motion disables spin, and
+offscreen/hidden-tab animation pauses without stopping the music.
+
+`/lab/turntable` uses the same components with two clearly labeled specimens of
+the same 330 KB CC0 jazz demo, and can read a file selected in the browser without
+uploading it. The footer uses the real playlist in both development and production.
+`src/lab/listening-demo.ts` is imported only by the development-only lab route;
+neither the fixture nor its lab route ships in `dist`.
+The native audio element is hidden; visitors can drag the tonearm or operate it
+with arrow keys, Home, End, and Enter/Space.
+The no-JavaScript fallback links directly to the recording. See `CONTENT.md` for
+switching to a published audio URL; no R2 binding or backend is needed in the player.
+The handwritten sign-off uses the existing self-hosted Caveat font, so it now
+loads on every page with the shared footer.
+`BaseLayout.astro` composes these through the blueprint slots and owns the `top`
+anchor. All links work without JavaScript; theme buttons remain hidden until the
+controller is available. New section links arrive alongside their actual targets.
+
+`src/lib/build-info.server.ts` reads the UTC build date once per module instance.
+It displays a seven-character revision only when the build environment supplies
+a valid full `GITHUB_SHA` (GitHub Actions supplies this automatically). Local and
+archive builds can omit it. This public identifier is optional; no Git process,
+network request, or browser script is needed. Import this module only from Astro
+frontmatter or other build-side code. The footer date describes the build, not
+the last editorial update to the content.
 
 ### Optional design-reference checkout
 

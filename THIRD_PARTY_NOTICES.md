@@ -1,5 +1,21 @@
 # Third-party notices
 
+## Development jazz fixture
+
+`src/lab/assets/jazz-n-brass-demo.mp3` is a compressed version of
+**Jazz n' brass loop** by **Emma_MA**, published January 7, 2017 on
+[OpenGameArt](https://opengameart.org/content/jazz-n-brass-loop).
+The author released the track under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+
+The original `jazznbrass loop.wav` was downloaded from the author's submission
+and converted with FFmpeg to 96 kbit/s MP3, with source metadata removed.
+The complete 27.44-second loop is retained (330,127 bytes). It is used only in
+development, with its actual title and author shown; it is not Julian Lage's
+recording. The demo is excluded from production builds.
+
+SHA-256: `27312f8150511b57a9f82b75a16d8550b364c0a76085c68b03df0f18c43833b3`.
+
 ## Geist
 
 Display-heading typography is provided by `@fontsource-variable/geist` 5.3.0,
