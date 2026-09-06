@@ -65,7 +65,25 @@ The four initial projects use facts from the supplied résumé and the confirmed
 ATLAS description in `PLAN.md`. Their prose is an editable summary, not a claim
 that a repository, paper, or public benchmark exists. Add external links only
 when their actual destinations are supplied or verified. Never put private
-contact values in content or publish a source résumé as part of this workflow.
+contact values in article or project content. The separately approved PDF CV
+follows the publication workflow below.
+
+## Update the PDF CV
+
+`public/cv.pdf` is the original `Sky Lu Resume (14).pdf`, published verbatim at the
+user's explicit request on September 6, 2026. The global CV link opens `/cv.pdf`
+directly in the browser's PDF handler. `/cv` is an Astro static redirect to that
+asset; it uses an HTML refresh in the static build and requires no JavaScript.
+
+Replace the asset with the approved original file to update the CV. Do not
+rebuild it from HTML, re-export it, compress it, or change its metadata. Keep the
+public filename stable so existing links continue to work. The browser tests
+compare the served and built bytes with the source asset.
+
+The PDF's original layout, links, and metadata remain intact. Review replacement
+files before publishing; authorization for this supplied version is not blanket
+authorization to publish another document's private contact details. Profile data
+for the homepage remains separate from the PDF and does not generate it.
 
 ## Layout ownership
 

@@ -1031,6 +1031,33 @@ Proposed message: `fix: generate Astro content types before linting`.
 - Run the focused regression checks and `pnpm verify`, then inspect the complete
   diff and obtain approval for this separate corrective commit before pushing it.
 
+### Current profile/CV continuation - original PDF delivery
+
+The UI/content branch was approved and rebase-merged through PR #3, preserving
+seven commits through `b322095`. Continue from that merged base in the separate
+`codex/feat/profile-cv` worktree. Do not import the outdated content-model branch.
+
+On September 6, 2026, the user approved continuing but requested that the CV serve
+`Sky Lu Resume (14).pdf` verbatim. This replaces the planned HTML CV and its print
+layout. Deliver the independent PDF candidate first, then prepare shared profile
+and experience data for the homepage as a separate reviewed commit.
+
+Proposed message: `feat: serve the original resume PDF`.
+
+- Copy the approved PDF unchanged to `public/cv.pdf`; do not regenerate it.
+- Link to it from the shared navigation with an accessible PDF label.
+- Preserve `/cv` as a static redirect; add no PDF viewer library or hydration.
+- Record the approved publication decision and replacement workflow.
+- Compare the source, build output, and HTTP response bytes; verify PDF MIME type,
+  the static redirect, mobile/desktop navigation, and no-JavaScript keyboard use.
+- Run `pnpm verify:full`; inspect and update only the changed header baselines.
+- Review the original document and retain its exact checksum in the commit review.
+
+The next candidate remains `feat: add typed profile and experience data`, using
+approved identity, education, experience, research, and public-link facts. It
+must reuse existing project collection data rather than copy project metrics,
+and it must not become a PDF generation layer.
+
 ## 8. Stage 03 - Content model and core routes
 
 ### Branch
@@ -1099,13 +1126,14 @@ Scope:
 - `/writing` index.
 - `/projects` index.
 - `/projects/[slug]` static route.
-- `/cv` accessible web résumé.
+- `/cv` redirects to the approved original PDF at `/cv.pdf` (superseded by the
+  user's September 6 direction and the PDF delivery candidate above).
 - Shared empty and not-found states.
 
 Non-goals:
 
 - Rich article rendering arrives in Stage 05.
-- No PDF publishing.
+- No generated HTML CV or PDF rewriting; publish only the explicitly approved original.
 - No dynamic filtering API.
 
 Checks:

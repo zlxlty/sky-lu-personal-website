@@ -7,6 +7,7 @@ import { developmentLab } from "./src/integrations/development-lab";
 
 export default defineConfig({
   output: "static",
+  redirects: { "/cv": "/cv.pdf" },
   integrations: [mdx(), react(), developmentLab()],
   markdown: {
     shikiConfig: {
