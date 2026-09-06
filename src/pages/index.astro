@@ -11,9 +11,10 @@ import AstroSmoke from "@/components/foundation/AstroSmoke.astro";
 import StaticMdxSmoke from "@/components/foundation/StaticMdxSmoke.mdx";
 import { StaticReactSmoke } from "@/components/foundation/StaticReactSmoke";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { profile } from "@/data/profile";
 
-const title = "Sky Lu";
-const description = "Personal website and technical writing by Sky Lu.";
+const title = profile.name;
+const description = profile.siteDescription;
 const buildMetadata = [
   { label: "Rendering", value: "Static Astro" },
   { label: "Client runtime", value: "Theme controller" },
@@ -21,7 +22,11 @@ const buildMetadata = [
 ];
 ---
 
-<BaseLayout {title} {description} mainLabel="Sky Lu personal website">
+<BaseLayout
+  {title}
+  {description}
+  mainLabel={`${profile.name} personal website`}
+>
   <Panel id="hero-panel" aria-labelledby="hero-heading">
     <PanelHeader className="py-12 sm:py-18">
       <p

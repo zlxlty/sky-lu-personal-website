@@ -4,13 +4,14 @@ import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
 import IndexHeading from "@/components/content/IndexHeading.astro";
 import WritingList from "@/components/content/WritingList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { profile } from "@/data/profile";
 
 const entries = await getWriting();
 ---
 
 <BaseLayout
-  title="Writing — Sky Lu"
-  description="Notes on systems, infrastructure, and software engineering by Sky Lu."
+  title={`Writing — ${profile.name}`}
+  description={`Notes on systems, infrastructure, and software engineering by ${profile.name}.`}
 >
   <IndexHeading
     title="Writing"

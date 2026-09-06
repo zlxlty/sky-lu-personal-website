@@ -3,10 +3,11 @@ import { Panel, PanelContent } from "@/components/blueprint/Panel";
 import IndexHeading from "@/components/content/IndexHeading.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { profile } from "@/data/profile";
 ---
 
 <BaseLayout
-  title="Page not found — Sky Lu"
+  title={`Page not found — ${profile.name}`}
   description="This page could not be found."
 >
   <meta slot="head" name="robots" content="noindex" />

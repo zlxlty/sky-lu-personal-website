@@ -1,4 +1,4 @@
-# Writing and project authoring
+# Content authoring
 
 Content is authored in Markdown or MDX and rendered during the Astro build.
 The public routes are `/writing`, `/writing/[slug]`, `/projects`, and
@@ -84,6 +84,37 @@ The PDF's original layout, links, and metadata remain intact. Review replacement
 files before publishing; authorization for this supplied version is not blanket
 authorization to publish another document's private contact details. Profile data
 for the homepage remains separate from the PDF and does not generate it.
+
+## Update public profile data
+
+Small, typed modules in `src/data/` supply public facts to static Astro templates:
+
+- `profile.ts`: name, site description, introduction, GitHub/LinkedIn links, and
+  education. Shared navigation and page titles already read the name here.
+- `experience.ts`: jobs in newest-first order, with a short summary and one to
+  three disclosure bullets per job.
+- `research.ts`: the confirmed ATLAS relationship, collaborator link, interests,
+  and related project IDs. This wording comes from `PLAN.md`, while education
+  and employment details come from the approved résumé.
+- `types.ts`: shared public-link and month-precision date types.
+
+Use `YYYY-MM` for dates. Education explicitly distinguishes expected graduation
+from completion; experience uses `end: null` for a current role. Update these
+facts deliberately rather than changing a visitor's biography based on the clock.
+Keep IDs stable when editing display text. The readonly types protect consumers
+from accidentally editing shared records; no runtime data library is needed.
+
+`projectIds` refer to filenames in `src/content/projects/` without extensions.
+Resolve them against `getProjects()` from `src/content/queries.ts`, and render the
+collection's titles, descriptions, results, and tags. Project metrics have one
+source. When renaming or unpublishing a project, update its references too; the
+isolated build test checks these relationships against Astro's published data.
+
+This data prepares the homepage sections; it does not render an HTML CV or
+rewrite the original PDF. GPA values stay in the PDF. Contact values are absent
+from these public modules and remain deferred to the environment-backed contact
+feature. Do not add an email field, invented research dates, a publication, or a
+Tundra repository link without an approved source.
 
 ## Layout ownership
 
