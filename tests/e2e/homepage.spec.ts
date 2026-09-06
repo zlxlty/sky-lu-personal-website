@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
@@ -8,6 +8,9 @@ test("development lab is absent from the production build", async ({
   page,
 }) => {
   expect(existsSync("dist/lab")).toBe(false);
+  expect(
+    readdirSync("dist/_astro").some((file) => file.includes("jazz-n-brass")),
+  ).toBe(false);
 
   await page.goto("/lab");
   await expect(
@@ -48,7 +51,7 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
     ruleBands: 3,
     edgeOverrides: 0,
     islands: 0,
-    scripts: 3, // Theme bootstrap, theme control, and the shared sketch enhancement.
+    scripts: 4, // Theme bootstrap/control, sketch enhancement, and optional audio controls.
     runtimeErrors: [],
     accessibilityViolations: [],
   });
@@ -71,12 +74,18 @@ for (const theme of ["light", "dark"] as const) {
     );
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     await expect(
-      page.getByRole("button", { name: expected.toggleLabel }),
+      page
+        .getByRole("banner")
+        .getByRole("button", { name: expected.toggleLabel }),
     ).toBeVisible();
     await expect(
-      page.locator(`[data-theme-icon="${expected.nextTheme}"]`),
+      page
+        .getByRole("banner")
+        .locator(`[data-theme-icon="${expected.nextTheme}"]`),
     ).toBeVisible();
-    await expect(page.locator(`[data-theme-icon="${theme}"]`)).toBeHidden();
+    await expect(
+      page.getByRole("banner").locator(`[data-theme-icon="${theme}"]`),
+    ).toBeHidden();
     expect(await readThemeState(page)).toEqual(expected.state);
   });
 }
@@ -94,14 +103,16 @@ test("explicit theme choice persists and overrides later system changes", async 
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
-  const toggle = page.locator("[data-theme-toggle]");
+  const toggle = page.getByRole("banner").locator("[data-theme-toggle]");
   await expect(toggle).toHaveAccessibleName("Switch to dark theme");
   await toggle.focus();
   await page.keyboard.press("Enter");
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(
-    page.getByRole("button", { name: "Switch to light theme" }),
+    page
+      .getByRole("banner")
+      .getByRole("button", { name: "Switch to light theme" }),
   ).toBeFocused();
   await expect(page.locator("[data-theme-status]")).toHaveText(
     "Dark theme active.",
@@ -133,12 +144,13 @@ test("theme control stays unboxed and fills only over the icon", async ({
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
 
-  const toggle = page.locator("[data-theme-toggle]");
+  const toggle = page.getByRole("banner").locator("[data-theme-toggle]");
   await expect(toggle).toHaveAccessibleName("Switch to dark theme");
   const moonFill = page
+    .getByRole("banner")
     .locator('[data-theme-icon="dark"] [data-theme-icon-fill]')
     .first();
-  const moonIcon = page.locator('[data-theme-icon="dark"]');
+  const moonIcon = page.getByRole("banner").locator('[data-theme-icon="dark"]');
 
   expect(
     await toggle.evaluate((element) => {
@@ -164,9 +176,10 @@ test("theme control stays unboxed and fills only over the icon", async ({
 
   await toggle.click();
   const sunFill = page
+    .getByRole("banner")
     .locator('[data-theme-icon="light"] [data-theme-icon-fill]')
     .first();
-  await page.locator('[data-theme-icon="light"]').hover();
+  await page.getByRole("banner").locator('[data-theme-icon="light"]').hover();
   await expect(sunFill).toHaveCSS("opacity", "1");
 });
 
@@ -212,7 +225,6 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
       position: getComputedStyle(header).position,
       headerBottomRule: getComputedStyle(headerRail, "::after").content,
       firstPanelTopRule: getComputedStyle(firstPanel, "::before").content,
-      headerText: header.textContent?.trim() ?? "",
     };
   });
 
@@ -224,7 +236,9 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
   expect(shell.toggle.right).toBeLessThan(shell.headerRail.right);
   expect(shell.headerBottomRule).toBe('""');
   expect(shell.firstPanelTopRule).toBe("none");
-  expect(shell.headerText).toContain("Sky Lu");
+  await expect(
+    page.getByRole("banner").getByRole("link", { name: "Sky Lu — Home" }),
+  ).toBeVisible();
   await expect(
     page.getByRole("navigation", { name: "Main navigation" }).getByRole("link"),
   ).toHaveCount(3);
@@ -571,12 +585,19 @@ test("homepage serves both visual themes and local typography", async ({
   ).toBe(true);
   expect(
     [...fontResponses.keys()].every(
-      (path) => path.startsWith("/fonts/") || path.startsWith("/_astro/geist-"),
+      (path) =>
+        path.startsWith("/fonts/") ||
+        path.startsWith("/_astro/geist-") ||
+        path.startsWith("/_astro/caveat-"),
     ),
   ).toBe(true);
   expect(
-    [...fontResponses.keys()].some((path) => path.includes("caveat")),
-  ).toBe(false);
+    [...fontResponses].some(
+      ([path, status]) =>
+        /\/_astro\/caveat-latin-wght-normal\.[\w-]+\.woff2$/.test(path) &&
+        status === 200,
+    ),
+  ).toBe(true);
   expect([...fontOrigins]).toEqual([new URL(page.url()).origin]);
 });
 
@@ -648,7 +669,9 @@ test.describe("without JavaScript", () => {
 
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sky Lu");
-    await expect(page.locator("[data-theme-toggle]")).toBeHidden();
+    await expect(
+      page.getByRole("banner").locator("[data-theme-toggle]"),
+    ).toBeHidden();
     await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.+/);
     expect(
       await page.locator("html").evaluate((root) => ({

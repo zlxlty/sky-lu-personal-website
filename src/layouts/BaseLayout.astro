@@ -1,9 +1,7 @@
 ---
 import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
-import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
-import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
-import ThemeToggle from "@/components/theme/ThemeToggle.astro";
-import { profile } from "@/data/profile";
+import SiteHeader from "@/components/site/SiteHeader.astro";
+import SiteFooter from "@/components/site/SiteFooter.astro";
 import {
   DARK_THEME_QUERY,
   THEME_COLORS,
@@ -22,12 +20,6 @@ interface Props {
 
 const { title, description, lang = "en", mainLabel } = Astro.props;
 const mainId = "main-content";
-const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
-const navigation = [
-  { href: "/writing", label: "Writing" },
-  { href: "/projects", label: "Projects" },
-  { href: "/cv.pdf", label: "CV", accessibleLabel: "CV (PDF)" },
-];
 ---
 
 <!doctype html>
@@ -103,7 +95,7 @@ const navigation = [
     <title>{title}</title>
     <slot name="head" />
   </head>
-  <body>
+  <body id="top">
     <nav aria-label="Skip links">
       <a
         class="fixed top-3 left-3 z-[1000] -translate-y-[calc(100%+1.5rem)] rounded-(--radius-small) border border-(--color-rule-strong) bg-(--color-surface-raised) px-3 py-2 font-mono text-(length:--text-small) text-foreground shadow-[0_0.25rem_1rem_rgb(43_39_36/12%)] transition-transform duration-(--duration-feedback) ease-(--ease-standard) focus-visible:translate-y-0"
@@ -113,44 +105,11 @@ const navigation = [
       </a>
     </nav>
     <BlueprintPage id={mainId} aria-label={mainLabel}>
-      <BlueprintNavbar slot="header" aria-label="Site header">
-        <div
-          class="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2"
-        >
-          <a
-            href="/"
-            aria-label={`${profile.name} — Home`}
-            class="inline-flex min-h-10 items-center px-1 font-mono text-sm font-medium"
-            ><SketchUnderline text={profile.name} /></a
-          >
-          <nav
-            aria-label="Main navigation"
-            class="flex items-center gap-3 sm:gap-5"
-          >
-            {
-              navigation.map(({ href, label, accessibleLabel }) => (
-                <a
-                  href={href}
-                  aria-label={accessibleLabel}
-                  aria-current={
-                    currentPath === href
-                      ? "page"
-                      : currentPath.startsWith(`${href}/`)
-                        ? "location"
-                        : undefined
-                  }
-                  class="inline-flex min-h-10 items-center text-sm"
-                >
-                  <SketchUnderline text={label} seed={`navigation:${href}`} />
-                </a>
-              ))
-            }
-          </nav>
-        </div>
-        <ThemeToggle />
-      </BlueprintNavbar>
+      <SiteHeader slot="header" />
       <slot />
+      <SiteFooter slot="footer" />
     </BlueprintPage>
+    <span data-theme-status class="sr-only" aria-live="polite"></span>
     <script>
       import "@/lib/sketch-underline";
     </script>

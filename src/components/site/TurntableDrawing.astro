@@ -1,0 +1,148 @@
+---
+import { tonearm } from "@/lib/turntable-geometry";
+import VinylLabel from "./VinylLabel.astro";
+interface Props {
+  interactive?: boolean;
+  selectable?: boolean;
+  instructionsId?: string;
+  labelDesign?: number;
+}
+const {
+  interactive = false,
+  selectable = false,
+  instructionsId,
+  labelDesign = 0,
+} = Astro.props;
+---
+
+<svg
+  viewBox="0 0 238 200"
+  width="238"
+  height="200"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.1"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden={interactive ? undefined : "true"}
+  focusable="false"
+  class="mb-2 block h-auto w-full translate-x-2"
+>
+  <!-- Translation lives outside the spinning group so the two motions compose. -->
+  <g
+    data-turntable-record
+    role={selectable ? "button" : undefined}
+    tabindex={selectable ? -1 : undefined}
+    aria-disabled={selectable ? "true" : undefined}
+    aria-label={selectable ? "Change record" : undefined}
+    aria-describedby={selectable ? instructionsId : undefined}
+    aria-keyshortcuts={selectable ? "ArrowUp ArrowDown Enter Space" : undefined}
+    style="transform-origin: 100px 100px; transform-box: view-box"
+  >
+    <g
+      data-turntable-disc
+      style="transform-origin: 100px 100px; transform-box: view-box"
+    >
+      <circle
+        data-turntable-rim
+        cx="100"
+        cy="100"
+        r="82"
+        fill="currentColor"
+        fill-opacity=".035"
+        stroke-opacity=".65"></circle>
+      <g opacity=".24" stroke-width=".7">
+        <circle cx="100" cy="100" r="67.5"></circle>
+        <circle cx="100" cy="100" r="53"></circle>
+        <circle cx="100" cy="100" r="38.5"></circle>
+      </g>
+      <circle cx="100" cy="100" r="24" class="fill-paper" stroke-opacity=".45"
+      ></circle>
+      <VinylLabel design={labelDesign} />
+      <circle
+        cx="100"
+        cy="100"
+        r="3"
+        class="fill-paper"
+        stroke-width=".8"
+        stroke-opacity=".65"></circle>
+    </g>
+  </g>
+  <circle
+    cx="100"
+    cy="100"
+    r="1.2"
+    fill="currentColor"
+    stroke="none"
+    pointer-events="none"></circle>
+
+  <!-- Resting tonearm and cartridge. -->
+  <g
+    data-turntable-arm
+    role={interactive ? "slider" : undefined}
+    tabindex={interactive ? -1 : undefined}
+    aria-disabled={interactive ? "true" : undefined}
+    aria-label={interactive ? "Tonearm position" : undefined}
+    aria-valuemin={interactive ? tonearm.minAngle : undefined}
+    aria-valuemax={interactive ? tonearm.maxAngle : undefined}
+    aria-valuenow={interactive ? 0 : undefined}
+    aria-valuetext={interactive ? "At rest" : undefined}
+    aria-describedby={interactive ? instructionsId : undefined}
+    class:list={[
+      interactive && "cursor-grab touch-none active:cursor-grabbing",
+    ]}
+    style="transform-origin: 214px 33px; transform-box: view-box"
+    opacity=".7"
+  >
+    {
+      interactive && (
+        <path
+          d="M214 45V128L198 148L188 161"
+          stroke="transparent"
+          stroke-width="30"
+        />
+      )
+    }
+    <circle cx="214" cy="33" r="7"></circle>
+    <circle cx="214" cy="33" r="3" opacity=".4"></circle>
+    <path d="M212 40V127.3L196.44 146.75M216 40V128.7L199.56 149.25"></path>
+    <!-- Local coordinates keep the square, centered arm, and needle aligned. -->
+    <g transform="translate(198 148) rotate(38.66)">
+      <rect
+        data-turntable-cartridge
+        x="-6"
+        y="0"
+        width="12"
+        height="12"
+        class="fill-paper"></rect>
+      <path data-turntable-needle d="M0 12V17"></path>
+    </g>
+  </g>
+</svg>
+
+<style>
+  [data-turntable-record]:focus-visible {
+    outline: none;
+  }
+  [data-turntable-record]:focus-visible [data-turntable-rim] {
+    stroke: var(--color-focus);
+    stroke-width: 2;
+    stroke-opacity: 1;
+  }
+  [data-turntable-arm]:focus-visible {
+    outline: none;
+    opacity: 1;
+  }
+  [data-turntable-arm]:focus-visible [data-turntable-cartridge] {
+    stroke: var(--color-focus);
+    stroke-width: 2.5;
+  }
+  @media (forced-colors: active) {
+    [data-turntable-record]:focus-visible [data-turntable-rim] {
+      stroke: Highlight;
+    }
+    [data-turntable-arm]:focus-visible [data-turntable-cartridge] {
+      stroke: Highlight;
+    }
+  }
+</style>

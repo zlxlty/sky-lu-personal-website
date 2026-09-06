@@ -11,9 +11,10 @@ export function BlueprintPage({
   children,
   className,
   header,
+  footer,
   tabIndex = -1,
   ...props
-}: ComponentProps<"main"> & { header?: ReactNode }) {
+}: ComponentProps<"main"> & { header?: ReactNode; footer?: ReactNode }) {
   return (
     <div
       data-slot="blueprint-shell"
@@ -28,12 +29,22 @@ export function BlueprintPage({
         <main
           data-slot="blueprint-page"
           data-has-header={header ? "" : undefined}
+          data-has-footer={footer ? "" : undefined}
           tabIndex={tabIndex}
           className={cn("group/layout panel-stack", className)}
           {...props}
         >
           {children}
         </main>
+        {footer && (
+          <footer
+            id="site-footer"
+            data-slot="site-footer"
+            className="screen-line-top screen-line-bottom"
+          >
+            {footer}
+          </footer>
+        )}
       </div>
     </div>
   );

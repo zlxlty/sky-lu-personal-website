@@ -1198,6 +1198,10 @@ Checks:
 
 ## 9. Stage 04 - Static homepage
 
+The profile/CV continuation landed through PR #4 at `eaf58c6`, preserving its
+two approved commits. Reuse the current worktree on `codex/feat/homepage` from
+that merged base. Keep the following candidates separate and individually reviewed.
+
 ### Branch
 
 `codex/feat/homepage`
@@ -1217,9 +1221,33 @@ feat: add responsive site navigation
 Scope:
 
 - Sticky header.
+- Approved editorial `sky lu.` wordmark using the existing Geist font, with an
+  accessible home link and no additional font or client runtime.
 - Desktop and mobile navigation.
-- Footer metadata, attribution, and external links.
-- Placeholder controls for command search and theme integration.
+- Approved notebook footer with an editorial sign-off, metadata, attribution,
+  and external links. Remove abandoned design variants and their switcher.
+- Minimal vinyl/arm/cartridge drawing with a typed playlist of Sky's uploaded
+  covers, served from public audio URLs. The draggable
+  tonearm is clamped to 0–34°, with a keyboard alternative and hidden native audio.
+  The record spins only on actual audio playback, using lazy Anime.js WAAPI.
+- Vertical vinyl swipes and keyboard input on the vinyl change tracks with an eased
+  exit/entrance, pause playback, and park the arm. Playlist order wraps. Source,
+  title, author, and record metadata live in one module; omit publication dates.
+- Five subtle record-label prints cycle by playlist position. The rail note puts
+  switching before playback. Omit visible selection buttons and track counters.
+- A CC0 jazz fixture enables development playback without shipping demo audio
+  in production. `/lab/turntable` also accepts a browser-local audio file.
+- Bottom-row Privacy link and a static `/privacy` statement reflecting the
+  site's current theme storage and external-link behavior.
+- Header theme control with one preference and one live announcement.
+- Native back-to-top link outside the right rail on desktop, returning to the
+  footer row on narrower viewports. No duplicate theme toggle in the footer.
+- Header and footer outside the main landmark, sharing the blueprint frame and
+  one horizontal rule at each join.
+- Build date and optional validated public CI revision, evaluated at build time.
+- Keep the existing public route links during this candidate. Add homepage
+  section anchors with their target sections; add menu/search controls when the
+  destinations and search behavior exist, without presenting inert controls.
 - Skip link and anchor offsets.
 
 Checks:
@@ -1228,6 +1256,17 @@ Checks:
 - Full keyboard path.
 - No-JavaScript links.
 - External link security attributes.
+- Footer frame geometry, short/long pages, and single border ownership.
+- Header theme control, one screen-reader announcement, and no-JavaScript
+  back-to-top keyboard navigation at both gutter and inline placements.
+- Optional build revision validation and deterministic UTC date formatting.
+- Direct audio fallback without JavaScript, absence of provider requests, and
+  keyboard navigation to the privacy statement.
+- Audio activation, interruption, errors, native pause/end events, pointer and
+  touch dragging, angle limits, keyboard focus, reduced motion, and cleanup.
+- No demo audio in the production build; static fallback for an empty playlist.
+- Playlist validation, next/previous wraparound, cancelled gestures, lazy media
+  loading, keyboard/touch selection, stable caption height, and motion cleanup.
 
 ### Commit 04.2 - add static hero and identity content
 

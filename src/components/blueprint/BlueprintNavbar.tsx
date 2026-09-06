@@ -25,7 +25,7 @@ export function BlueprintNavbar({
       />
       <div
         data-slot="site-header-rail"
-        className="screen-line-top screen-line-bottom flex h-13 items-center px-2"
+        className="screen-line-top screen-line-bottom flex h-13 items-center pr-2 pl-4"
       >
         {children}
       </div>

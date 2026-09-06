@@ -5,6 +5,50 @@ The public routes are `/writing`, `/writing/[slug]`, `/projects`, and
 `/projects/[slug]`. Reading and navigation work without JavaScript. A small shared
 enhancement adds sketch underlines to designated link labels.
 
+## Footer music
+
+Add an entry to `listeningTracks` in `src/data/listening.ts`. This is the one
+place for the ordered playlist and its metadata:
+
+```ts
+{
+  id: "my-next-cover", // Unique, stable identifier.
+  audioSrc: "https://skylu.me/my-next-cover.m4a",
+  title: "Song title",
+  author: "Original artist / composer",
+  record: "Album title", // Or "Single".
+  // videoUrl: "https://www.bilibili.com/video/your-video-id/",
+},
+```
+
+`id`, `audioSrc`, `title`, and `author` are required. `record` is optional.
+`videoUrl` adds a small external video link. No publication date is displayed.
+Duplicate IDs, missing titles/authors, and unsafe URLs fail the build.
+Use an HTTPS audio URL (including a public R2 custom domain), or a site path
+such as `/music/recording.mp3` for a file in `public/music/`. MP3 and M4A are
+supported when their codecs are supported by the visitor's browser.
+
+Array order is playback selection order. With two or more tracks, swipe the
+vinyl up for next or down for previous; selection wraps at either end. Tab to
+the vinyl and use Up/Down (or Enter for next) as a keyboard alternative.
+There are no visible selection buttons or track counter. Lifting a record pauses the
+audio and parks the arm. The new record stays paused until the arm is placed
+back on the grooves. A single track hides the selection UI; an empty list
+leaves only the static drawing. Caption space is reserved across tracks to
+avoid shifting the footer during a swap.
+Five asymmetric vinyl labels cycle by playlist position; their drawings live in
+`src/components/site/VinylLabel.astro`. Each track keeps the same print when revisited.
+
+The browser fetches audio only after a listening action. Keep a web-sized MP3
+and publish only recordings you have permission to stream. The host should
+serve the correct audio content type and support byte ranges for seeking.
+
+The footer uses the real playlist in development and production. `/lab/turntable`
+uses two explicitly labeled specimens of the same CC0 fixture to exercise record
+swaps, and accepts a local audio file for the selected record. It stays in
+browser memory and is not uploaded. Neither lab nor demo audio ships in production.
+The fixture's source and license are in `THIRD_PARTY_NOTICES.md`.
+
 ## Add an article
 
 Create a file directly inside `src/content/blog/`, for example

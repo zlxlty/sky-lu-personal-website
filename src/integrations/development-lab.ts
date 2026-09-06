@@ -36,5 +36,9 @@ export function getDevelopmentLabRoutes(command: AstroCommand) {
       pattern: "/lab/underline",
       entrypoint: new URL("../lab/SketchUnderlinePage.astro", import.meta.url),
     },
+    {
+      pattern: "/lab/turntable",
+      entrypoint: new URL("../lab/TurntablePage.astro", import.meta.url),
+    },
   ];
 }
