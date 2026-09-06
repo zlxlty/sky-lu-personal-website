@@ -1,0 +1,29 @@
+---
+import {
+  Panel,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  description: string;
+}
+const { title, eyebrow, description } = Astro.props;
+---
+
+<Panel aria-labelledby="page-heading">
+  <PanelHeader className="pt-10 pb-8 sm:pt-16 sm:pb-12">
+    <p class="mb-5 font-mono text-xs tracking-(--tracking-meta) uppercase">
+      {eyebrow}
+    </p>
+    <h1 id="page-heading" class="font-heading">{title}</h1>
+    <p class="mt-5 mb-0 max-w-xl text-lg leading-relaxed text-muted-foreground">
+      {description}
+    </p>
+  </PanelHeader>
+  <StripeSeparator />
+  <PanelRuleBand />
+</Panel>

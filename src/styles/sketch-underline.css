@@ -1,0 +1,71 @@
+@layer components {
+  sketch-underline {
+    --duration-sketch-in: 187ms;
+    --duration-sketch-out: 140ms;
+    position: relative;
+    display: inline;
+    /* Reserve breathing room for marks between wrapped text lines. */
+    line-height: 1.6;
+  }
+
+  sketch-underline > [data-sketch-lines] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: clamp(1px, 0.055em, 3px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.72;
+    visibility: hidden;
+    /* Keep the SVG painted until the reverse stroke has finished. */
+    transition: visibility 0s linear var(--duration-sketch-out);
+  }
+
+  sketch-underline > [data-sketch-lines] > path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset var(--duration-sketch-out) linear;
+  }
+
+  @media (hover: hover) {
+    :where(a, button):hover sketch-underline,
+    sketch-underline:hover {
+      &:not([data-ready]) {
+        text-decoration: underline;
+      }
+      &[data-ready] > [data-sketch-lines] {
+        visibility: visible;
+        transition-delay: 0s;
+      }
+      &[data-ready] > [data-sketch-lines] > path {
+        stroke-dashoffset: 0;
+        transition-duration: var(--duration-sketch-in);
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  sketch-underline > [data-sketch-lines],
+  sketch-underline > [data-sketch-lines] > path {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  sketch-underline > [data-sketch-lines] {
+    visibility: hidden;
+    transition: none;
+  }
+  :where(a, button):is(:hover, :focus-visible) sketch-underline,
+  sketch-underline:hover {
+    text-decoration: underline;
+  }
+  sketch-underline > [data-sketch-lines] > path {
+    transition: none;
+  }
+}

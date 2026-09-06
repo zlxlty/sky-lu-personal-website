@@ -27,6 +27,13 @@ utility, and the general structure of the curated Base UI-backed control
 wrappers. Chánh Đại's name, wordmark, mark geometry, avatar, personal data,
 illustrations, and other brand assets are not included.
 
+The static `LineNav` component is additionally adapted from
+`src/registry/components/line-nav/line-nav.tsx` at revision
+`dc4bf70d7de91bf0531c1897125cfe59d6f1f3e7`, under the same MIT license.
+The original credits Devouring Details and Skiper UI. This adaptation uses
+ordinary anchors and CSS instead of the original client lifecycle and Motion
+dependency, and provides wrapping labels and keyboard focus feedback.
+
 MIT License
 
 Copyright (c) 2026 Chánh Đại

@@ -371,8 +371,70 @@ Use `pnpm test:lab` for the interaction, Axe, responsive, and reviewed visual ta
 Use `pnpm test:lab:ui` to step through them. Run `pnpm test:lab:update` only after
 visually reviewing an intentional change; snapshot files are platform-specific.
 Production Playwright independently verifies that the build contains no `/lab`
-artifact. Astro's local Vite preview may rewrite an unknown path to `/`, while the
-deployed Cloudflare 404 policy is verified in Stage 09.
+artifact. Its `scripts/serve-preview.ts` starts Astro's programmatic static preview
+with a strict port, preserving directory-index routing and the real 404 response.
+It does not use Vite's standalone SPA fallback, which can serve the homepage for
+an extensionless content URL. The deployed Cloudflare policy remains Stage 09.
+
+### Content page development
+
+See [CONTENT.md](CONTENT.md) for schemas, drafts, project records, and layout
+ownership. `/lab/content/writing` displays a populated writing index;
+`/lab/content/article` renders the unpublished prose specimen. The public writing
+page stays empty until an article is explicitly published. These previews use the
+same index/reader components as the public routes.
+
+`LineNav` in `src/components/blueprint/` is a static adaptation of the reference
+component. It uses ordinary anchors, wrapping text, visible keyboard focus, and
+CSS marker feedback. Its `activeHref` prop represents an active page; it does not
+install scroll tracking. Reading pages pass build-generated second-level headings.
+
+### Sketch underlines
+
+`SketchUnderline` in `src/components/blueprint/` is a static React renderer for
+an inline custom element. Use it in Astro or React without hydration:
+
+```tsx
+<a href="/projects/tundra">
+  <SketchUnderline text="Tundra" seed="project:tundra" />
+</a>
+```
+
+The `text` prop is required. The optional `seed` defaults to that text; distinct
+seeds produce different repeatable pen gestures. Marks appear only on hover,
+including for the current page. Keep icons outside the label and set typography
+on the surrounding element. The component inherits color and font size, and
+provides a 1.6 line height to leave room for marks under wrapped text.
+
+`BaseLayout` loads the small shared enhancement in `src/lib/sketch-underline.ts`.
+Each instance caches one SVG path per encountered text line. CSS traces the stroke
+on hover in 187ms and retraces it backward on exit in 140ms. Reversing direction
+mid-transition continues from the current point. No pointer listeners, path
+generation, or layout reads run for those interactions. Paths survive reflow and
+reconnection; their coordinates are refreshed only when their size changes.
+A stable seed reproduces the same gesture on a later page load without storage.
+
+One shared ResizeObserver watches the nearest layout containers. Text mutations
+and font loading also invalidate measurements. A single scheduled frame reads all
+dirty labels before writing SVG geometry, and unchanged geometry causes no
+write. Observations/listeners are removed on disconnection. SVGs occupy no layout
+space, are hidden from assistive technology, and cannot intercept a pointer.
+
+`src/lib/sketch-path.ts` owns the deterministic curve generation;
+`src/styles/sketch-underline.css` owns stroke width, 72% current-color opacity,
+hover transitions, reduced motion, and forced-colors fallbacks. Each path uses
+`pathLength="1"`: moving its dash offset from 1 to 0 draws it; returning to 1
+erases it. Visibility switches off after erasing, hiding rounded endpoint dots.
+Opacity stays constant throughout. Reduced motion makes both changes immediate.
+Keyboard focus keeps the native outline; touch devices do not acquire sticky
+sketch marks. Normal underlines remain available without JavaScript and in forced
+colors. No animation library or React client runtime is loaded for this effect.
+Ordinary prose links retain native underlines unless an author opts into the component.
+
+Review `/lab/underline` for small labels, large titles, multiline headings, and
+links inside prose. The browser tests exercise actual path reuse, container
+resizing, text changes, reconnection, both stroke directions and interrupted
+transitions, keyboard navigation, and fallbacks.
 
 ### Production preview
 

@@ -318,6 +318,8 @@ Include:
   horizontal seam has one paint owner, including adjacent panels, paired rule
   bands, striped dividers, and stacks with decorative overlays or hidden sections.
 - Section boundaries align to a shared 8 px spacing grid.
+- Main page title/description blocks end with `StripeSeparator` followed directly
+  by `PanelRuleBand` before content or metadata, using shared border ownership.
 - Mobile side padding: 20 px.
 - Desktop section spacing: 72-96 px depending on content density.
 - Text line length in prose: approximately 68 characters.
@@ -516,6 +518,32 @@ Implementation choices:
 ## 8. MDX authoring system
 
 ### 8.1 Content collections
+
+The independent writing/project implementation on `codex/fix/ui-maintainability`
+supersedes the older diverging content branch. It implements static indexes and
+reader routes together, with minimal validated frontmatter, page-owned metadata,
+Markdown/MDX narrative, and shared published-entry queries. See `CONTENT.md` for
+the currently supported fields. The schema below describes the broader publishing
+target; fields such as featured, social images, canonical URLs, series, and
+reading-time metadata are introduced alongside their consuming features.
+
+Project pages present numbered records in the index, labeled results on detail
+pages, and ordinary section links using the static Line Nav adaptation. Both
+writing and projects reuse the current blueprint frame and border ownership.
+Technology and topic tags use square brackets around each label.
+The supplied résumé is a factual authoring reference, not a public asset. Initial
+writing specimens remain drafts and are visible only through development lab
+routes. Filtering and the richer MDX feature set remain later work.
+
+Designated navigation and content links use a reusable sketch underline: varied,
+repeatable pen gestures in the text color at 72% opacity. A small native custom
+element enhances static labels with a mark for each wrapped line, caching paths
+and recalculating only when layout/text/fonts change. Marks have enough vertical
+room for long labels. A quick CSS stroke transition draws on hover and retraces
+backward on pointer exit, reversing smoothly if interrupted. No sketch appears by
+default or for the current page. Keyboard focus retains its native outline;
+reduced motion makes changes immediate. Native underlines remain the no-JavaScript
+and forced-colors fallback. This requires no React hydration or animation dependency.
 
 Create a `blog` collection in `src/content.config.ts` with a strict schema:
 

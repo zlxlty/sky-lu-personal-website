@@ -1,0 +1,83 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { formatContentDate } from "@/lib/content";
+
+interface Props {
+  entries: readonly CollectionEntry<"blog">[];
+  /** The development specimen links to its preview instead of a public draft. */
+  previewHref?: string;
+}
+const { entries, previewHref } = Astro.props;
+---
+
+{
+  entries.length ? (
+    <Panel aria-label="Published writing" data-writing-list>
+      {entries.map((entry) => (
+        <article
+          data-content-row
+          class="px-4 py-7 sm:py-9"
+          aria-labelledby={`post-${entry.id}`}
+        >
+          <div class="grid gap-3 sm:grid-cols-[8rem_1fr] sm:gap-5">
+            <time
+              datetime={entry.data.publishedAt.toISOString()}
+              class="pt-1 font-mono text-xs leading-6"
+            >
+              {formatContentDate(entry.data.publishedAt)}
+            </time>
+            <div class="min-w-0">
+              <h2
+                id={`post-${entry.id}`}
+                class="m-0 font-heading text-2xl font-medium tracking-tight"
+              >
+                <a href={previewHref ?? `/writing/${entry.id}`}>
+                  <SketchUnderline
+                    text={entry.data.title}
+                    seed={`writing:${entry.id}`}
+                  />
+                </a>
+              </h2>
+              <p class="mt-3 mb-4 max-w-prose">{entry.data.description}</p>
+              <ul
+                aria-label="Topics"
+                class="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 font-mono text-xs"
+              >
+                {entry.data.tags.map((tag) => (
+                  <li>[{tag}]</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ))}
+    </Panel>
+  ) : (
+    <Panel aria-labelledby="writing-empty-title">
+      <PanelContent className="py-12 sm:py-16">
+        <p class="mb-5 font-mono text-xs tracking-(--tracking-meta) uppercase">
+          The notebook is open
+        </p>
+        <h2
+          id="writing-empty-title"
+          class="mb-4 font-heading text-3xl font-medium tracking-tight"
+        >
+          Good notes take time.
+        </h2>
+        <p class="mb-6 max-w-lg text-base leading-relaxed">
+          No published articles yet. This will be a place for notes on network
+          systems, infrastructure, and the details of building software.
+        </p>
+        <a
+          href="/projects"
+          class="inline-flex min-h-10 items-center gap-3 text-sm"
+        >
+          <SketchUnderline text="Explore the projects" />{" "}
+          <span aria-hidden="true">↗</span>
+        </a>
+      </PanelContent>
+    </Panel>
+  )
+}

@@ -36,7 +36,7 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
       .locator(".screen-line-top-none, .screen-line-bottom-none")
       .count(),
     islands: await page.locator("astro-island").count(),
-    themeScripts: await page.locator("script").count(),
+    scripts: await page.locator("script").count(),
     runtimeErrors,
     accessibilityViolations: accessibility.violations.map(({ id }) => id),
   }).toEqual({
@@ -48,7 +48,7 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
     ruleBands: 3,
     edgeOverrides: 0,
     islands: 0,
-    themeScripts: 2,
+    scripts: 3, // Theme bootstrap, theme control, and the shared sketch enhancement.
     runtimeErrors: [],
     accessibilityViolations: [],
   });
@@ -224,8 +224,10 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
   expect(shell.toggle.right).toBeLessThan(shell.headerRail.right);
   expect(shell.headerBottomRule).toBe('""');
   expect(shell.firstPanelTopRule).toBe("none");
-  expect(shell.headerText).toBe("");
-  await expect(page.locator('[data-slot="site-header"] a')).toHaveCount(0);
+  expect(shell.headerText).toContain("Sky Lu");
+  await expect(
+    page.getByRole("navigation", { name: "Main navigation" }).getByRole("link"),
+  ).toHaveCount(2);
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect
@@ -321,7 +323,7 @@ test("integration title uses the compact blueprint header composition", async ({
 
   const composition = await page.evaluate(() => {
     const stripe = document.querySelector<HTMLElement>(
-      '[data-slot="stripe-separator"]',
+      'main > [data-slot="stripe-separator"]',
     );
     const panel = document.querySelector<HTMLElement>("#integration-panel");
     const header = panel?.querySelector<HTMLElement>(
@@ -470,10 +472,10 @@ test("rule bands keep their size and flush section joins", async ({ page }) => {
     };
     const panel = document.querySelector("#integration-panel");
     const bands = panel?.querySelectorAll('[data-slot="panel-rule-band"]');
-    const heroBands = document.querySelectorAll(
-      '#hero-panel > [data-slot="panel-rule-band"]',
+    const heroSeparators = document.querySelectorAll(
+      '#hero-panel > [data-slot="stripe-separator"] + [data-slot="panel-rule-band"]',
     );
-    if (!panel || !bands || bands.length !== 2 || heroBands.length !== 1) {
+    if (!panel || !bands || bands.length !== 2 || heroSeparators.length !== 1) {
       throw new Error("Missing direct panel rule bands");
     }
 

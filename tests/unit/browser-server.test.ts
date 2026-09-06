@@ -10,7 +10,9 @@ describe("browser test server configuration", () => {
     expect(production.baseURL).toBe("http://127.0.0.1:4322");
     expect(production.webServer.url).toBe(production.baseURL);
     expect(production.webServer.command).toContain("pnpm build &&");
-    expect(production.webServer.command).toContain("--port 4322 --strictPort");
+    expect(production.webServer.command).toContain(
+      "node scripts/serve-preview.ts 4322",
+    );
     expect(lab.baseURL).toBe("http://127.0.0.1:4323");
     expect(lab.webServer.url).toBe(`${lab.baseURL}/lab`);
     expect(lab.webServer.command).toBe("node scripts/serve-lab.ts 4323");

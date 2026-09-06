@@ -1,0 +1,100 @@
+---
+import type { MarkdownHeading } from "astro";
+import {
+  Panel,
+  PanelContent,
+  PanelHeader,
+  PanelRuleBand,
+} from "@/components/blueprint/Panel";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import { LineNav } from "@/components/blueprint/LineNav";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import "@/styles/prose.css";
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  backHref: string;
+  backLabel: string;
+  headings: readonly MarkdownHeading[];
+  preview?: boolean;
+}
+const {
+  title,
+  description,
+  eyebrow,
+  backHref,
+  backLabel,
+  headings,
+  preview = false,
+} = Astro.props;
+const sections = headings
+  .filter(({ depth }) => depth === 2)
+  .map(({ text, slug }) => ({ title: text, href: `#${slug}` }));
+---
+
+<BaseLayout title={`${title} — Sky Lu`} {description}>
+  {preview && <meta slot="head" name="robots" content="noindex,nofollow" />}
+  <Panel aria-labelledby="reading-title">
+    <PanelHeader className="pt-6 pb-8 sm:pb-10">
+      <a
+        href={backHref}
+        class="mb-8 inline-flex min-h-10 items-center gap-2 font-mono text-xs"
+        ><span aria-hidden="true">←</span><SketchUnderline
+          text={backLabel}
+        /></a
+      >
+      <p class="mb-4 font-mono text-xs tracking-(--tracking-meta) uppercase">
+        {preview ? "Layout specimen · unpublished" : eyebrow}
+      </p>
+      <h1
+        id="reading-title"
+        class="font-heading text-4xl leading-[1.08] tracking-tight sm:text-5xl"
+      >
+        {title}
+      </h1>
+      <p class="mt-5 mb-0 max-w-prose text-lg leading-relaxed">{description}</p>
+    </PanelHeader>
+    <StripeSeparator />
+    <PanelRuleBand />
+    {
+      Astro.slots.has("metadata") && (
+        <PanelContent className="py-6">
+          <slot name="metadata" />
+        </PanelContent>
+      )
+    }
+    {
+      sections.length > 1 && (
+        <PanelContent className="py-5">
+          <div class="grid gap-3 sm:grid-cols-[8rem_1fr] sm:gap-5">
+            <p class="m-0 pt-2 font-mono text-xs tracking-wide uppercase">
+              On this page
+            </p>
+            <LineNav label="On this page" items={sections} />
+          </div>
+        </PanelContent>
+      )
+    }
+    <PanelContent className="py-8 sm:py-12">
+      <article class="content-prose max-w-(--size-prose)" aria-label={title}>
+        <slot />
+      </article>
+    </PanelContent>
+  </Panel>
+  <StripeSeparator />
+  <Panel>
+    <PanelContent className="py-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 text-sm">
+        <a href={backHref} class="inline-flex min-h-10 items-center gap-2"
+          ><span aria-hidden="true">←</span><SketchUnderline
+            text={backLabel}
+          /></a
+        >
+        <slot name="next" />
+      </div>
+    </PanelContent>
+  </Panel>
+</BaseLayout>

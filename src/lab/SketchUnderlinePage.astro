@@ -1,0 +1,62 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Sketch underlines · Component lab"
+  description="Development-only sketch underline specimens."
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <IndexHeading
+    title="Sketch underlines"
+    eyebrow="Component specimen"
+    description="Hover to draw; move away to retrace. One cached pen gesture, adapted to labels, headings, and wrapped text."
+  />
+  <Panel>
+    <PanelContent className="grid gap-10 py-10">
+      <div class="flex flex-wrap gap-x-8 gap-y-6 font-mono text-xs">
+        <a href="/writing"><SketchUnderline text="Writing" /></a>
+        <a href="/projects"><SketchUnderline text="Projects" /></a>
+        <a href="/lab/underline" aria-current="page"
+          ><SketchUnderline text="Current page" /></a
+        >
+      </div>
+      <h2 class="m-0 font-heading text-3xl font-medium">
+        <a href="/projects/dynamic-pages"
+          ><SketchUnderline
+            text="Dynamic Pages"
+            seed="project:dynamic-pages"
+          /></a
+        >
+      </h2>
+      <h2 class="m-0 font-heading text-5xl leading-tight font-medium">
+        <a href="/projects/tundra"
+          ><SketchUnderline text="Systems, software, and sound" /></a
+        >
+      </h2>
+      <div data-wrapped-specimen class="max-w-xs">
+        <h2 class="m-0 font-heading text-3xl leading-relaxed font-medium">
+          <a href="/projects" data-wrapped-link
+            ><SketchUnderline
+              text="Designing useful boundaries for changing systems"
+            /></a
+          >
+        </h2>
+      </div>
+      <p class="m-0 max-w-md leading-loose">
+        This inline link starts inside a sentence:{" "}
+        <a href="/writing" data-inline-link
+          ><SketchUnderline
+            text="notes about designing small interfaces and keeping room for change"
+          /></a
+        >. Each text line gets its own gesture.
+      </p>
+      <a href="/lab/content/writing" class="w-fit text-sm"
+        ><SketchUnderline text="Back to content specimens" /></a
+      >
+    </PanelContent>
+  </Panel>
+</BaseLayout>

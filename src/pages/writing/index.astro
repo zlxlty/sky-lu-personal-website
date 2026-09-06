@@ -1,0 +1,22 @@
+---
+import { getWriting } from "@/content/queries";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import WritingList from "@/components/content/WritingList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const entries = await getWriting();
+---
+
+<BaseLayout
+  title="Writing — Sky Lu"
+  description="Notes on systems, infrastructure, and software engineering by Sky Lu."
+>
+  <IndexHeading
+    title="Writing"
+    eyebrow="Notes / Systems & software"
+    description="A notebook for the ideas behind the implementation. What worked, what changed, and what is worth understanding more deeply."
+  />
+  <WritingList {entries} />
+  <StripeSeparator />
+</BaseLayout>

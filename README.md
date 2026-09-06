@@ -97,3 +97,6 @@ when testing another checkout at the same time.
 See [DEVELOPMENT.md](./DEVELOPMENT.md) for every command, test selection,
 debugging, CI behavior, editor setup, and Git workflow. `pnpm cf:preview` is
 reserved for the Cloudflare deployment stage and is not available yet.
+
+See [CONTENT.md](./CONTENT.md) to author writing and project pages, preview
+draft specimens, and understand the shared reading layouts.

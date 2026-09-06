@@ -1,6 +1,7 @@
 ---
 import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
 import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import ThemeToggle from "@/components/theme/ThemeToggle.astro";
 import {
   DARK_THEME_QUERY,
@@ -20,6 +21,11 @@ interface Props {
 
 const { title, description, lang = "en", mainLabel } = Astro.props;
 const mainId = "main-content";
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const navigation = [
+  { href: "/writing", label: "Writing" },
+  { href: "/projects", label: "Projects" },
+];
 ---
 
 <!doctype html>
@@ -106,9 +112,44 @@ const mainId = "main-content";
     </nav>
     <BlueprintPage id={mainId} aria-label={mainLabel}>
       <BlueprintNavbar slot="header" aria-label="Site header">
+        <div
+          class="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2"
+        >
+          <a
+            href="/"
+            aria-label="Sky Lu — Home"
+            class="inline-flex min-h-10 items-center px-1 font-mono text-sm font-medium"
+            ><SketchUnderline text="Sky Lu" /></a
+          >
+          <nav
+            aria-label="Main navigation"
+            class="flex items-center gap-3 sm:gap-5"
+          >
+            {
+              navigation.map(({ href, label }) => (
+                <a
+                  href={href}
+                  aria-current={
+                    currentPath === href
+                      ? "page"
+                      : currentPath.startsWith(`${href}/`)
+                        ? "location"
+                        : undefined
+                  }
+                  class="inline-flex min-h-10 items-center text-sm"
+                >
+                  <SketchUnderline text={label} seed={`navigation:${href}`} />
+                </a>
+              ))
+            }
+          </nav>
+        </div>
         <ThemeToggle />
       </BlueprintNavbar>
       <slot />
     </BlueprintPage>
+    <script>
+      import "@/lib/sketch-underline";
+    </script>
   </body>
 </html>

@@ -8,6 +8,12 @@ import { developmentLab } from "./src/integrations/development-lab";
 export default defineConfig({
   output: "static",
   integrations: [mdx(), react(), developmentLab()],
+  markdown: {
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },
