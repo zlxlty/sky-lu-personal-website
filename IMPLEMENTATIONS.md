@@ -1014,6 +1014,23 @@ Proposed message: `feat: add writing and project publishing pages`.
 - Run `pnpm verify:full`, review light/dark mobile/desktop screenshots, and
   update only intentionally changed visual baselines before commit review.
 
+### Supplemental DX fix - linting on a fresh checkout
+
+The content candidate was approved, committed as `5d5cc55`, and pushed on
+`codex/fix/ui-maintainability`. Its first CI run reproduced a clean-checkout
+failure: ESLint ran before Astro generated the collection types, so the typed
+queries appeared unsafe. Local development had already generated those types.
+
+Proposed message: `fix: generate Astro content types before linting`.
+
+- Run `astro sync` before both full-project lint commands and staged source lint.
+- Keep generated types ignored and retain all type-aware lint rules.
+- Document the generated-file prerequisite without requiring a manual build.
+- Exercise the real lint scripts in isolated fixtures without an `.astro`
+  directory; verify staged lint also works before any build or dev server.
+- Run the focused regression checks and `pnpm verify`, then inspect the complete
+  diff and obtain approval for this separate corrective commit before pushing it.
+
 ## 8. Stage 03 - Content model and core routes
 
 ### Branch

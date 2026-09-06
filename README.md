@@ -79,20 +79,20 @@ when testing another checkout at the same time.
 
 ## Commands
 
-| Command             | Purpose                                                |
-| ------------------- | ------------------------------------------------------ |
-| `pnpm dev`          | Start Astro with hot module replacement.               |
-| `pnpm build`        | Generate the production site in `dist/`.               |
-| `pnpm preview`      | Serve the production build locally.                    |
-| `pnpm check`        | Run Astro, TypeScript, and content type checks.        |
-| `pnpm format:check` | Check formatting without writing files.                |
-| `pnpm lint`         | Run ESLint without writing files.                      |
-| `pnpm test`         | Run unit tests once.                                   |
-| `pnpm test:e2e`     | Run Playwright against a production-style server.      |
-| `pnpm test:lab`     | Test `/lab` and compare local visual snapshots.        |
-| `pnpm test:lab:ui`  | Open Playwright UI for component-lab debugging.        |
-| `pnpm verify`       | Run formatting, linting, types, unit tests, and build. |
-| `pnpm verify:full`  | Run all required quality and browser checks.           |
+| Command             | Purpose                                                  |
+| ------------------- | -------------------------------------------------------- |
+| `pnpm dev`          | Start Astro with hot module replacement.                 |
+| `pnpm build`        | Generate the production site in `dist/`.                 |
+| `pnpm preview`      | Serve the production build locally.                      |
+| `pnpm check`        | Run Astro, TypeScript, and content type checks.          |
+| `pnpm format:check` | Check formatting without writing files.                  |
+| `pnpm lint`         | Generate Astro types, then lint without changing source. |
+| `pnpm test`         | Run unit tests once.                                     |
+| `pnpm test:e2e`     | Run Playwright against a production-style server.        |
+| `pnpm test:lab`     | Test `/lab` and compare local visual snapshots.          |
+| `pnpm test:lab:ui`  | Open Playwright UI for component-lab debugging.          |
+| `pnpm verify`       | Run formatting, linting, types, unit tests, and build.   |
+| `pnpm verify:full`  | Run all required quality and browser checks.             |
 
 See [DEVELOPMENT.md](./DEVELOPMENT.md) for every command, test selection,
 debugging, CI behavior, editor setup, and Git workflow. `pnpm cf:preview` is
