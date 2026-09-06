@@ -3,6 +3,7 @@ import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
 import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import ThemeToggle from "@/components/theme/ThemeToggle.astro";
+import { profile } from "@/data/profile";
 import {
   DARK_THEME_QUERY,
   THEME_COLORS,
@@ -118,9 +119,9 @@ const navigation = [
         >
           <a
             href="/"
-            aria-label="Sky Lu — Home"
+            aria-label={`${profile.name} — Home`}
             class="inline-flex min-h-10 items-center px-1 font-mono text-sm font-medium"
-            ><SketchUnderline text="Sky Lu" /></a
+            ><SketchUnderline text={profile.name} /></a
           >
           <nav
             aria-label="Main navigation"

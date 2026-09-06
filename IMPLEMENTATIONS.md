@@ -1034,8 +1034,10 @@ Proposed message: `fix: generate Astro content types before linting`.
 ### Current profile/CV continuation - original PDF delivery
 
 The UI/content branch was approved and rebase-merged through PR #3, preserving
-seven commits through `b322095`. Continue from that merged base in the separate
-`codex/feat/profile-cv` worktree. Do not import the outdated content-model branch.
+seven commits through `b322095`. Continue from that merged base on
+`codex/feat/profile-cv`, reusing the current worktree. The user clarified that new
+feature branches do not each need a new worktree. Do not import the outdated
+content-model branch.
 
 On September 6, 2026, the user approved continuing but requested that the CV serve
 `Sky Lu Resume (14).pdf` verbatim. This replaces the planned HTML CV and its print
@@ -1053,10 +1055,29 @@ Proposed message: `feat: serve the original resume PDF`.
 - Run `pnpm verify:full`; inspect and update only the changed header baselines.
 - Review the original document and retain its exact checksum in the commit review.
 
-The next candidate remains `feat: add typed profile and experience data`, using
-approved identity, education, experience, research, and public-link facts. It
-must reuse existing project collection data rather than copy project metrics,
-and it must not become a PDF generation layer.
+The PDF candidate was approved and committed as `22c3f06`.
+
+### Current candidate - typed profile and experience data
+
+Proposed message: `feat: add typed profile and experience data`.
+
+- Add readonly, build-time identity, education, experience, research, and public
+  link records from the approved résumé and the confirmed wording in `PLAN.md`.
+- Keep dates at month precision, preserve expected/completed graduation status,
+  and limit experience disclosures to three bullets.
+- Reference existing project collection IDs; do not duplicate their metrics or
+  build a PDF generation layer. Leave private contact values out of public data.
+- Connect existing navigation and page titles to the shared name, preserving
+  their rendered output. Homepage layout and richer content remain separate.
+- Document where humans edit each fact and how project references work.
+- Verify authored date/order/disclosure constraints and resolve project references
+  through the real Astro content query in an isolated production build.
+- Run `pnpm verify:full` and compare production output before/after the extraction.
+
+After this candidate is approved, the profile/CV branch is ready for branch review.
+The next dependent branch is Stage 04's static homepage, starting from merged main
+and reusing this worktree. Skills lists, homepage layouts, and contact handling
+remain with their consuming features rather than extending this data candidate.
 
 ## 8. Stage 03 - Content model and core routes
 

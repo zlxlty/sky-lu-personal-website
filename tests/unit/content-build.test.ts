@@ -29,6 +29,25 @@ it("builds published article paths and navigation while excluding drafts", async
       ),
       symlink(resolve("node_modules"), join(root, "node_modules"), "dir"),
     ]);
+    // Resolve the real profile references through Astro's published query. This
+    // fixture is never a public route; it catches renamed or draft-only targets.
+    await writeFile(
+      join(root, "src/pages/profile-data-check.astro"),
+      `---
+import { getProjects } from "@/content/queries";
+import { experience } from "@/data/experience";
+import { research } from "@/data/research";
+const projects = await getProjects();
+const ids = [...experience.flatMap((entry) => entry.projectIds), ...research.projectIds];
+const related = ids.map((id) => {
+  const project = projects.find((entry) => entry.id === id);
+  if (!project) throw new Error(\`Profile references an unpublished or missing project: \${id}\`);
+  return project;
+});
+---
+{related.map((project) => <a href={\`/projects/\${project.id}\`}>{project.data.title}</a>)}
+`,
+    );
     const article = (title: string, date: string) =>
       `---\ntitle: ${title}\ndescription: Isolated publication fixture.\npublishedAt: ${date}\ndraft: false\n---\n\n## A real article heading\n\nContent rendered in the shared reading layout.\n`;
     await writeFile(
@@ -60,6 +79,9 @@ it("builds published article paths and navigation while excluding drafts", async
       );
     await build();
     const output = (path: string) => readFile(join(root, "dist", path), "utf8");
+    expect(await output("profile-data-check/index.html")).toContain(
+      'href="/projects/tundra"',
+    );
     const page = await output("writing/new-note/index.html");
     expect(page).toContain("Published fixture &amp; safe text");
     expect(page).toContain('href="/writing/older-note"');

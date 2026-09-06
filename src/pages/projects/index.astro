@@ -9,12 +9,13 @@ import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import IndexHeading from "@/components/content/IndexHeading.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { profile } from "@/data/profile";
 
 const projects = await getProjects();
 ---
 
 <BaseLayout
-  title="Projects — Sky Lu"
+  title={`Projects — ${profile.name}`}
   description="Selected work in edge infrastructure, efficient AI serving, and network systems."
 >
   <IndexHeading
