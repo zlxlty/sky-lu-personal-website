@@ -1,0 +1,92 @@
+---
+import { getEntry, render } from "astro:content";
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import WritingList from "@/components/content/WritingList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ReadingLayout from "@/layouts/ReadingLayout.astro";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { formatContentDate } from "@/lib/content";
+
+export function getStaticPaths() {
+  return ["writing", "article"].map((example) => ({
+    params: { example },
+    props: { example },
+  }));
+}
+interface Props {
+  example: string;
+}
+const { example } = Astro.props;
+const entry = await getEntry("blog", "communication-as-composition");
+if (!entry) throw new Error("The content lab requires its draft specimen.");
+const { Content, headings } = await render(entry);
+const entries = [
+  entry,
+  {
+    ...entry,
+    id: "latency-budgets",
+    data: {
+      ...entry.data,
+      title: "A note on latency budgets",
+      description:
+        "An example row for reviewing index rhythm, metadata, and longer titles.",
+      tags: ["Edge infrastructure"],
+      publishedAt: new Date("2026-08-20"),
+    },
+  },
+  {
+    ...entry,
+    id: "small-interfaces",
+    data: {
+      ...entry.data,
+      title: "Small interfaces, useful boundaries",
+      description: "An example of a shorter note in the same reading list.",
+      tags: ["Software design"],
+      publishedAt: new Date("2026-08-04"),
+    },
+  },
+];
+---
+
+{
+  example === "writing" ? (
+    <BaseLayout
+      title="Writing layout · Component lab"
+      description="Development-only writing layout specimens."
+    >
+      <meta slot="head" name="robots" content="noindex,nofollow" />
+      <IndexHeading
+        title="Writing"
+        eyebrow="Layout specimen / sample entries"
+        description="A notebook for the ideas behind the implementation. What worked, what changed, and what is worth understanding more deeply."
+      />
+      <WritingList entries={entries} previewHref="/lab/content/article" />
+      <Panel>
+        <PanelContent className="flex flex-wrap gap-6">
+          <a href="/writing">
+            <SketchUnderline text="View the public empty state" /> →
+          </a>
+          <a href="/lab/underline">
+            <SketchUnderline text="Sketch underline specimens" /> →
+          </a>
+        </PanelContent>
+      </Panel>
+    </BaseLayout>
+  ) : (
+    <ReadingLayout
+      title={entry.data.title}
+      description={entry.data.description}
+      eyebrow="Writing"
+      backHref="/lab/content/writing"
+      backLabel="Writing specimen"
+      {headings}
+      preview
+    >
+      <p slot="metadata" class="m-0 font-mono text-xs">
+        {formatContentDate(entry.data.publishedAt)} · Sample date
+      </p>
+      <Content />
+    </ReadingLayout>
+  )
+}

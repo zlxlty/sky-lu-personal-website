@@ -23,7 +23,7 @@ export function createBrowserServer(
   const webServer = {
     command:
       suite === "e2e"
-        ? `corepack pnpm build && corepack pnpm exec vite preview --host 127.0.0.1 --port ${port} --strictPort`
+        ? `corepack pnpm build && node scripts/serve-preview.ts ${port}`
         : `node scripts/serve-lab.ts ${port}`,
     url: suite === "lab" ? `${baseURL}/lab` : baseURL,
     env: { NODE_ENV: suite === "e2e" ? "production" : "development" },

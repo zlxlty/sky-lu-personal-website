@@ -1,0 +1,25 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+---
+
+<BaseLayout
+  title="Page not found — Sky Lu"
+  description="This page could not be found."
+>
+  <meta slot="head" name="robots" content="noindex" />
+  <IndexHeading
+    title="Page not found"
+    eyebrow="404 / A loose end"
+    description="The page may have moved, or the address may be incomplete."
+  />
+  <Panel
+    ><PanelContent className="flex flex-wrap gap-6 py-10"
+      ><a href="/"><SketchUnderline text="Go home" /></a><a href="/projects"
+        ><SketchUnderline text="Explore projects" /></a
+      ></PanelContent
+    ></Panel
+  >
+</BaseLayout>

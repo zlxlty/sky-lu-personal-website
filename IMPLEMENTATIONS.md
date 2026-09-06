@@ -943,11 +943,7 @@ Checks:
 Continue on `codex/fix/ui-maintainability` after the approved theme-controller
 commit. The user clarified that compositions are vertical stacks, including nesting.
 
-Commit candidate (uncommitted):
-
-```text
-fix: make blueprint borders compose across nested stacks
-```
+Committed as `1fe45b0`: `fix: make blueprint borders compose across nested stacks`.
 
 Scope:
 
@@ -980,6 +976,43 @@ Checks:
 - Manually inspect desktop/mobile layouts, keyboard focus, scrolling, annotations,
   and the continuous rails; preserve review screenshots outside tracked source.
 - Confirm no new dependency, hydration, production lab route, or unrelated change.
+
+### Current content implementation - writing and project pages
+
+The user superseded the diverging content branch on September 6, 2026 and
+requested an independent implementation on the current review branch. Do not
+merge or copy that branch. This candidate supplies the small collection boundary
+needed by the pages it renders, replacing the unexecuted route work below for
+this branch. Profile/CV, homepage composition, SEO, and feeds remain separate work.
+
+Proposed message: `feat: add writing and project publishing pages`.
+
+- Build static `/writing`, `/writing/[slug]`, `/projects`, and
+  `/projects/[slug]` using the current blueprint stack and 12% border token.
+- Keep route metadata in strict content schemas and narrative in Markdown/MDX.
+  Centralize published-entry selection; exclude drafts from public paths.
+- Author four concise project summaries from the supplied résumé. Keep the
+  résumé private and do not invent external project links or published articles.
+- Provide an honest writing empty state, a populated development preview, and a
+  reusable article layout with a draft specimen for prose, code, tables, and TOC.
+- Adapt the MIT-licensed reference Line Nav into a static, accessible component
+  with CSS focus/hover feedback, preserving source attribution.
+- Add working global navigation and a branded 404 for the new route surface.
+- End main title blocks with `StripeSeparator` then `PanelRuleBand` across indexes,
+  readers, the homepage, and visible lab page headings; verify their shared joins.
+- Incorporate the requested sketch underline revision before approval: reusable
+  text labels with seeded pen gestures, per-instance path caching, multiline
+  measurement with taller strokes, hover-only CSS drawing and backward erasing,
+  and native no-JavaScript/forced-color fallbacks. Verify interrupted transitions,
+  resize, font/text updates, reconnection, and cleanup in the lab.
+- Use Astro's programmatic static preview for browser verification so clean
+  content URLs resolve to their directory indexes and missing pages return 404.
+- Verify published article routes and next-entry links in an isolated build;
+  exercise invalid frontmatter and draft project/article exclusion there.
+- Verify schemas, ordering, draft exclusion, all local content links, responsive
+  layouts, accessible headings/navigation, anchor offsets, and border ownership.
+- Run `pnpm verify:full`, review light/dark mobile/desktop screenshots, and
+  update only intentionally changed visual baselines before commit review.
 
 ## 8. Stage 03 - Content model and core routes
 

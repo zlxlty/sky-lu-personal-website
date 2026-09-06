@@ -1,0 +1,69 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import { getProjects } from "@/content/queries";
+import ReadingLayout from "@/layouts/ReadingLayout.astro";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, index) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[index + 1] },
+  }));
+}
+interface Props {
+  project: CollectionEntry<"projects">;
+  next?: CollectionEntry<"projects">;
+}
+const { project, next } = Astro.props;
+const { Content, headings } = await render(project);
+---
+
+<ReadingLayout
+  title={project.data.title}
+  description={project.data.description}
+  eyebrow={`${project.data.context} / ${project.data.category}`}
+  backHref="/projects"
+  backLabel="All projects"
+  {headings}
+>
+  <div slot="metadata">
+    <dl
+      class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(9rem,100%),1fr))] gap-6"
+    >
+      {
+        project.data.results.map(({ value, label }) => (
+          <div>
+            <>
+              <dt class="font-mono text-xs leading-5">{label}</dt>
+              <dd class="mt-2 ml-0 font-heading text-3xl font-medium tracking-tight">
+                {value}
+              </dd>
+            </>
+          </div>
+        ))
+      }
+    </dl>
+    <ul
+      aria-label="Technologies and topics"
+      class="mt-6 mb-0 flex list-none flex-wrap gap-x-4 gap-y-2 p-0 font-mono text-xs"
+    >
+      {project.data.tags.map((tag) => <li>[{tag}]</li>)}
+    </ul>
+  </div>
+  <Content />
+  {
+    next && (
+      <a
+        slot="next"
+        class="inline-flex min-h-10 max-w-full items-center gap-2"
+        href={`/projects/${next.id}`}
+      >
+        <span class="min-w-0">
+          <SketchUnderline text={`Next: ${next.data.title}`} />
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+    )
+  }
+</ReadingLayout>

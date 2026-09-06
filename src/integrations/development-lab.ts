@@ -28,5 +28,13 @@ export function getDevelopmentLabRoutes(command: AstroCommand) {
       pattern: "/lab/blueprint/[example]",
       entrypoint: new URL("../lab/BlueprintPage.astro", import.meta.url),
     },
+    {
+      pattern: "/lab/content/[example]",
+      entrypoint: new URL("../lab/ContentPage.astro", import.meta.url),
+    },
+    {
+      pattern: "/lab/underline",
+      entrypoint: new URL("../lab/SketchUnderlinePage.astro", import.meta.url),
+    },
   ];
 }

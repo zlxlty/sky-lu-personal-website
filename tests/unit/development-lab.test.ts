@@ -4,7 +4,8 @@ import { getDevelopmentLabRoutes } from "@/integrations/development-lab";
 
 describe("development lab route", () => {
   it("injects the lab only for the development server", () => {
-    const [route, blueprintRoute] = getDevelopmentLabRoutes("dev");
+    const [route, blueprintRoute, contentRoute, underlineRoute] =
+      getDevelopmentLabRoutes("dev");
 
     expect(route).toMatchObject({ pattern: "/lab" });
     expect(route?.entrypoint).toBeInstanceOf(URL);
@@ -17,6 +18,16 @@ describe("development lab route", () => {
     expect(
       blueprintRoute?.entrypoint.pathname.endsWith(
         "/src/lab/BlueprintPage.astro",
+      ),
+    ).toBe(true);
+    expect(contentRoute).toMatchObject({ pattern: "/lab/content/[example]" });
+    expect(
+      contentRoute?.entrypoint.pathname.endsWith("/src/lab/ContentPage.astro"),
+    ).toBe(true);
+    expect(underlineRoute).toMatchObject({ pattern: "/lab/underline" });
+    expect(
+      underlineRoute?.entrypoint.pathname.endsWith(
+        "/src/lab/SketchUnderlinePage.astro",
       ),
     ).toBe(true);
   });

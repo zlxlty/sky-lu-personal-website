@@ -1,0 +1,70 @@
+---
+title: Communication as a composition
+description: A layout specimen about making the boundaries of a small pipeline explicit.
+publishedAt: 2026-09-01
+tags: [Network systems, Engineering notes]
+draft: true
+---
+
+This is an unpublished layout specimen, not a published article. It exercises
+the reading page with prose, code, lists, and a small table.
+
+## Start with the boundary
+
+A pipeline is easier to reason about when each step has a clear input and
+output. The implementation can change without forcing a reader to understand
+every surrounding detail at once.
+
+> A useful interface makes the important choices visible and keeps routine
+> coordination inside the module that owns it.
+
+For a small message pipeline, that may mean distinguishing the message itself
+from the mechanism that carries it. Names should explain that distinction before
+a developer needs to inspect the implementation.
+
+## Keep the example small
+
+This TypeScript example is illustrative; it is not code from a project or employer.
+
+```ts
+type Message = { payload: Uint8Array };
+type Transform = (message: Message) => Message;
+
+function compose(first: Transform, second: Transform): Transform {
+  return (message) => second(first(message));
+}
+
+const description =
+  "A deliberately long line demonstrates local horizontal scrolling without widening the document rail.";
+```
+
+The function above captures a narrow contract. It does not decide how to open
+a connection, retry a failed operation, or schedule work across threads.
+Those choices belong at the boundaries that actually need them.
+
+### Questions for a caller
+
+1. What input does this operation accept?
+2. What output or failure can it produce?
+3. Who owns the lifetime of the resources it uses?
+
+## Compare responsibilities
+
+| Boundary       | Responsibility   | Example               |
+| -------------- | ---------------- | --------------------- |
+| Transformation | Change a message | Encode a payload      |
+| Transport      | Move bytes       | Write to a connection |
+| Lifecycle      | Own resources    | Close a connection    |
+
+A table is useful when its rows describe comparable things. Longer discussion
+belongs in prose, where the relationship between decisions can be explained.
+
+## Leave room to change
+
+Good structure does not require predicting every future feature. It requires
+making today's responsibilities clear enough that a future developer can find
+the right place for the next change.
+
+- Keep policy close to the module that enforces it.
+- Prefer a small number of explicit inputs.
+- Check behavior at the boundary, including the failure path.

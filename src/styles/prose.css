@@ -1,0 +1,99 @@
+@reference "./global.css";
+
+/* Content typography is scoped to authored Markdown/MDX, never the page shell. */
+@layer components {
+  .content-prose {
+    @apply text-base leading-7;
+    overflow-wrap: anywhere;
+  }
+  .content-prose > :first-child {
+    margin-top: 0;
+  }
+  .content-prose > :last-child {
+    margin-bottom: 0;
+  }
+  .content-prose :where(p, ul, ol, blockquote, pre, table, figure) {
+    @apply my-6;
+  }
+  .content-prose :where(h2, h3, h4) {
+    @apply mt-10 mb-4 scroll-mt-20 font-heading font-medium tracking-tight;
+  }
+  .content-prose h2 {
+    @apply text-3xl;
+  }
+  .content-prose h3 {
+    @apply text-2xl;
+  }
+  .content-prose h4 {
+    @apply text-xl;
+  }
+  .content-prose :where(ul, ol) {
+    @apply pl-6;
+  }
+  .content-prose ul {
+    @apply list-disc;
+  }
+  .content-prose ol {
+    @apply list-decimal;
+  }
+  .content-prose li {
+    @apply my-2 pl-1;
+  }
+  .content-prose li > :where(ul, ol) {
+    @apply my-2;
+  }
+  .content-prose a {
+    @apply underline decoration-(--color-rule-strong) underline-offset-4;
+  }
+  .content-prose a:hover {
+    @apply decoration-current;
+  }
+  .content-prose blockquote {
+    @apply border-l-2 border-(--color-rule-strong) pl-5 italic;
+  }
+  .content-prose :not(pre) > code {
+    @apply rounded-sm bg-(--color-surface) px-1 py-0.5 text-[0.9em];
+  }
+  .content-prose pre {
+    @apply overflow-x-auto rounded-(--radius-small) border border-line p-4 text-sm leading-6;
+  }
+  .content-prose pre code {
+    @apply block w-max min-w-full;
+  }
+  .content-prose .astro-code {
+    background: var(--color-surface-raised);
+  }
+  .content-prose .astro-code,
+  .content-prose .astro-code span {
+    color: var(--shiki-light);
+  }
+  [data-theme="dark"] .content-prose .astro-code,
+  [data-theme="dark"] .content-prose .astro-code span {
+    color: var(--shiki-dark);
+  }
+  .content-prose table {
+    @apply block max-w-full border-collapse overflow-x-auto text-sm;
+  }
+  .content-prose :where(th, td) {
+    @apply border-b border-line px-3 py-3 text-left;
+  }
+  .content-prose th {
+    @apply font-medium;
+  }
+  .content-prose :where(img, video) {
+    @apply h-auto max-w-full;
+  }
+  .content-prose figcaption {
+    @apply mt-3 text-sm text-muted-foreground;
+  }
+  .content-prose hr {
+    @apply my-10;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .content-prose .astro-code,
+  :root:not([data-theme]) .content-prose .astro-code span {
+    color: var(--shiki-dark);
+  }
+}
