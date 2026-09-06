@@ -25,9 +25,9 @@ const alignmentClasses: Record<RailAnnotationAlign, string> = {
 
 /**
  * Places a decorative handwritten note in either outer gutter of a positioned
- * content-rail ancestor. Mount direct Panel annotations before its stack
- * sections so overlays remain outside the Panel adjacency contract. The note
- * is hidden when the gutters are too narrow.
+ * content-rail ancestor. Annotations are outside the stack's layout and rule
+ * ownership, regardless of their position among sections. The note is hidden
+ * when the gutters are too narrow.
  */
 export function RailAnnotation({
   side,

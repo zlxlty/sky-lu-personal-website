@@ -104,10 +104,10 @@ const mainId = "main-content";
         Skip to content
       </a>
     </nav>
-    <BlueprintNavbar aria-label="Site header">
-      <ThemeToggle />
-    </BlueprintNavbar>
     <BlueprintPage id={mainId} aria-label={mainLabel}>
+      <BlueprintNavbar slot="header" aria-label="Site header">
+        <ThemeToggle />
+      </BlueprintNavbar>
       <slot />
     </BlueprintPage>
   </body>

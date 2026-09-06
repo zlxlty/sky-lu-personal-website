@@ -15,15 +15,17 @@ export function BlueprintNavbar({
   return (
     <header
       data-slot="site-header"
-      className={cn(
-        "sticky top-0 z-50 max-w-screen overflow-x-clip bg-background/95 px-[3px] backdrop-blur-sm",
-        className,
-      )}
+      className={cn("sticky top-0 z-50", className)}
       {...props}
     >
+      {/* Mask scrolling content in the gutters as well as inside the rail. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-[-100vw] -z-1 w-[200vw] bg-background/95 backdrop-blur-sm"
+      />
       <div
         data-slot="site-header-rail"
-        className="screen-line-top screen-line-bottom mx-auto flex h-13 items-center border-x border-line px-2 md:max-w-3xl"
+        className="screen-line-top screen-line-bottom flex h-13 items-center px-2"
       >
         <div className="flex-1" aria-hidden="true" />
         {children}

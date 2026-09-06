@@ -10,13 +10,19 @@ import { cn } from "@/lib/cn";
 export function StripeSeparator({
   className,
   ...props
-}: ComponentProps<"div">) {
+}: Omit<ComponentProps<"div">, "children" | "aria-hidden">) {
   return (
     <div
       aria-hidden="true"
       data-slot="stripe-separator"
-      className={cn("stripe-divider w-full border-x border-line", className)}
+      data-blueprint-edge=""
+      className={cn("screen-line-top screen-line-bottom h-8", className)}
       {...props}
-    />
+    >
+      <span
+        data-slot="stripe-pattern"
+        className="pointer-events-none absolute inset-y-px left-[-100vw] z-0 w-[200vw] diagonal-stripes"
+      />
+    </div>
   );
 }

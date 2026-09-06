@@ -1,0 +1,50 @@
+---
+import {
+  BlueprintCompositions,
+  blueprintCases,
+} from "@/lab/BlueprintCompositions";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+
+export function getStaticPaths() {
+  return blueprintCases.map((example) => ({
+    params: { example },
+    props: { example },
+  }));
+}
+
+const { example } = Astro.props;
+interface Props {
+  example: (typeof blueprintCases)[number];
+}
+---
+
+<BaseLayout
+  title={`Blueprint ${example} · Component lab`}
+  description="Development-only blueprint composition checks."
+  mainLabel="Blueprint composition"
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <h1 data-panel-overlay class="sr-only">Blueprint: {example}</h1>
+  <BlueprintCompositions {example} />
+  <Panel>
+    <PanelContent>
+      <nav
+        aria-label="Blueprint examples"
+        class="flex flex-wrap gap-x-4 gap-y-2 text-sm"
+      >
+        <a href="/lab">Component lab</a>
+        {
+          blueprintCases.map((name) => (
+            <a
+              href={`/lab/blueprint/${name}`}
+              aria-current={name === example ? "page" : undefined}
+            >
+              {name}
+            </a>
+          ))
+        }
+      </nav>
+    </PanelContent>
+  </Panel>
+</BaseLayout>

@@ -4,25 +4,29 @@ type AstroCommand = Parameters<
   NonNullable<AstroIntegration["hooks"]["astro:config:setup"]>
 >[0]["command"];
 
-const LAB_ROUTE_PATTERN = "/lab";
-
 export function developmentLab(): AstroIntegration {
   return {
     name: "sky-lu-development-lab",
     hooks: {
       "astro:config:setup": ({ command, injectRoute }) => {
-        const route = getDevelopmentLabRoute(command);
-        if (route) injectRoute(route);
+        for (const route of getDevelopmentLabRoutes(command))
+          injectRoute(route);
       },
     },
   };
 }
 
-export function getDevelopmentLabRoute(command: AstroCommand) {
-  if (command !== "dev") return null;
+export function getDevelopmentLabRoutes(command: AstroCommand) {
+  if (command !== "dev") return [];
 
-  return {
-    pattern: LAB_ROUTE_PATTERN,
-    entrypoint: new URL("../lab/LabPage.astro", import.meta.url),
-  };
+  return [
+    {
+      pattern: "/lab",
+      entrypoint: new URL("../lab/LabPage.astro", import.meta.url),
+    },
+    {
+      pattern: "/lab/blueprint/[example]",
+      entrypoint: new URL("../lab/BlueprintPage.astro", import.meta.url),
+    },
+  ];
 }

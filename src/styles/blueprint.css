@@ -18,7 +18,7 @@
 
   &::before {
     content: "";
-    @apply absolute top-0 left-[-100vw] -z-1 h-px w-[200vw] bg-line;
+    @apply pointer-events-none absolute top-0 left-[-100vw] z-1 h-px w-[200vw] bg-(--color-blueprint-rule);
   }
 }
 
@@ -27,7 +27,7 @@
 
   &::after {
     content: "";
-    @apply absolute bottom-0 left-[-100vw] -z-1 h-px w-[200vw] bg-line;
+    @apply pointer-events-none absolute bottom-0 left-[-100vw] z-1 h-px w-[200vw] bg-(--color-blueprint-rule);
   }
 }
 
@@ -35,56 +35,62 @@
   @apply screen-line-top screen-line-bottom;
 
   /*
-   * Direct-child overlays sit before the first stack section and do not own
-   * layout or screen rules. Normal sections and rule bands retain the same
-   * adjacency contract whether or not an overlay layer is present.
+   * Count only flow sections. Each later section paints the join above it,
+   * including panels and dividers. Non-layout children cannot break a join.
    */
   &
-    > :not([data-panel-overlay], [data-slot="panel-rule-band"])
-    + :not([data-panel-overlay], [data-slot="panel-rule-band"]) {
+    > :nth-child(
+      n
+        + 2
+        of
+        :not(
+          [data-panel-overlay],
+          [hidden],
+          script,
+          style,
+          template,
+          [data-slot="panel"]:empty
+        )
+    ) {
     @apply screen-line-top;
   }
 
   /*
-   * A rule band owns both of its edges. The panel keeps ownership only when
-   * that edge is also the panel's outer boundary, and adjacent bands share a
-   * single middle edge.
+   * The stack owns its outer edges. Child end rules are supplied by either
+   * the next section or the stack's closing rule, never both.
    */
-  & > [data-slot="panel-rule-band"]:first-child::before,
-  & > [data-slot="panel-rule-band"] + [data-slot="panel-rule-band"]::before,
-  & > [data-slot="panel-rule-band"]:last-child::after {
+  &
+    > [data-blueprint-edge]:nth-child(
+      1
+        of
+        :not(
+          [data-panel-overlay],
+          [hidden],
+          script,
+          style,
+          template,
+          [data-slot="panel"]:empty
+        )
+    )::before,
+  & > [data-blueprint-edge]::after {
     content: none;
   }
-}
 
-@utility blueprint-page-stack {
-  /* The sticky header owns the shell boundary above the first panel. */
-  & > [data-slot="blueprint-rail"] > [data-slot="panel"]:first-child::before {
+  /* Empty containers and the sticky-header join add no extra rules. */
+  &:empty::before,
+  &:empty::after,
+  &[data-has-header]::before {
     content: none;
   }
 }
 
 @utility diagonal-stripes {
-  --pattern-foreground: color-mix(
-    in oklab,
-    var(--color-rule-strong) 56%,
-    transparent
-  );
   background-image: repeating-linear-gradient(
     315deg,
-    var(--pattern-foreground) 0,
-    var(--pattern-foreground) 1px,
+    var(--color-blueprint-rule) 0,
+    var(--color-blueprint-rule) 1px,
     transparent 0,
     transparent 50%
   );
   background-size: 10px 10px;
-}
-
-@utility stripe-divider {
-  @apply relative h-8;
-
-  &::before {
-    content: "";
-    @apply absolute left-[-100vw] -z-1 h-full w-[200vw] diagonal-stripes;
-  }
 }
