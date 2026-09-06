@@ -209,7 +209,7 @@ personal content, portraits, illustrations, or branded assets.
 | `pnpm check`           | Run `astro check`, TypeScript, and content type validation.   |
 | `pnpm format`          | Write Prettier formatting across supported repository files.  |
 | `pnpm format:check`    | Check formatting without writing.                             |
-| `pnpm lint`            | Run ESLint without writing.                                   |
+| `pnpm lint`            | Generate Astro types, then lint without changing source.      |
 | `pnpm lint:fix`        | Apply safe ESLint fixes; inspect the diff afterward.          |
 | `pnpm test`            | Run Vitest once in deterministic mode.                        |
 | `pnpm test:watch`      | Keep Vitest running while unit-test code changes.             |
@@ -227,6 +227,11 @@ personal content, portraits, illustrations, or branded assets.
 
 `pnpm cf:preview` is intentionally unavailable until Stage 09 adds Wrangler. No
 install, build, preview, verify, or Git hook command deploys the website.
+
+Both lint commands run `astro sync` first to generate the ignored `.astro` content
+types. A fresh checkout can run `pnpm lint`, `pnpm lint:fix`, or `pnpm verify`
+without first starting the development server or building the site. `pnpm lint`
+does not modify source files; `pnpm lint:fix` applies ESLint's safe source fixes.
 
 ## Normal development loop
 
@@ -470,7 +475,9 @@ hook through `simple-git-hooks`. The hook runs `lint-staged` against files alrea
 staged for the proposed commit:
 
 - Prettier checks supported source, content, configuration, and documentation.
-- ESLint checks staged Astro, JavaScript, and TypeScript source.
+- Astro generates ignored content types before ESLint checks staged Astro,
+  JavaScript, and TypeScript source. Type generation receives no staged filenames;
+  ESLint still checks only the matching staged files.
 
 The installer asks Git for the effective hook directory, so linked worktrees and
 relative, global, or worktree-specific `core.hooksPath` settings work correctly.
