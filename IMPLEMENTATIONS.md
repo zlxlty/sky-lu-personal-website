@@ -911,7 +911,7 @@ Continue on `codex/fix/ui-maintainability` after the approved hook-installation
 commit. This candidate makes the existing theme behavior reusable by feature
 handlers while preserving the static shell and synchronous first-paint bootstrap.
 
-Commit candidate (uncommitted):
+Committed as `22ba8f4` after explicit approval:
 
 ```text
 refactor: share theme control across browser features
@@ -937,6 +937,49 @@ Checks:
   light/dark desktop/mobile states and keyboard behavior.
 - Confirm the production shell retains its no-JavaScript fallback, pre-paint
   bootstrap ordering, and lack of React hydration.
+
+### Supplemental blueprint review - composable border ownership
+
+Continue on `codex/fix/ui-maintainability` after the approved theme-controller
+commit. The user clarified that compositions are vertical stacks, including nesting.
+
+Commit candidate (uncommitted):
+
+```text
+fix: make blueprint borders compose across nested stacks
+```
+
+Scope:
+
+- Put the header and main content inside one viewport-height blueprint frame
+  that owns the two vertical rails. Remove vertical borders from nested panels,
+  the header, and horizontal dividers.
+- Let stacks own their outer horizontal rules and later flow sections own joins.
+  Ignore overlays, hidden elements, non-layout nodes, and empty panels when
+  identifying sections. Keep rules visible above opaque surfaces and mask
+  scrolling stripes behind the sticky header across the viewport.
+- Soften blueprint rails, rules, and hatching to 12% ink opacity in both themes
+  through one semantic token, including the no-JavaScript system-theme fallback.
+- Exercise adjacent panels, all nine panel/band/stripe pairs, leading/trailing
+  dividers, nested stacks, descriptions, and decorative overlays in static
+  development-only lab routes.
+- Replace the old exact-coordinate overlap check with a shared seam inspector
+  that also detects adjacent-pixel double lines, missing rules, and incomplete
+  full-width rules. Add screenshot-pixel and full-height rail checks.
+- Document the new ownership and composition contract, retain attribution, and
+  review affected visual baselines before updating them.
+
+Checks:
+
+- Reproduce six composition/rail failures, the opaque-background pixel failure,
+  and scrolling stripes leaking through the sticky-header gutters in both themes
+  before their fixes.
+- Verify the composition matrix without JavaScript at 360, 768, 1024, and 1440px
+  in both themes; check accessibility and shared rule geometry in production.
+- Run `pnpm verify:full` and the reviewed lab visual targets.
+- Manually inspect desktop/mobile layouts, keyboard focus, scrolling, annotations,
+  and the continuous rails; preserve review screenshots outside tracked source.
+- Confirm no new dependency, hydration, production lab route, or unrelated change.
 
 ## 8. Stage 03 - Content model and core routes
 

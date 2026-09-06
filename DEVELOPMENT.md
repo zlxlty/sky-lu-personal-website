@@ -63,11 +63,10 @@ not repository files.
 - `src/components/blueprint/` preserves the attributed React module seam migrated
   from `ncdai/chanhdai.com`; Astro renders these modules statically without a
   `client:*` directive.
-- `Panel` is a boundary-owning divided stack: normal direct children are
-  sections, `PanelHeader` owns the compact title row, and a sibling
-  `PanelRuleBand` may follow it or separate later sections. The module
-  reconciles shared edges; do not coordinate adjoining rules with call-site
-  edge overrides.
+- `BlueprintPage` owns the continuous vertical rail around its header and main
+  content. `Panel` owns a divided vertical stack; panels and horizontal dividers
+  share those rails. The composition rules below keep joins consistent without
+  call-site border overrides.
 - React components become client islands only when an explicit `client:*` directive
   is necessary.
 - `src/components/ui/` contains the curated shadcn-compatible React primitives.
@@ -97,6 +96,67 @@ not repository files.
 Do not introduce SSR, a Worker binding, or a hydrated React wrapper for static
 content as a convenience. Cloudflare Workers Static Assets remains the production
 target.
+
+### Blueprint composition
+
+`BlueprintPage` creates one frame at least as tall as the viewport. Pass
+`BlueprintNavbar` in its `header` slot, as `BaseLayout.astro` does, so the header
+and content share the same two vertical rails. Standard main-element props,
+including `id`, accessible labels, `tabIndex`, and `className`, still apply to
+the main landmark. The shell owns width, clipping, and rail geometry. Its frame
+paints above section backgrounds, while the sticky header's backdrop spans the
+viewport so scrolling stripes do not show through the side gutters.
+
+`--color-blueprint-rule` controls the decorative rails, horizontal rules, and
+hatching at 12% ink opacity in both themes, including the system-theme fallback.
+Use this token to tune the sketch treatment independently of UI control borders
+and keyboard focus indicators.
+
+`Panel` is a flush **vertical stack**. Each visible direct child is a section:
+
+- The stack draws its opening and closing horizontal rules. Every later section
+  draws the join above it. Nested panels use the same rule, so parent/child and
+  sibling seams have one owner.
+- `PanelHeader` contains a title and optional `PanelDescription`. The header
+  handles their internal separator. Put `PanelRuleBand` or `StripeSeparator`
+  alongside the header or content as a stack section.
+- `PanelRuleBand` is the 16px blank band; `StripeSeparator` is the 32px hatched
+  band. They can begin, end, or repeat within a stack. Neither draws vertical
+  borders. Their visible ending edge comes from the next section or closing
+  stack rule when composed inside a panel.
+- Use `PanelContent` for padding, prose, flex/grid layouts, and feature islands.
+  For another divided stack inside padded content, nest a `Panel` there. Keep
+  padding, margins, and layout gaps off the stack itself: those would separate
+  edges that are meant to touch. Apply spacing within its sections instead.
+- `RailAnnotation` can appear before, between, or after sections. Its
+  `data-panel-overlay` marker excludes it from the flow count. Hidden elements,
+  script/style/template nodes, and empty panels also do not introduce joins.
+
+For example, these sections share one pair of vertical rails:
+
+```tsx
+<Panel>
+  <PanelHeader>
+    <PanelTitle>Research</PanelTitle>
+  </PanelHeader>
+  <PanelRuleBand />
+  <PanelContent>Overview</PanelContent>
+  <StripeSeparator />
+  <Panel>
+    <PanelContent>Nested section one</PanelContent>
+    <PanelRuleBand />
+    <PanelContent>Nested section two</PanelContent>
+  </Panel>
+</Panel>
+```
+
+Keep the `data-blueprint-edge` marker internal to the blueprint modules. Do not
+coordinate joins with negative margins or per-instance border suppression.
+Rules paint above section backgrounds and ignore pointer events. All composition
+behavior is CSS; no React context, child inspection, observer, or hydration is
+required. The CSS uses the standard filtered
+[`nth-child(... of selector)` syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:nth-child#the_of_selector_syntax)
+to count flow sections even when overlays interrupt the DOM order.
 
 ### Theme behavior
 
@@ -261,6 +321,14 @@ overlay, and command-menu specimens. Rail annotations appear outside the content
 rail at the `xl` breakpoint, so review them at 1280 px or wider. Astro's development
 toolbar remains available during manual use; the lab's automated checks hide that
 overlay so audits and screenshots measure only the application UI.
+
+The **Layout cases** link opens `/lab/blueprint/adjacent`. Its navigation exposes
+`dividers`, `nested`, `overlays`, `short`, `pairs`, `descriptions`, and `surfaces`.
+These static fixtures cover all nine panel/band/stripe pairings, deep nesting,
+empty/hidden sections, annotations, and opaque backgrounds. They are injected
+only during development, alongside `/lab`, and never enter the production build.
+The portable lab suite checks every seam across four widths and both themes with
+JavaScript disabled, plus screenshot pixels, full-height rails, and accessibility.
 
 `RailAnnotation` accepts Tailwind positioning utilities through `className` for
 call-site optical adjustments. Match the utility to the selected alignment:

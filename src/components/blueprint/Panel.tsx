@@ -8,14 +8,15 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * A full-bleed divided stack. Normal adjacent sections share one separator;
- * a direct-child PanelRuleBand owns its paired separators.
+ * A flush vertical stack. The stack owns its outer rules; each later section
+ * owns its starting rule. Put padding or grid layouts inside PanelContent.
  */
 export function Panel({ className, ...props }: ComponentProps<"section">) {
   return (
     <section
       data-slot="panel"
-      className={cn("panel-stack border-x border-line", className)}
+      data-blueprint-edge=""
+      className={cn("panel-stack", className)}
       {...props}
     />
   );
@@ -89,6 +90,7 @@ export function PanelRuleBand({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="panel-rule-band"
+      data-blueprint-edge=""
       className={cn(
         "screen-line-top screen-line-bottom col-span-full h-4",
         className,

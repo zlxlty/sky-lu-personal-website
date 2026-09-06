@@ -309,7 +309,14 @@ Include:
 
 - Main rail maximum width: 768 px.
 - Wide hero bleed: up to 960 px on large screens, while identity text remains in the 768 px rail.
-- Rail receives 1 px left and right borders on desktop.
+- The outer blueprint page panel owns one continuous pair of 1 px vertical
+  rails, spanning the header and content and at least the full viewport height.
+  Nested panels share those rails; horizontal dividers never add vertical borders.
+- Blueprint rails, horizontal rules, and hatching use 12% ink opacity in both
+  themes for a faint sketch treatment, controlled by `--color-blueprint-rule`.
+- Panels compose as vertical stacks, including nested stacks. Each physical
+  horizontal seam has one paint owner, including adjacent panels, paired rule
+  bands, striped dividers, and stacks with decorative overlays or hidden sections.
 - Section boundaries align to a shared 8 px spacing grid.
 - Mobile side padding: 20 px.
 - Desktop section spacing: 72-96 px depending on content density.
@@ -328,6 +335,7 @@ Include:
   --color-brass: #38332f;
   --color-brass-soft: #e7d6be;
   --color-rule: rgb(56 51 47 / 18%);
+  --color-blueprint-rule: rgb(56 51 47 / 12%);
   --color-rule-strong: rgb(56 51 47 / 32%);
   --color-overlay: rgb(43 39 36 / 25%);
   --color-focus: #38332f;
@@ -350,6 +358,7 @@ Include:
   --color-brass: #ae9877;
   --color-brass-soft: #4a4033;
   --color-rule: rgb(174 152 119 / 18%);
+  --color-blueprint-rule: rgb(174 152 119 / 12%);
   --color-rule-strong: rgb(174 152 119 / 32%);
   --color-overlay: rgb(0 0 0 / 50%);
   --color-focus: #ae9877;

@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { inspectBlueprintRules } from "../support/blueprint-rules";
 
 test("development lab is absent from the production build", async ({
   page,
@@ -217,8 +218,8 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
 
   expect(shell.position).toBe("sticky");
   expect(shell.header.height).toBe(52);
-  expect(shell.headerRail.left).toBeCloseTo(shell.pageRail.left, 3);
-  expect(shell.headerRail.right).toBeCloseTo(shell.pageRail.right, 3);
+  expect(shell.headerRail.left).toBeCloseTo(shell.pageRail.left + 1, 3);
+  expect(shell.headerRail.right).toBeCloseTo(shell.pageRail.right - 1, 3);
   expect(shell.firstPanel.top).toBeCloseTo(shell.header.bottom, 3);
   expect(shell.toggle.right).toBeLessThan(shell.headerRail.right);
   expect(shell.headerBottomRule).toBe('""');
@@ -296,8 +297,9 @@ for (const width of [360, 768, 1024, 1440]) {
 
     expect(geometry.scrollWidth).toBe(geometry.viewport);
     expect(Math.abs(geometry.rail.left - geometry.rail.right)).toBeLessThan(1);
-    expect(geometry.headerRail.left).toBeCloseTo(geometry.rail.left, 3);
-    expect(geometry.headerRail.right).toBeCloseTo(geometry.rail.right, 3);
+    // Header content sits inside the frame's shared one-pixel rails.
+    expect(geometry.headerRail.left).toBeCloseTo(geometry.rail.left + 1, 3);
+    expect(geometry.headerRail.right).toBeCloseTo(geometry.rail.right + 1, 3);
     expect(geometry.figure.left).toBeGreaterThanOrEqual(geometry.rail.left);
     expect(geometry.figure.right).toBeGreaterThanOrEqual(geometry.rail.right);
     expect(geometry.themeToggle.left).toBeGreaterThanOrEqual(0);
@@ -457,9 +459,7 @@ test("hero title is optically aligned with its eyebrow", async ({ page }) => {
   expect(Math.abs(alignment.inkOffset)).toBeLessThanOrEqual(1);
 });
 
-test("rule bands own both edges at direct panel boundaries", async ({
-  page,
-}) => {
+test("rule bands keep their size and flush section joins", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("/");
 
@@ -483,23 +483,9 @@ test("rule bands own both edges at direct panel boundaries", async ({
     const titleBand = rect(bands[0], "title band");
     const endBand = rect(bands[1], "end band");
     const panelBounds = rect(panel, "panel");
-    const titleBandElement = bands[0];
-    const directBandElement = heroBands[0];
-    const before = getComputedStyle(titleBandElement, "::before");
-    const after = getComputedStyle(titleBandElement, "::after");
-    const directBefore = getComputedStyle(directBandElement, "::before");
-    const directAfter = getComputedStyle(directBandElement, "::after");
 
     return {
       bandHeights: [titleBand.height, endBand.height],
-      titleBandRules: {
-        before: before.content,
-        after: after.content,
-      },
-      directBandRules: {
-        before: directBefore.content,
-        after: directAfter.content,
-      },
       joins: [
         titleBand.top - header.bottom,
         body.top - titleBand.bottom,
@@ -512,8 +498,6 @@ test("rule bands own both edges at direct panel boundaries", async ({
   });
 
   expect(boundaries.bandHeights).toEqual([16, 16]);
-  expect(boundaries.titleBandRules).toEqual({ before: '""', after: '""' });
-  expect(boundaries.directBandRules).toEqual({ before: '""', after: '""' });
   expect(boundaries.joins).toEqual([0, 0, 0, 0]);
   expect(boundaries.titleBandWidth).toBeCloseTo(boundaries.headerWidth, 3);
 });
@@ -524,52 +508,14 @@ test("each physical screen rule has one visible paint owner", async ({
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("/");
 
-  const overlappingRules = await page.evaluate(() => {
-    const painters = [
-      ...document.querySelectorAll<HTMLElement>("main, main *"),
-    ].flatMap((element) => {
-      const bounds = element.getBoundingClientRect();
-
-      return (["::before", "::after"] as const).flatMap((pseudo) => {
-        const style = getComputedStyle(element, pseudo);
-        const height = Number.parseFloat(style.height);
-        if (
-          style.content === "none" ||
-          style.display === "none" ||
-          style.position !== "absolute" ||
-          height !== 1
-        ) {
-          return [];
-        }
-
-        const inset = Number.parseFloat(
-          pseudo === "::before" ? style.top : style.bottom,
-        );
-        const y =
-          pseudo === "::before"
-            ? bounds.top + inset
-            : bounds.bottom - inset - height;
-
-        return [
-          {
-            owner:
-              element.id ||
-              element.dataset.slot ||
-              element.tagName.toLowerCase(),
-            pseudo,
-            y: Math.round(y * 1000) / 1000,
-          },
-        ];
-      });
-    });
-
-    return Object.values(Object.groupBy(painters, ({ y }) => y)).filter(
-      (owners): owners is typeof painters =>
-        owners !== undefined && owners.length > 1,
-    );
-  });
-
-  expect(overlappingRules).toEqual([]);
+  const report = await inspectBlueprintRules(
+    page,
+    '[data-slot="panel"], [data-slot="panel-header"], [data-slot="panel-body"], [data-slot="panel-rule-band"], [data-slot="stripe-separator"], #integration-panel > dl',
+  );
+  expect(report.length).toBeGreaterThan(10);
+  expect(
+    report.filter(({ owners }) => owners.length !== 1 || !owners[0]?.fullWidth),
+  ).toEqual([]);
 });
 
 test("homepage serves both visual themes and local typography", async ({
