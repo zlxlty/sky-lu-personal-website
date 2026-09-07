@@ -16,7 +16,7 @@ for (const colorScheme of ["light", "dark"] as const) {
           const footer = page.getByRole("contentinfo");
           await expect(footer).toHaveCount(1);
           await expect(
-            footer.getByRole("heading", { name: "Systems, software & sound." }),
+            footer.getByRole("heading", { name: "Simmer, strace & strum." }),
           ).toBeVisible();
           await expect(
             page.getByRole("main").getByRole("contentinfo"),

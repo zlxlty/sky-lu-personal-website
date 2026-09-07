@@ -2,125 +2,28 @@
 import {
   Panel,
   PanelContent,
-  PanelHeader,
   PanelRuleBand,
-  PanelTitle,
 } from "@/components/blueprint/Panel";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
-import AstroSmoke from "@/components/foundation/AstroSmoke.astro";
-import StaticMdxSmoke from "@/components/foundation/StaticMdxSmoke.mdx";
-import { StaticReactSmoke } from "@/components/foundation/StaticReactSmoke";
+import HomeHero from "@/components/site/HomeHero.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { profile } from "@/data/profile";
-
-const title = profile.name;
-const description = profile.siteDescription;
-const buildMetadata = [
-  { label: "Rendering", value: "Static Astro" },
-  { label: "Client runtime", value: "Theme controller" },
-  { label: "Next boundary", value: "Content model" },
-];
 ---
 
 <BaseLayout
-  {title}
-  {description}
+  title={profile.name}
+  description={profile.siteDescription}
   mainLabel={`${profile.name} personal website`}
 >
-  <Panel id="hero-panel" aria-labelledby="hero-heading">
-    <PanelHeader className="py-12 sm:py-18">
-      <p
-        data-slot="eyebrow"
-        class="mb-3 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-(--tracking-meta) text-muted-foreground uppercase"
-      >
-        Foundation online
-      </p>
-      <h1 id="hero-heading" class="indent-[-0.04em] font-heading">{title}</h1>
-    </PanelHeader>
-
-    <StripeSeparator />
-    <PanelRuleBand />
-
-    <PanelContent>
-      <p
-        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
-      >
-        This static Astro page establishes the build boundary for the personal
-        site. The full design and interactive hero will arrive in reviewed
-        feature commits.
-      </p>
-    </PanelContent>
-    <PanelContent>
-      <p
-        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
-      >
-        This static Astro page establishes the build boundary for the personal
-        site. The full design and interactive hero will arrive in reviewed
-        feature commits.
-      </p>
-    </PanelContent>
-    <PanelContent>
-      <p
-        class="m-0 max-w-(--size-prose) text-(length:--text-body-large) text-muted-foreground"
-      >
-        This static Astro page establishes the build boundary for the personal
-        site. The full design and interactive hero will arrive in reviewed
-        feature commits.
-      </p>
-    </PanelContent>
-  </Panel>
-
+  <HomeHero />
   <StripeSeparator />
-
-  <Panel id="integration-panel" aria-labelledby="integration-heading">
-    <PanelHeader>
-      <PanelTitle id="integration-heading">Integration checks</PanelTitle>
-    </PanelHeader>
-
-    <PanelRuleBand />
-
-    <PanelContent className="flex flex-col gap-4">
-      <p
-        class="m-0 max-w-(--size-prose) text-base text-balance text-muted-foreground"
-      >
-        Astro, React, and MDX currently resolve to one accessible document
-        without hydrating a component tree.
-      </p>
-
-      <figure class="m-0">
-        <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <AstroSmoke label="Astro component" />
-          <StaticReactSmoke label="React without hydration" />
-          <StaticMdxSmoke />
-        </div>
-        <figcaption
-          class="flex flex-wrap gap-x-3 gap-y-2 pt-3 text-(length:--text-small) leading-(--leading-meta) text-muted-foreground"
-        >
-          <span
-            class="font-mono text-(length:--text-meta) font-semibold tracking-[0.08em] text-foreground uppercase"
-          >
-            Build boundary
-          </span>
-          Three authoring models, rendered as static HTML.
-        </figcaption>
-      </figure>
-    </PanelContent>
-
-    <dl
-      class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(10rem,100%),1fr))] gap-x-8 gap-y-4 px-4 py-4"
+  <PanelRuleBand />
+  <Panel>
+    <PanelContent
+      className="flex flex-wrap items-center justify-between gap-4 py-7 text-sm"
     >
-      {
-        buildMetadata.map((item) => (
-          <div>
-            <dt class="mb-1 font-mono text-(length:--text-meta) leading-(--leading-meta) font-semibold tracking-[0.08em] text-muted-foreground uppercase">
-              {item.label}
-            </dt>
-            <dd class="m-0 text-(length:--text-small)">{item.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
-
-    <PanelRuleBand />
+      <span>Explore the work behind the strings.</span>
+      <a href="/projects">Selected projects ↗</a>
+    </PanelContent>
   </Panel>
 </BaseLayout>

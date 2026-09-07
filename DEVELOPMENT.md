@@ -190,6 +190,26 @@ checks. The lab suite exercises the shared command and header behavior.
 
 ### Shared site navigation and footer
 
+The homepage at `/` uses `src/components/site/HomeHero.astro` for static identity
+copy and layout. Only its guitar SVG hydrates as a React island. Development and
+production render the same selected design, with no variants or design chooser.
+The guitar uses a filled sound hole and a 35-degree angle, with compact copy at
+the bottom left. Its drawing spans the full hero on desktop; below 768 px it
+stacks below the text and crops to the instrument. The right rail annotation
+places its arrow above the two-line interaction hint; the shared component hides
+it when there is no gutter space. The figure retains screen-reader instructions,
+with no visible caption/status or duplicate navigation row. Run the interaction
+and responsive checks with `pnpm test:e2e guitar.spec.ts`.
+
+`src/components/guitar/GuitarStrings.tsx` renders the static SVG and owns input
+lifecycle. `string-geometry.ts` owns finite-segment crossings and gauge order;
+`string-motion.ts` owns one on-demand animation loop and direct SVG updates.
+Clicking or tapping a string plucks it immediately; holding the primary pointer
+and crossing strings strums them. Release never adds another pluck. Touch uses
+the same one-finger gesture; Tab then Enter/Space is the keyboard alternative.
+Reduced motion gives a brief highlight instead of vibration. The guitar has no
+audio engine or audio-context initialization in this candidate.
+
 `src/components/site/SiteHeader.astro` owns the static `sky lu.` wordmark, public
 navigation records, and current-page labels. The wordmark reuses the preloaded
 Geist font and needs no client code. `SiteFooter.astro` consumes the shared profile's

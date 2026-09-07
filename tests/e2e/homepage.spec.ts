@@ -26,12 +26,15 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
 
   const response = await page.goto("/");
+  await expect(page.locator("[data-guitar]")).toHaveAttribute("data-ready");
   const accessibility = await new AxeBuilder({ page }).analyze();
 
   expect({
     status: response?.status(),
     title: await page.title(),
-    heading: await page.getByRole("heading", { level: 1 }).textContent(),
+    heading: (
+      await page.getByRole("heading", { level: 1 }).textContent()
+    )?.trim(),
     mainLandmarks: await page.getByRole("main").count(),
     panels: await page.locator('[data-slot="panel"]').count(),
     ruleBands: await page.locator('[data-slot="panel-rule-band"]').count(),
@@ -39,19 +42,17 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
       .locator(".screen-line-top-none, .screen-line-bottom-none")
       .count(),
     islands: await page.locator("astro-island").count(),
-    scripts: await page.locator("script").count(),
     runtimeErrors,
     accessibilityViolations: accessibility.violations.map(({ id }) => id),
   }).toEqual({
     status: 200,
     title: "Sky Lu",
-    heading: "Sky Lu",
+    heading: "Sky Lu ;)",
     mainLandmarks: 1,
     panels: 2,
-    ruleBands: 3,
+    ruleBands: 1,
     edgeOverrides: 0,
-    islands: 0,
-    scripts: 4, // Theme bootstrap/control, sketch enhancement, and optional audio controls.
+    islands: 1,
     runtimeErrors: [],
     accessibilityViolations: [],
   });
@@ -287,7 +288,7 @@ for (const width of [360, 768, 1024, 1440]) {
         };
       };
       const heroHeader = document.querySelector<HTMLElement>(
-        '#hero-panel > [data-slot="panel-header"]',
+        '#hero-panel [data-slot="panel-body"]',
       );
       const themeToggle = document.querySelector<HTMLElement>(
         "[data-theme-toggle]",
@@ -300,7 +301,7 @@ for (const width of [360, 768, 1024, 1440]) {
         viewport: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
         rail: rect('[data-slot="blueprint-rail"]'),
-        heroHeader: rect('#hero-panel > [data-slot="panel-header"]'),
+        heroHeader: rect('#hero-panel [data-slot="panel-body"]'),
         heroHeaderPaddingLeft: Number.parseFloat(
           getComputedStyle(heroHeader).paddingLeft,
         ),
@@ -329,193 +330,46 @@ for (const width of [360, 768, 1024, 1440]) {
   });
 }
 
-test("integration title uses the compact blueprint header composition", async ({
+test("hero text shares its left inset", async ({ page }) => {
+  await page.goto("/");
+  const starts = await page
+    .locator("[data-hero-copy] > *")
+    .evaluateAll((elements) =>
+      elements.map((element) => element.getBoundingClientRect().left),
+    );
+  expect(starts).toHaveLength(3);
+  expect(new Set(starts).size).toBe(1);
+});
+
+test("the hero's stripe and rule band join flush with the next section", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("/");
-
-  const composition = await page.evaluate(() => {
-    const stripe = document.querySelector<HTMLElement>(
-      'main > [data-slot="stripe-separator"]',
-    );
-    const panel = document.querySelector<HTMLElement>("#integration-panel");
-    const header = panel?.querySelector<HTMLElement>(
-      ':scope > [data-slot="panel-header"]',
-    );
-    const title = panel?.querySelector<HTMLElement>(
-      '[data-slot="panel-title"]',
-    );
-    if (!stripe || !panel || !header || !title) {
-      throw new Error("Missing integration title composition");
-    }
-
-    const stripeBounds = stripe.getBoundingClientRect();
-    const panelBounds = panel.getBoundingClientRect();
-    const headerBounds = header.getBoundingClientRect();
-    const titleBounds = title.getBoundingClientRect();
-    const headerStyle = getComputedStyle(header);
-
-    return {
-      titleParent: title.parentElement?.dataset.slot,
-      firstPanelChild: panel.firstElementChild?.getAttribute("data-slot"),
-      afterHeader: header.nextElementSibling?.getAttribute("data-slot"),
-      joins: [
-        panelBounds.top - stripeBounds.bottom,
-        Number.parseFloat(headerStyle.paddingTop),
-        titleBounds.left -
-          headerBounds.left -
-          Number.parseFloat(headerStyle.paddingLeft),
-        headerBounds.bottom - titleBounds.bottom,
-      ],
-    };
-  });
-
-  expect(composition).toEqual({
-    titleParent: "panel-header",
-    firstPanelChild: "panel-header",
-    afterHeader: "panel-rule-band",
-    joins: [0, 0, 0, 0],
-  });
-});
-
-test("panel sections share one responsive spacing rhythm", async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await page.goto("/");
-
-  const rhythm = await page.evaluate(() => {
-    const bounds = (selector: string) => {
-      const element = document.querySelector<HTMLElement>(selector);
-      if (!element) throw new Error(`Missing rhythm element: ${selector}`);
-      return element.getBoundingClientRect();
-    };
-    const integrationHeaderElement = document.querySelector<HTMLElement>(
-      "#integration-panel header",
-    );
-    const integrationBodyElement = document.querySelector<HTMLElement>(
-      '#integration-panel [data-slot="panel-body"]',
-    );
-    if (!integrationHeaderElement || !integrationBodyElement) {
-      throw new Error("Missing integration panel structure");
-    }
-    const integrationDescription = bounds(
-      '#integration-panel [data-slot="panel-body"] > p',
-    );
-    const integrationBody = bounds(
-      '#integration-panel [data-slot="panel-body"]',
-    );
-    const integrationGrid = bounds("#integration-panel figure > div");
-    const integrationCaption = bounds("#integration-panel figcaption");
-    const metadata = bounds("#integration-panel dl");
-    const metadataItem = bounds("#integration-panel dl > div");
-
-    return {
-      sectionBlock: Number.parseFloat(
-        getComputedStyle(integrationBodyElement).paddingBottom,
-      ),
-      inlineStarts: [
-        bounds("#hero-heading").left,
-        bounds('#hero-panel [data-slot="panel-body"] p').left,
-        bounds("#integration-heading").left,
-        integrationGrid.left,
-        metadataItem.left,
-      ],
-      blockGaps: [
-        integrationDescription.top - integrationBody.top,
-        integrationGrid.top - integrationDescription.bottom,
-        integrationBody.bottom - integrationCaption.bottom,
-        metadataItem.top - metadata.top,
-        metadata.bottom - metadataItem.bottom,
-      ],
-    };
-  });
-
-  expect(new Set(rhythm.inlineStarts).size).toBe(1);
-  for (const gap of rhythm.blockGaps) {
-    expect(gap).toBeCloseTo(rhythm.sectionBlock, 3);
-  }
-});
-
-test("hero title is optically aligned with its eyebrow", async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await page.goto("/");
-  await page.evaluate(() => document.fonts.ready.then(() => undefined));
-
-  const alignment = await page.evaluate(() => {
-    const heading = document.querySelector<HTMLElement>("#hero-heading");
-    const eyebrow = document.querySelector<HTMLElement>(
-      '#hero-panel [data-slot="eyebrow"]',
-    );
-    if (!heading || !eyebrow) throw new Error("Missing hero typography");
-
-    const style = getComputedStyle(heading);
-    const context = document.createElement("canvas").getContext("2d");
-    if (!context) throw new Error("Canvas 2D context is unavailable");
-
-    context.font = style.font;
-    const firstCharacter = heading.textContent?.trim().charAt(0) ?? "";
-    const glyph = context.measureText(firstCharacter);
-
-    return {
-      boxOffset:
-        heading.getBoundingClientRect().left -
-        eyebrow.getBoundingClientRect().left,
-      inkOffset:
-        heading.getBoundingClientRect().left +
-        Number.parseFloat(style.textIndent) -
-        glyph.actualBoundingBoxLeft -
-        eyebrow.getBoundingClientRect().left,
-      marginInlineStart: Number.parseFloat(style.marginInlineStart),
-      textIndent: Number.parseFloat(style.textIndent),
-    };
-  });
-
-  expect(alignment.boxOffset).toBeCloseTo(0, 3);
-  expect(alignment.marginInlineStart).toBe(0);
-  expect(Math.abs(alignment.inkOffset)).toBeLessThanOrEqual(1);
-});
-
-test("rule bands keep their size and flush section joins", async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await page.goto("/");
-
   const boundaries = await page.evaluate(() => {
-    const rect = (element: Element | null, label: string) => {
-      if (!element) throw new Error(`Missing boundary element: ${label}`);
-      return element.getBoundingClientRect();
-    };
-    const panel = document.querySelector("#integration-panel");
-    const bands = panel?.querySelectorAll('[data-slot="panel-rule-band"]');
-    const heroSeparators = document.querySelectorAll(
-      '#hero-panel > [data-slot="stripe-separator"] + [data-slot="panel-rule-band"]',
-    );
-    if (!panel || !bands || bands.length !== 2 || heroSeparators.length !== 1) {
-      throw new Error("Missing direct panel rule bands");
-    }
-
-    const header = rect(panel.querySelector("header"), "header");
-    const body = rect(panel.querySelector('[data-slot="panel-body"]'), "body");
-    const metadata = rect(panel.querySelector("dl"), "metadata");
-    const titleBand = rect(bands[0], "title band");
-    const endBand = rect(bands[1], "end band");
-    const panelBounds = rect(panel, "panel");
-
+    const hero = document.querySelector("#hero-panel");
+    const stripe = hero?.nextElementSibling;
+    const band = stripe?.nextElementSibling;
+    const next = band?.nextElementSibling;
+    if (!hero || !stripe || !band || !next)
+      throw new Error("Missing hero boundary");
+    const h = hero.getBoundingClientRect();
+    const s = stripe.getBoundingClientRect();
+    const b = band.getBoundingClientRect();
+    const n = next.getBoundingClientRect();
     return {
-      bandHeights: [titleBand.height, endBand.height],
-      joins: [
-        titleBand.top - header.bottom,
-        body.top - titleBand.bottom,
-        endBand.top - metadata.bottom,
-        panelBounds.bottom - endBand.bottom,
-      ],
-      titleBandWidth: titleBand.width,
-      headerWidth: header.width,
+      stripe: stripe.getAttribute("data-slot"),
+      band: band.getAttribute("data-slot"),
+      height: b.height,
+      width: b.width,
+      heroWidth: h.width,
+      joins: [s.top - h.bottom, b.top - s.bottom, n.top - b.bottom],
     };
   });
-
-  expect(boundaries.bandHeights).toEqual([16, 16]);
-  expect(boundaries.joins).toEqual([0, 0, 0, 0]);
-  expect(boundaries.titleBandWidth).toBeCloseTo(boundaries.headerWidth, 3);
+  expect(boundaries.stripe).toBe("stripe-separator");
+  expect(boundaries.band).toBe("panel-rule-band");
+  expect(boundaries.height).toBe(16);
+  expect(boundaries.width).toBeCloseTo(boundaries.heroWidth, 3);
+  expect(boundaries.joins).toEqual([0, 0, 0]);
 });
 
 test("each physical screen rule has one visible paint owner", async ({
@@ -526,9 +380,10 @@ test("each physical screen rule has one visible paint owner", async ({
 
   const report = await inspectBlueprintRules(
     page,
-    '[data-slot="panel"], [data-slot="panel-header"], [data-slot="panel-body"], [data-slot="panel-rule-band"], [data-slot="stripe-separator"], #integration-panel > dl',
+    // Only stack boundaries own rules; the hero's inner grid is one section.
+    'main > [data-slot="panel"], main > [data-slot="panel-rule-band"], main > [data-slot="stripe-separator"]',
   );
-  expect(report.length).toBeGreaterThan(10);
+  expect(report.length).toBeGreaterThan(2);
   expect(
     report.filter(({ owners }) => owners.length !== 1 || !owners[0]?.fullWidth),
   ).toEqual([]);
@@ -668,7 +523,16 @@ test.describe("without JavaScript", () => {
     await page.goto("/");
 
     await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sky Lu");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Sky Lu ;)",
+    );
+    await expect(page.locator("[data-hero-copy]")).toContainText(
+      "Agents running at the desk",
+    );
+    await expect(page.locator("[data-guitar]")).toBeVisible();
+    await expect(
+      page.locator('[data-guitar-string][aria-disabled="true"]'),
+    ).toHaveCount(6);
     await expect(
       page.getByRole("banner").locator("[data-theme-toggle]"),
     ).toBeHidden();

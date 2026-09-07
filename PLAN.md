@@ -21,7 +21,7 @@ The site is both a portfolio and a technical blog. It should feel like a careful
 - The playable guitar is the hero's primary interactive visual, not a lower-page reveal.
 - The homepage is useful with JavaScript disabled; only explicit interactive islands require JavaScript.
 - Articles support code, math, Mermaid diagrams, forms, and embedded interactive components through MDX.
-- The guitar supports individual plucks and ordered multi-string strums using the required `F`-key interaction.
+- The guitar supports individual plucks and ordered multi-string strums while the primary pointer is held down over the instrument.
 - Static pages remain fast and cacheable on Cloudflare.
 - Both light and dark themes are supported.
 - The public site contains no comments, reactions, view counts, guestbook, authentication, CMS, or unnecessary database.
@@ -152,23 +152,36 @@ The hero pairs the identity block with the playable guitar. On wide screens, the
 Behavior:
 
 - Render a meaningful static six-string SVG before the React island hydrates.
-- Show the mute/unmute control and the instruction `Unmute, hold F, then cross one or more strings` immediately beside the instrument.
+- The current guitar is silent: six strings and a sound hole,
+  with the neck pointing toward the upper left and string 6 (low E, thickest)
+  below string 1 (high E).
+- Put `Click to pluck` and `Drag to strum` on separate lines in a right-side
+  `RailAnnotation`, with its arrow above the text. It follows the shared gutter
+  visibility breakpoint. Keep instructions and status accessible to screen
+  readers without a visible caption or status row beneath the guitar.
+- The selected visual pairs a filled sound hole with a side-by-side
+  composition, using a 35-degree string angle. Compact identity copy sits at
+  the bottom left, clear of the strings. The drawing spans the full hero so
+  strings reach its outer edge without being cut off by the text column.
+  Below 768 px, the guitar stacks beneath the copy.
+- Resolve sound and explicit audio activation in the following commit; do not
+  show a mute/unmute control before an audio engine exists.
 - Keep Tone.js out of the initial bundle and load it only after explicit unmute.
 - Preserve visual plucking while muted, but never produce sound before explicit activation.
 - Use the documented reduced-motion, keyboard, and touch alternatives without moving the instrument to another section.
 - Do not place a competing pointer-driven network interaction in the hero.
 
-Proposed figure caption:
-
-> Fig. 1. Six strings, tuned E-A-D-G-B-E. Unmute, hold F, and cross a path to play.
-
 ### 5.3 Hero identity block
 
 Initial copy:
 
-> # Sky Lu
+> # Sky Lu ;)
 >
-> Computer science master's student at Brown. I build fast distributed systems and AI infrastructure - and play jazz guitar.
+> Agents running at the desk, something simmering on the stove, jazz guitar in between. I’m a CS master’s student at Brown, learning and building abstractions.
+
+The hero eyebrow reads `Usually making something`. The introduction should
+connect distributed systems, cooking, jazz guitar, and learning category/type
+theory without implying expertise in the latter.
 
 Compact identity labels:
 
@@ -177,12 +190,8 @@ Compact identity labels:
 - Network Systems Researcher
 - Jazz Guitarist
 
-Primary links:
-
-- Read my writing
-- Explore projects
-- GitHub
-- Résumé / CV
+Writing, Projects, and CV remain in the shared header rather than being repeated
+in a link row beneath the hero identity. GitHub remains available in the footer.
 
 Reserve a portrait slot that can initially contain an abstract monogram or neutral placeholder. Do not fabricate a face or use a stock portrait.
 
@@ -281,7 +290,7 @@ Initial copy:
 
 The playable instrument remains in the hero; do not mount a second guitar island here. Include a `Play the hero guitar` link back to the instrument and repeat the concise usage hint for visitors who arrived through the `Jazz` anchor:
 
-> Unmute, hold `F`, then cross one or more strings.
+> Hold the mouse button and drag across the strings.
 
 The actual mute/unmute control stays beside the hero instrument and always exposes a text label to assistive technology.
 
@@ -302,7 +311,7 @@ Initial topic taxonomy:
 
 Include:
 
-- Editorial notebook sign-off: "Systems, software & sound." and a handwritten
+- Editorial notebook sign-off: "Simmer, strace & strum." and a handwritten
   "Thanks for stopping by."
 - A minimal vinyl, tonearm, and cartridge drawing beside the sign-off, stacked
   below it on mobile. Play Sky's uploaded covers from the authored playlist.
@@ -458,14 +467,18 @@ React owns lifecycle, controls, status text, and SVG structure. Per-frame pointe
 
 ### 7.2 String model
 
-| Index | Name | Tone.js note | Visual width |
-| ---: | --- | --- | ---: |
-| 0 | Low E | `E2` | 3.4 px |
-| 1 | A | `A2` | 2.8 px |
-| 2 | D | `D3` | 2.2 px |
-| 3 | G | `G3` | 1.5 px |
-| 4 | B | `B3` | 1.0 px |
-| 5 | High E | `E4` | 0.7 px |
+| Index | Name | Tone.js note | Gauge (inches) | Visual width (approx.) |
+| ---: | --- | --- | ---: | ---: |
+| 0 | High E (string 1, top) | `E4` | .012 | 0.7 px |
+| 1 | B | `B3` | .016 | 0.933 px |
+| 2 | G | `G3` | .024 | 1.4 px |
+| 3 | D | `D3` | .032 | 1.867 px |
+| 4 | A | `A2` | .042 | 2.45 px |
+| 5 | Low E (string 6, bottom) | `E2` | .053 | 3.092 px |
+
+Derive each stroke width from `0.7 × gauge / .012`, keeping the thinnest string
+as the visual baseline. Use non-scaling SVG strokes to preserve these widths
+across responsive layouts.
 
 Each visible string has a separate transparent interaction hit area of approximately 16-20 px. The hit area must not change the visual thickness.
 
@@ -475,7 +488,7 @@ States:
 
 - `muted`: visual interaction works but no audio is produced.
 - `ready`: audio context has been unlocked; instrument is not armed.
-- `armed`: `F` is held while the widget is eligible for pointer interaction.
+- `armed`: the primary mouse button, pen, or touch is held over the instrument.
 - `playing`: one or more strings are decaying visually and/or audibly.
 - `suspended`: tab hidden, window blurred, or widget offscreen.
 - `error`: audio could not start; visual behavior remains usable.
@@ -484,20 +497,20 @@ Transitions:
 
 - Initial state is muted.
 - Clicking unmute dynamically loads Tone.js, calls `Tone.start()`, creates the audio graph, and moves to ready.
-- `keydown` for `F` moves ready/muted to armed unless focus is inside an input, textarea, select, editable element, or dialog text field.
-- `keyup`, window blur, visibility change, component unmount, or pointer leaving the active region disarms safely.
+- Primary `pointerdown` within the instrument moves ready/muted to armed and captures that pointer.
+- `pointerup`, cancellation, lost capture, window blur, visibility change, component unmount, or pointer leaving the active region disarms safely.
 - Key repeat must not retrigger notes.
-- Pressing `F` while the pointer is already stationary over a string does not trigger it; a geometric crossing is required.
+- Pressing a string's hit area plucks that string once, immediately, for mouse,
+  pen, or touch. Holding without moving does not repeat it, and release never
+  adds another pluck. Holding and crossing other strings continues the strum.
 
 ### 7.4 Crossing and strum algorithm
 
 Track the previous and current pointer samples in SVG-local coordinates.
 
-For each horizontal string baseline `y_i`, detect a crossing when:
-
-```text
-(previousY - y_i) and (currentY - y_i) have opposite signs
-```
+Intersect the pointer segment with each finite string segment in SVG-local
+coordinates. This works at any string tilt. Ignore intersections at the start
+of the pointer segment to avoid counting a shared sample twice.
 
 Additional constraints:
 
@@ -525,6 +538,8 @@ displacement(x, time) =
 Implementation choices:
 
 - Approximate each path with 24-40 points; six paths remain inexpensive.
+- Keep strum displacement restrained while retaining its speed response. Direct
+  click, tap, and keyboard plucks use a gentler fixed impulse than a fast strum.
 - Run one `requestAnimationFrame` loop for all strings.
 - Stop the loop when every amplitude falls below an epsilon.
 - Do not use Anime.js for per-frame string physics.
@@ -548,8 +563,8 @@ Implementation choices:
 - Expose mute state using a real button with `aria-pressed` and a visible tooltip/label.
 - Announce audio initialization errors in a polite live region.
 - Render each string as a keyboard-focusable logical control in addition to the SVG presentation.
-- Accessibility exception to the pointer rule: when a string control is focused, pressing `F` triggers that string.
-- On touch devices, replace the unavailable keyboard modifier with a visible press-and-hold `Play` control; dragging while held performs the same crossing algorithm.
+- Accessibility exception to the pointer rule: Enter or Space plucks the focused string, without key-repeat retriggering.
+- Touch supports a tap to pluck or a single-finger press and drag to strum, with the same pointer capture and crossing algorithm. Scrolling remains available outside the instrument.
 - Never rely on color alone for armed/muted status.
 - Keep instructions visible, concise, and updated for the current input modality.
 
@@ -932,8 +947,8 @@ Add Sentry when the first public interactive version is stable enough to produce
 - Crossing outside the playable span does not trigger.
 - Per-string cooldown suppresses jitter.
 - Velocity-to-amplitude mapping clamps correctly.
-- `F` state resets on keyup, blur, visibility change, and unmount.
-- Focused text inputs suppress the global shortcut.
+- Pointer arming resets on release, cancellation, blur, visibility change, and unmount.
+- No global keyboard arming shortcut is installed.
 - Content schemas reject invalid dates, missing descriptions, and malformed tags.
 - Draft filtering excludes content from all production indexes.
 
@@ -942,11 +957,11 @@ Add Sentry when the first public interactive version is stable enough to produce
 - Homepage renders and remains navigable with JavaScript disabled.
 - Theme initializes without a flash and persists after reload.
 - Unmute requires an explicit click.
-- Holding `F` and crossing one string produces one instrument event.
+- Holding the primary pointer and crossing one string produces one instrument event.
 - Crossing several strings produces ordered events.
-- Moving without `F` does not pluck.
-- `F` while typing into a form does not arm the guitar.
-- Mobile press-and-hold fallback works.
+- Moving without holding the primary pointer does not pluck.
+- Typing into a form does not arm the guitar.
+- Single-finger touch strumming works without scrolling the instrument.
 - Reduced-motion mode disables decorative animation.
 - Command palette finds routes and posts.
 - Mermaid and math render in both themes.
@@ -1055,7 +1070,7 @@ Acceptance:
 - Replace the hero's static six-string placeholder with the interactive React island.
 - Implement pure crossing geometry and tests.
 - Implement six SVG strings and damped visual physics.
-- Implement `F`-key state machine.
+- Implement primary-pointer capture and arming state machine.
 - Implement Tone.js lazy loading and six PluckSynth voices.
 - Implement ordered strums, mute control, error handling, mobile fallback, and keyboard fallback.
 
