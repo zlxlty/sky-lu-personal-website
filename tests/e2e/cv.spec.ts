@@ -35,7 +35,6 @@ for (const colorScheme of ["light", "dark"] as const) {
         await expect(link).toBeInViewport();
 
         await page.keyboard.press("Tab"); // Skip link.
-        await page.keyboard.press("Tab"); // Home.
         await page.keyboard.press("Tab"); // Writing.
         await page.keyboard.press("Tab"); // Projects.
         await page.keyboard.press("Tab"); // CV.

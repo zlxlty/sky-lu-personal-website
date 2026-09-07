@@ -1,6 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import { basename } from "node:path";
 import quartertone from "../../src/assets/guitar/quartertone.json" with { type: "json" };
+import { profile } from "../../src/data/profile";
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
@@ -69,10 +70,10 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
   }).toEqual({
     status: 200,
     title: "Sky Lu",
-    heading: "Sky Lu ;)",
+    heading: "sky lu.",
     mainLandmarks: 1,
-    panels: 2,
-    ruleBands: 1,
+    panels: 8,
+    ruleBands: 3,
     edgeOverrides: 0,
     islands: 1,
     runtimeErrors: [],
@@ -81,6 +82,41 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
 });
 
 for (const theme of ["light", "dark"] as const) {
+  test(`hero name hint supports hover, focus, and dismissal in ${theme} mode`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: theme });
+    await page.goto("/");
+    const trigger = page.locator("[data-name-hint-trigger]");
+    const tooltip = page.locator("#hero-name-hint");
+    const heading = page.getByRole("heading", { level: 1 });
+    await expect(trigger).not.toHaveAttribute("title");
+    await expect(tooltip).toBeHidden();
+    const headingBox = await heading.boundingBox();
+
+    await trigger.hover();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveText("Legal Name: Tianyi Lu");
+    await expect(trigger).toHaveAccessibleDescription("Legal Name: Tianyi Lu");
+    expect(await heading.boundingBox()).toEqual(headingBox);
+    await tooltip.hover();
+    await expect(tooltip).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(tooltip).toBeHidden();
+
+    await page.mouse.move(0, 0);
+    await trigger.focus();
+    await expect(tooltip).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(trigger).toBeFocused();
+    await expect(tooltip).toBeHidden();
+    await page.keyboard.press("Tab");
+    await trigger.hover();
+    await expect(tooltip).toBeVisible();
+    await page.mouse.move(0, 0);
+    await expect(tooltip).toBeHidden();
+  });
+
   test(`first visit follows the ${theme} system theme before styles load`, async ({
     page,
   }) => {
@@ -261,7 +297,7 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
   expect(shell.firstPanelTopRule).toBe("none");
   await expect(
     page.getByRole("banner").getByRole("link", { name: "Sky Lu — Home" }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     page.getByRole("navigation", { name: "Main navigation" }).getByRole("link"),
   ).toHaveCount(3);
@@ -545,12 +581,17 @@ test.describe("without JavaScript", () => {
     await page.goto("/");
 
     await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "Sky Lu ;)",
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("sky lu.");
     await expect(page.locator("[data-hero-copy]")).toContainText(
-      "Agents running at the desk",
+      profile.introduction,
     );
+    await expect(page.locator("[data-name-hint-trigger]")).toHaveAttribute(
+      "title",
+      "Legal Name: Tianyi Lu",
+    );
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: "Sky Lu — Home" }),
+    ).toHaveCount(0);
     await expect(page.locator("[data-guitar]")).toBeVisible();
     await expect(
       page.locator('[data-guitar-string][aria-disabled="true"]'),

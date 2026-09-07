@@ -4,6 +4,7 @@ import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import { GuitarPlayer } from "@/components/guitar/GuitarPlayer";
 import type { GuitarLayout } from "@/components/guitar/string-geometry";
 import { profile } from "@/data/profile";
+import SiteWordmark from "./SiteWordmark.astro";
 
 const guitarLayout = {
   width: 800,
@@ -23,16 +24,36 @@ const guitarLayout = {
       <div data-hero-copy>
         <p
           data-slot="eyebrow"
-          class="mb-4 font-mono text-[10px] tracking-widest uppercase"
+          class="mb-4 font-mono text-[10px] tracking-widest uppercase opacity-45"
         >
-          Usually making something
+          Sincere,Compassionate,Tolerant
         </p>
-        <h1
-          id="hero-heading"
-          class="m-0 font-heading text-4xl font-medium tracking-[-0.06em] md:text-5xl"
-        >
-          {profile.name} ;)
-        </h1>
+        <div data-name-hint class="relative w-fit">
+          <h1 id="hero-heading" class="m-0 font-heading text-4xl md:text-5xl">
+            <SiteWordmark>
+              <span
+                slot="first-name"
+                data-name-hint-trigger
+                tabindex="0"
+                aria-describedby="hero-name-hint"
+                title={`Legal Name: ${profile.legalName}`}
+                class="cursor-help">sky</span
+              >
+            </SiteWordmark>
+          </h1>
+          <span
+            id="hero-name-hint"
+            role="tooltip"
+            hidden
+            class="absolute bottom-full left-0 z-30 w-max max-w-72 pb-2"
+          >
+            <span
+              class="block rounded-(--radius-small) bg-foreground px-3 py-1.5 font-mono text-xs leading-normal font-normal tracking-normal text-background shadow-lg"
+            >
+              Legal Name: {profile.legalName}
+            </span>
+          </span>
+        </div>
         <p class="mt-4 mb-0 max-w-sm text-sm leading-relaxed">
           {profile.introduction}
         </p>
@@ -66,8 +87,40 @@ const guitarLayout = {
       <GuitarPlayer
         client:load
         layout={guitarLayout}
-        className="mx-auto max-w-lg md:max-w-none [&_[data-guitar]]:ml-[-135%] [&_[data-guitar]]:w-[250%] [&_[data-guitar]]:-translate-y-[4%] md:[&_[data-guitar]]:ml-0 md:[&_[data-guitar]]:w-full md:[&_[data-guitar]]:translate-y-0"
+        className="mx-auto max-w-lg md:max-w-none md:[&_[data-guitar-viewport]]:overflow-visible [&_[data-guitar]]:ml-[-135%] [&_[data-guitar]]:w-[250%] [&_[data-guitar]]:-translate-y-[4%] md:[&_[data-guitar]]:ml-0 md:[&_[data-guitar]]:w-full md:[&_[data-guitar]]:translate-y-0 md:[&_[data-guitar]]:overflow-visible md:[&_[data-guitar]]:[clip-path:inset(calc(-1*var(--size-site-header))_0_0)]"
       />
     </div>
   </div>
 </Panel>
+
+<script>
+  const hint = document.querySelector<HTMLElement>("[data-name-hint]");
+  const trigger = hint?.querySelector<HTMLElement>("[data-name-hint-trigger]");
+  const tooltip = hint?.querySelector<HTMLElement>('[role="tooltip"]');
+
+  if (hint && trigger && tooltip) {
+    // Keep the native title as the no-JavaScript fallback only.
+    trigger.removeAttribute("title");
+    const show = () => {
+      tooltip.hidden = false;
+    };
+    const hide = () => {
+      tooltip.hidden = true;
+    };
+
+    trigger.addEventListener("pointerenter", show);
+    trigger.addEventListener("focus", show);
+    // The padded tooltip is part of the same hover region, so it can be read
+    // or selected without disappearing as the pointer leaves the word.
+    hint.addEventListener("pointerleave", () => {
+      if (document.activeElement !== trigger) hide();
+    });
+    trigger.addEventListener("blur", () => {
+      if (!hint.matches(":hover")) hide();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") hide();
+    });
+    window.addEventListener("pagehide", hide);
+  }
+</script>

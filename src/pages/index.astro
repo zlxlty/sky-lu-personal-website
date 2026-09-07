@@ -1,11 +1,10 @@
 ---
-import {
-  Panel,
-  PanelContent,
-  PanelRuleBand,
-} from "@/components/blueprint/Panel";
+import { PanelRuleBand } from "@/components/blueprint/Panel";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
 import HomeHero from "@/components/site/HomeHero.astro";
+import HomeOverview from "@/components/site/HomeOverview.astro";
+import HomeResearch from "@/components/site/HomeResearch.astro";
+import HomeSelectedWork from "@/components/site/HomeSelectedWork.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { profile } from "@/data/profile";
 ---
@@ -18,17 +17,10 @@ import { profile } from "@/data/profile";
   <HomeHero />
   <StripeSeparator />
   <PanelRuleBand />
-  <Panel
-    id="after-guitar"
-    tabIndex={-1}
-    aria-label="Explore more"
-    className="scroll-mt-16"
-  >
-    <PanelContent
-      className="flex flex-wrap items-center justify-between gap-4 py-7 text-sm"
-    >
-      <span>Explore the work behind the strings.</span>
-      <a href="/projects">Selected projects ↗</a>
-    </PanelContent>
-  </Panel>
+  <HomeOverview />
+  <PanelRuleBand />
+  <HomeResearch />
+  <PanelRuleBand />
+  <HomeSelectedWork />
+  <StripeSeparator />
 </BaseLayout>

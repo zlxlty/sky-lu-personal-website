@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"span">;
+const { class: className, ...attributes } = Astro.props;
+---
+
+<span
+  {...attributes}
+  class:list={[
+    "inline-flex font-(family-name:--font-heading-family) leading-none font-semibold tracking-[-0.065em] whitespace-nowrap",
+    className,
+  ]}
+  ><slot name="first-name"><span>sky</span></slot>{" "}<span
+    class="ml-[0.16em] font-[350]">lu</span
+  ><span class="ml-[0.025em]">.</span></span
+>

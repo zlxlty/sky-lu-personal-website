@@ -138,6 +138,12 @@ Mobile navigation:
 - Theme toggle remains directly reachable.
 
 The header is approximately 52 px tall, sticky, and uses a lightly translucent paper background with `backdrop-filter` only where supported.
+Omit the wordmark/home link on the homepage, where the hero already provides the
+identity. Keep navigation and the theme control aligned right on every page.
+On the homepage, fade the background and its blur from transparent at scroll
+position zero to the standard paper mask over the first 96 px of scrolling,
+using an eased, reversible opacity curve. Reduced motion uses an immediate mask
+after scrolling begins; without JavaScript, retain the standard background.
 
 The approved header identity is an editorial `sky lu.` wordmark in the existing
 Geist font, with a semibold first name, lighter surname, and tight optical spacing.
@@ -163,6 +169,9 @@ Behavior:
   composition, using a 35-degree string angle. Compact identity copy sits at
   the bottom left, clear of the strings. The drawing spans the full hero so
   strings reach its outer edge without being cut off by the text column.
+  On desktop, extend the same SVG strings upward behind the navbar, clipped to
+  the page rails and the navbar's top. Keep navigation above the drawing and
+  retain the instrument's original pointer-interaction boundary.
   Below 768 px, the guitar stacks beneath the copy and uses an enlarged crop
   for touch: the sound hole fills roughly 80% of the figure width and all six
   strings stay individually reachable. Keep the complete sound hole centered
@@ -191,13 +200,21 @@ Behavior:
 
 Initial copy:
 
-> # Sky Lu ;)
+> # sky lu.
 >
-> Agents running at the desk, something simmering on the stove, jazz guitar in between. I’m a CS master’s student at Brown, learning and building abstractions.
+> I'm a CS master's student at Brown, learning and building abstractions.
 
-The hero eyebrow reads `Usually making something`. The introduction should
-connect distributed systems, cooking, jazz guitar, and learning category/type
-theory without implying expertise in the latter.
+Render the hero title with the same editorial wordmark as the navbar, scaled to
+the hero's responsive heading size. Share its typography and optical spacing in
+one static component.
+Hovering or focusing `sky` in the hero reveals `Legal Name: Tianyi Lu`. Keep
+the tooltip outside the heading's accessible name, dismissible with Escape,
+and available as a native title without JavaScript.
+
+The hero eyebrow reads `Sincere,Compassionate,Tolerant`. Keep “learning and building”
+together when the introduction wraps. The overview below connects distributed
+systems, cooking, jazz guitar, and learning category/type theory without implying
+expertise in the latter.
 
 Compact identity labels:
 
@@ -328,7 +345,7 @@ Initial topic taxonomy:
 Include:
 
 - Editorial notebook sign-off: "Simmer, strace & strum." and a handwritten
-  "Thanks for stopping by."
+  "Thanks for being here at this moment."
 - A minimal vinyl, tonearm, and cartridge drawing beside the sign-off, stacked
   below it on mobile. Play Sky's uploaded covers from the authored playlist.
   The enlarged disc has asymmetric

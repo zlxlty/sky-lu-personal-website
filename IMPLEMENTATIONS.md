@@ -1369,25 +1369,9 @@ the next content panel without JavaScript or interference from strumming.
 
 ### Commit 04.4 - add static hero and identity content
 
-Proposed message:
-
-```text
-feat: add homepage identity hero
-```
-
-Scope:
-
-- Extend the selected identity composition already introduced in 04.2.
-- Sky Lu identity copy and four identity labels.
-- Portrait placeholder that cannot be mistaken for a real photograph.
-- Keep navigation in the shared header/footer, without a duplicate hero link
-  row. Place the interaction hint in a right-side rail annotation.
-
-Checks:
-
-- First-viewport comprehension at mobile and desktop widths.
-- Layout shift review.
-- Reduced-motion/no-JavaScript baseline.
+Completed through the reviewed 04.2 and 04.3 composition. The user selected the
+text-and-guitar hero; no portrait placeholder or additional identity labels are
+needed. Preserve its approved copy and layout in the following content work.
 
 ### Commit 04.5 - add overview, research, and selected work
 
@@ -1400,10 +1384,21 @@ feat: add research and selected work sections
 Scope:
 
 - Overview metadata.
+- A concise personal introduction connecting distributed systems with learning
+  category/type theory, cooking, and jazz guitar; use the existing education data.
 - ATLAS Group research section.
 - Nikos Vasilakis attribution.
 - Dynamic Pages, efficient LLM serving, Tundra, and KVonset records.
 - Project metrics and approved public claims.
+- Static Astro sections using the existing blueprint panel stack; nested project
+  records derive titles, descriptions, tags, and first results from published
+  collection entries. Preserve the mobile guitar skip destination and exclude
+  draft writing. Experience disclosures and longer jazz/writing sections follow
+  as separate candidates.
+- Homepage header polish: omit the repeated wordmark, fade its background with
+  scroll, and extend the existing desktop guitar strings behind navigation.
+  Preserve the mobile composition, readable static fallback, and reduced motion.
+- Use the shared editorial wordmark for the hero title at its responsive scale.
 
 Checks:
 
