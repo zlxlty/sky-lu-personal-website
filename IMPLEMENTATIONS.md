@@ -1208,7 +1208,10 @@ that merged base. Keep the following candidates separate and individually review
 
 ### Goal
 
-Build the complete content and layout of the homepage, including a static hero-guitar placeholder, before adding signature motion or playable behavior.
+Build the homepage content and layout. The user brought guitar visual exploration
+forward after 04.1: review silent, pointer-driven designs first, then decide and
+connect sound in a separate commit. Remaining Stage 07 work will be reconciled
+with the selected implementation rather than repeated.
 
 ### Commit 04.1 - add site header and footer
 
@@ -1268,7 +1271,40 @@ Checks:
 - Playlist validation, next/previous wraparound, cancelled gestures, lazy media
   loading, keyboard/touch selection, stable caption height, and motion cleanup.
 
-### Commit 04.2 - add static hero and identity content
+### Commit 04.2 - add the selected silent guitar hero
+
+Proposed message:
+
+```text
+feat: add silent guitar visual interaction
+```
+
+Scope:
+
+- The selected filled-hole hero at `/`, with static Astro identity copy and
+  one React island for guitar behavior. Development and production match.
+- Six strings and a sound hole; tilt toward the upper left, with the sixth and
+  thickest string at the bottom. No guitar body, headstock, or sound controls.
+- Primary pointer hold and crossing replaces the former F-key requirement.
+- Shared finite-segment geometry and an idle-stopping string physics loop.
+- Click/tap and keyboard plucking, single-finger strumming, reduced motion,
+  and cancellation. Pressing a string plucks once; release adds no extra pluck.
+- Remove the chooser, variant URL state, abandoned styles, and foundation
+  placeholder. Preserve the polished responsive composition and interaction.
+
+Checks:
+
+- Ordered crossings, gauge order, fixed endpoints, and bounded amplitudes.
+- Hover alone does nothing; release, cancellation, and unmount clean up safely.
+- Mobile/desktop, both themes, static no-JavaScript content, and no audio initialization.
+
+### Commit 04.3 - connect the selected guitar's sound
+
+Choose the sound approach after visual approval. Keep audio activation, volume,
+mute behavior, and resource cleanup in this separate review candidate. Reuse the
+selected string geometry and gesture flow; do not introduce audio during 04.2.
+
+### Commit 04.4 - add static hero and identity content
 
 Proposed message:
 
@@ -1278,10 +1314,11 @@ feat: add homepage identity hero
 
 Scope:
 
-- Static six-string hero placeholder with realistic gauge variation.
+- Extend the selected identity composition already introduced in 04.2.
 - Sky Lu identity copy and four identity labels.
 - Portrait placeholder that cannot be mistaken for a real photograph.
-- Primary calls to writing, projects, GitHub, and CV.
+- Keep navigation in the shared header/footer, without a duplicate hero link
+  row. Place the interaction hint in a right-side rail annotation.
 
 Checks:
 
@@ -1289,7 +1326,7 @@ Checks:
 - Layout shift review.
 - Reduced-motion/no-JavaScript baseline.
 
-### Commit 04.3 - add overview, research, and selected work
+### Commit 04.5 - add overview, research, and selected work
 
 Proposed message:
 
@@ -1312,7 +1349,7 @@ Checks:
 - No invented research title, paper, or Tundra URL.
 - Responsive presentation of long technical phrases.
 
-### Commit 04.4 - add experience disclosures
+### Commit 04.6 - add experience disclosures
 
 Proposed message:
 
@@ -1334,7 +1371,7 @@ Checks:
 - No layout jump from opening and closing records.
 - No accidental exposure of non-approved résumé fields.
 
-### Commit 04.5 - add jazz and writing previews
+### Commit 04.7 - add jazz and writing previews
 
 Proposed message:
 
@@ -1584,7 +1621,7 @@ Checks:
 
 ### Goal
 
-Implement the six-string standard-tuned guitar as the homepage hero's primary interactive visual, with synthesized plucks, ordered strumming, `F`-key arming, mobile fallback, and accessible alternatives.
+Implement the six-string standard-tuned guitar as the homepage hero's primary interactive visual, with synthesized plucks, ordered strumming, primary-pointer arming, and accessible alternatives. Visual exploration and the next sound decision now begin in 04.2–04.3; deduplicate completed work when this stage is reached.
 
 ### Commit 07.1 - add pure string-crossing geometry
 
@@ -1624,7 +1661,7 @@ Scope:
 
 - React island shell.
 - Integration boundary sized for the existing hero slot; development states also render in `/lab`.
-- Six horizontal SVG strings with documented widths.
+- Six tilted SVG strings with documented widths, thickest at the bottom.
 - Separate transparent hit areas.
 - Shared `requestAnimationFrame` damped-string loop.
 - Stop-on-idle and unmount cleanup.
@@ -1663,7 +1700,7 @@ Checks:
 - Mute/unmute has no audible click in manual review.
 - Cleanup tests using mocked Tone nodes.
 
-### Commit 07.4 - implement `F`-armed plucking and strumming
+### Commit 07.4 - implement pointer-armed plucking and strumming
 
 Proposed message:
 
@@ -1673,12 +1710,12 @@ feat: add armed guitar interactions
 
 Scope:
 
-- `F` keydown/keyup state machine.
+- Primary-pointer down/up/cancel state machine and pointer capture.
 - Pointer-local coordinate tracking.
 - Single pluck and ordered strum scheduling.
 - Visual velocity/direction response.
 - Reset on blur, hidden tab, pointer exit, route change, and unmount.
-- Ignore global shortcut in editable controls.
+- No global arming shortcut in editable controls.
 
 Checks:
 
@@ -1699,8 +1736,8 @@ feat: make guitar accessible across inputs
 Scope:
 
 - Accessible mute button and status labels.
-- Focusable string controls; focused string plus `F` triggers a note.
-- Touch press-and-hold Play control.
+- Focusable string controls; Enter or Space triggers a note.
+- Single-finger touch strumming on the instrument.
 - Pointer modality-specific instructions.
 - Polite audio error live region.
 - Armed state conveyed by text/shape as well as color.
@@ -1740,7 +1777,7 @@ Checks:
 
 ### Branch acceptance criteria
 
-- Desktop notes occur only after unmute and during an `F`-armed crossing.
+- Desktop notes occur only after audio activation and during a held-pointer crossing.
 - Multi-string gestures schedule in geometric order.
 - Standard tuning is correct.
 - Tone.js is lazy.

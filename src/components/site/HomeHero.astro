@@ -1,0 +1,50 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { GuitarStrings } from "@/components/guitar/GuitarStrings";
+import type { GuitarLayout } from "@/components/guitar/string-geometry";
+import { profile } from "@/data/profile";
+
+const guitarLayout = {
+  width: 800,
+  height: 470,
+  hole: { x: 592, y: 245, radius: 128 },
+  angle: 35,
+  length: 1500,
+  spacing: 22,
+} satisfies GuitarLayout;
+---
+
+<Panel id="hero-panel" aria-labelledby="hero-heading">
+  <div class="grid items-end md:grid-cols-[0.85fr_1.15fr]">
+    <PanelContent
+      className="z-10 min-w-0 pt-10 pb-6 md:col-start-1 md:row-start-1 md:pt-14 md:pb-12"
+    >
+      <div data-hero-copy>
+        <p
+          data-slot="eyebrow"
+          class="mb-4 font-mono text-[10px] tracking-widest uppercase"
+        >
+          Usually making something
+        </p>
+        <h1
+          id="hero-heading"
+          class="m-0 font-heading text-4xl font-medium tracking-[-0.06em] md:text-5xl"
+        >
+          {profile.name} ;)
+        </h1>
+        <p class="mt-4 mb-0 max-w-sm text-sm leading-relaxed">
+          {profile.introduction}
+        </p>
+      </div>
+    </PanelContent>
+    <div
+      class="mx-auto w-full max-w-lg min-w-0 md:col-span-2 md:col-start-1 md:row-start-1 md:max-w-none md:pb-8"
+    >
+      <GuitarStrings
+        client:load
+        layout={guitarLayout}
+        className="[&_[data-guitar]]:ml-[-66.666667%] [&_[data-guitar]]:w-[166.666667%] md:[&_[data-guitar]]:ml-0 md:[&_[data-guitar]]:w-full"
+      />
+    </div>
+  </div>
+</Panel>

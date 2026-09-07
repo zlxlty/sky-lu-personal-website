@@ -28,7 +28,7 @@ export const profile: Profile = {
   name,
   siteDescription: `Personal website and technical writing by ${name}.`,
   introduction:
-    "Computer science master's student at Brown. I build fast distributed systems and AI infrastructure — and play jazz guitar.",
+    "Agents running at the desk, something simmering on the stove, jazz guitar in between. I’m a CS master’s student at Brown, learning and building abstractions.",
   links: {
     github: { label: "GitHub", href: "https://github.com/zlxlty" },
     linkedin: {

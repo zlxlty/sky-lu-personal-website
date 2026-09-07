@@ -24,10 +24,10 @@ describe("curated React control boundary", () => {
     expect(manifest.dependencies?.["tw-animate-css"]).toBeUndefined();
   });
 
-  it("does not hydrate the control library before a feature island uses it", () => {
+  it("keeps the control library out of the shared layout and homepage", () => {
     expect(homepageSource).not.toContain("@/components/ui/");
     expect(layoutSource).not.toContain("@/components/ui/");
-    expect(homepageSource).not.toMatch(/client:(?:load|idle|visible|only)/);
+    // Only feature components own islands; the shared shell stays static.
     expect(layoutSource).not.toMatch(/client:(?:load|idle|visible|only)/);
   });
 });
