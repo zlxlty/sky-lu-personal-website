@@ -3,6 +3,7 @@ import { BlueprintNavbar } from "@/components/blueprint/BlueprintNavbar";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import ThemeToggle from "@/components/theme/ThemeToggle.astro";
 import { profile } from "@/data/profile";
+import SiteWordmark from "./SiteWordmark.astro";
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const navigation = [
   { href: "/writing", label: "Writing" },
@@ -11,21 +12,26 @@ const navigation = [
 ];
 ---
 
-<BlueprintNavbar aria-label="Site header">
+<BlueprintNavbar
+  aria-label="Site header"
+  data-home-header={currentPath === "/" ? "" : undefined}
+>
   <div class="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
-    <a
-      href="/"
-      aria-label={`${profile.name} — Home`}
-      class="inline-flex min-h-10 shrink-0 items-center"
-      ><span
-        aria-hidden="true"
-        class="font-(family-name:--font-heading-family) text-2xl leading-none font-semibold tracking-[-0.065em] whitespace-nowrap"
-        >sky<span class="ml-[0.16em] font-[350]">lu</span><span
-          class="ml-[0.025em]">.</span
-        ></span
-      ></a
+    {
+      currentPath !== "/" && (
+        <a
+          href="/"
+          aria-label={`${profile.name} — Home`}
+          class="inline-flex min-h-10 shrink-0 items-center"
+        >
+          <SiteWordmark aria-hidden="true" class="text-2xl" />
+        </a>
+      )
+    }
+    <nav
+      aria-label="Main navigation"
+      class="ml-auto flex items-center gap-3 sm:gap-5"
     >
-    <nav aria-label="Main navigation" class="flex items-center gap-3 sm:gap-5">
       {
         navigation.map(({ href, label, accessibleLabel }) => (
           <a
@@ -48,3 +54,9 @@ const navigation = [
   </div>
   <ThemeToggle />
 </BlueprintNavbar>
+
+<script>
+  import { initializeHomeHeader } from "@/lib/home-header";
+
+  initializeHomeHeader();
+</script>

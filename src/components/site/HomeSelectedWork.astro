@@ -1,0 +1,94 @@
+---
+import { Panel, PanelContent, PanelHeader } from "@/components/blueprint/Panel";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { getProjects } from "@/content/queries";
+
+// The collection's editorial order also determines the homepage selection.
+const projects = (await getProjects()).slice(0, 4);
+---
+
+{
+  projects.length > 0 && (
+    <Panel
+      id="selected-work"
+      aria-labelledby="selected-work-heading"
+      className="scroll-mt-16"
+    >
+      <PanelHeader className="py-7 sm:py-8">
+        <p class="m-0 mb-3 font-mono text-xs tracking-wide uppercase">
+          03 / Selected work
+        </p>
+        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          <h2
+            id="selected-work-heading"
+            class="m-0 font-heading text-2xl font-medium tracking-tight"
+          >
+            A few things I’ve built.
+          </h2>
+          <a
+            href="/projects"
+            class="inline-flex min-h-11 items-center gap-2 text-sm"
+          >
+            <SketchUnderline text="All projects" seed="home:all-projects" />
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </PanelHeader>
+      {projects.map((project, index) => (
+        <Panel aria-labelledby={`home-project-${project.id}`}>
+          <PanelContent className="grid gap-5 py-6 sm:grid-cols-[1fr_9rem] sm:gap-10 sm:py-7">
+            <div class="min-w-0">
+              <p class="m-0 mb-3 flex flex-wrap gap-x-2 gap-y-1 font-mono text-[10px] tracking-wide uppercase">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span aria-hidden="true">/</span>
+                <span>{project.data.context}</span>
+                <span aria-hidden="true">/</span>
+                <span>{project.data.category}</span>
+              </p>
+              <h3
+                id={`home-project-${project.id}`}
+                class="m-0 font-heading text-xl font-medium tracking-tight"
+              >
+                <a
+                  href={`/projects/${project.id}`}
+                  class="inline-flex max-w-full items-baseline gap-2"
+                >
+                  <span class="min-w-0">
+                    <SketchUnderline
+                      text={project.data.title}
+                      seed={`home:project:${project.id}`}
+                    />
+                  </span>
+                  <span aria-hidden="true" class="shrink-0 text-base">
+                    ↗
+                  </span>
+                </a>
+              </h3>
+              <p class="mt-3 mb-0 max-w-lg text-sm leading-relaxed">
+                {project.data.description}
+              </p>
+              <ul
+                aria-label="Technologies and topics"
+                class="m-0 mt-4 flex list-none flex-wrap gap-x-3 gap-y-2 p-0 font-mono text-[11px] leading-5"
+              >
+                {project.data.tags.map((tag) => (
+                  <li>[{tag}]</li>
+                ))}
+              </ul>
+            </div>
+            {project.data.results[0] && (
+              <p class="m-0 flex items-baseline gap-3 sm:block sm:pt-6">
+                <span class="shrink-0 font-heading text-2xl font-medium tracking-tight">
+                  {project.data.results[0].value}
+                </span>
+                <span class="font-mono text-[11px] leading-5 sm:mt-2 sm:block">
+                  {project.data.results[0].label}
+                </span>
+              </p>
+            )}
+          </PanelContent>
+        </Panel>
+      ))}
+    </Panel>
+  )
+}

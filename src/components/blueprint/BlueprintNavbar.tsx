@@ -20,12 +20,13 @@ export function BlueprintNavbar({
     >
       {/* Mask scrolling content in the gutters as well as inside the rail. */}
       <div
+        data-slot="site-header-background"
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-[-100vw] -z-1 w-[200vw] bg-background/95 backdrop-blur-sm"
       />
       <div
         data-slot="site-header-rail"
-        className="screen-line-top screen-line-bottom flex h-13 items-center pr-2 pl-4"
+        className="screen-line-top screen-line-bottom flex h-(--size-site-header) items-center pr-2 pl-4"
       >
         {children}
       </div>

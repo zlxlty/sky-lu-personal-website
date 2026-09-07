@@ -2,6 +2,7 @@ import type { PublicLink, YearMonth } from "./types";
 
 interface Profile {
   readonly name: string;
+  readonly legalName: string;
   readonly siteDescription: string;
   readonly introduction: string;
   readonly links: {
@@ -26,9 +27,11 @@ const name = "Sky Lu";
 /** Public identity from the approved résumé; introduction from PLAN.md §5.3. */
 export const profile: Profile = {
   name,
+  legalName: "Tianyi Lu",
   siteDescription: `Personal website and technical writing by ${name}.`,
+  // Nonbreaking spaces keep the phrase together without forcing a line break.
   introduction:
-    "Agents running at the desk, something simmering on the stove, jazz guitar in between. I’m a CS master’s student at Brown, learning and building abstractions.",
+    "I'm a CS master's student at Brown, learning\u00a0and\u00a0building abstractions.",
   links: {
     github: { label: "GitHub", href: "https://github.com/zlxlty" },
     linkedin: {

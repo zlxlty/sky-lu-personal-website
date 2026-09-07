@@ -191,7 +191,28 @@ checks. The lab suite exercises the shared command and header behavior.
 
 ### Shared site navigation and footer
 
+The homepage content is static Astro, composed in `src/pages/index.astro`:
+`HomeOverview.astro` owns the short personal introduction and displays education
+from `src/data/profile.ts`; `HomeResearch.astro` uses `src/data/research.ts` for
+ATLAS attribution and resolves its project IDs against published content;
+`HomeSelectedWork.astro` previews the first four published projects in collection
+order. Edit a project's title, description, tags, or results in its content file
+to update both the homepage and projects page. The overview remains the native
+`#after-guitar` skip destination. These sections add no islands or dependencies.
+`tests/e2e/homepage-content.spec.ts` covers their static rendering, project links,
+accessible content, and nested border ownership in both themes.
+
 The homepage at `/` uses `src/components/site/HomeHero.astro` for static identity
+and `home-header.ts` for a scroll-driven header mask. Only the homepage imports
+Anime.js WAAPI for this effect: a paused opacity animation follows the first
+96 px of scroll, with one scheduled write per frame and no idle animation loop.
+Reduced motion uses an immediate mask; no JavaScript retains the normal paper
+background. Pagehide releases the animation/listeners and bfcache restoration
+rebinds them. `--size-site-header` ties navbar height to the desktop SVG's upward
+clip inset, letting the actual guitar strings continue behind the navigation
+without duplicating geometry. The mobile crop and pointer bounds are unchanged.
+
+`HomeHero.astro` keeps identity
 copy and layout. Only its guitar SVG hydrates as a React island. Development and
 production render the same selected design, with no variants or design chooser.
 The guitar uses a filled sound hole and a 35-degree angle, with compact copy at
