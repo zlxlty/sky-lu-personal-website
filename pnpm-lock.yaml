@@ -50,6 +50,9 @@ importers:
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
+      tone:
+        specifier: 15.1.22
+        version: 15.1.22
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.10
@@ -1674,6 +1677,10 @@ packages:
       '@astrojs/markdown-remark':
         optional: true
 
+  automation-events@7.1.19:
+    resolution: {integrity: sha512-cD+TLhJTI0q4AI3ktd353lrGZiVa9AchowSDzQzzGjSoYe22js4vlS32VUtWuaulghi1Yq0KYNWKk9wWuGymPA==}
+    engines: {node: '>=18.2.0'}
+
   axe-core@4.13.0:
     resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
     engines: {node: '>=4'}
@@ -3115,6 +3122,9 @@ packages:
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
+  standardized-audio-context@25.3.77:
+    resolution: {integrity: sha512-Ki9zNz6pKcC5Pi+QPjPyVsD9GwJIJWgryji0XL9cAJXMGyn+dPOf6Qik1AHei0+UNVcc4BOCa0hWLBzlwqsW/A==}
+
   std-env@4.2.0:
     resolution: {integrity: sha512-oCUKSupKTHX53EyjDtuZQ64pjLJ6yYCtpmEw0goYxtjG9KpbRe8KAsl2tBUGU9DyMcJ0RwJ8GqJAFzMXcXW1Rw==}
 
@@ -3186,6 +3196,9 @@ packages:
   tinyrainbow@3.1.1:
     resolution: {integrity: sha512-yau8yJdTt989Mm0Bd/236QnzEiPf2xLLTqUZRUJOo/3CB078LSwzei343DgtJVmfJKJE3TMINY1u42SQsP6mXw==}
     engines: {node: '>=14.0.0'}
+
+  tone@15.1.22:
+    resolution: {integrity: sha512-TCScAGD4sLsama5DjvTUXlLDXSqPealhL64nsdV1hhr6frPWve0DeSo63AKnSJwgfg55fhvxj0iPPRwPN5o0ag==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -5259,6 +5272,11 @@ snapshots:
       - uploadthing
       - yaml
 
+  automation-events@7.1.19:
+    dependencies:
+      '@babel/runtime': 7.29.7
+      tslib: 2.8.1
+
   axe-core@4.13.0: {}
 
   axobject-query@4.1.0: {}
@@ -7034,6 +7052,12 @@ snapshots:
 
   stackback@0.0.2: {}
 
+  standardized-audio-context@25.3.77:
+    dependencies:
+      '@babel/runtime': 7.29.7
+      automation-events: 7.1.19
+      tslib: 2.8.1
+
   std-env@4.2.0: {}
 
   string-argv@0.3.2: {}
@@ -7104,6 +7128,11 @@ snapshots:
       picomatch: 4.0.5
 
   tinyrainbow@3.1.1: {}
+
+  tone@15.1.22:
+    dependencies:
+      standardized-audio-context: 25.3.77
+      tslib: 2.8.1
 
   trim-lines@3.0.1: {}
 

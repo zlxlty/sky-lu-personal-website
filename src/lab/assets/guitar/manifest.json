@@ -1,0 +1,973 @@
+{
+  "preparation": "Whole-bank RMS trim; mean of six medium plucks, first 1.5s after onset. No EQ or reverb.",
+  "shinyRevision": "57243cca85277dbcc120ce17c6178032f93c80f3",
+  "fssSource": "https://freepats.zenvoid.org/Guitar/FSS-SteelStringGuitar/FSS-SteelStringGuitar-SFZ-20200521.tar.xz",
+  "fssSha256": "720b55c5ad4dcfb9f788ab13a0bda834cbfd7b3214df2ca90648c58951e41777",
+  "quartertoneSource": "https://freesound.org/people/quartertone/packs/11573/",
+  "iowaSources": [
+    {
+      "file": "iowa/64-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sul_E.E4B4.mono.aif",
+      "end": 4.5,
+      "sha256": "ea9093ad964d99874da5caf300ef6ba15ab85cddf0d644824a63c7e9c4911f09"
+    },
+    {
+      "file": "iowa/64-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sul_E.E4B4.mono.aif",
+      "end": 6.9,
+      "sha256": "3c04d367aa3cdf9fa4c9cd6ba3591704de6da5917a714057b307699d1ed6128b"
+    },
+    {
+      "file": "iowa/64-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sul_E.E4B4.mono.aif",
+      "end": 6.2,
+      "sha256": "8e2acd05d89e3d9e784f4e2846de89af915b6daa566bf6e9302bab40aacb0b6b"
+    },
+    {
+      "file": "iowa/59-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sulB.B3.mono.aif",
+      "end": 6.4,
+      "sha256": "98bdd14f91bc0e1bb9ee12337ca6576376c5d3626ee3e103d1f202951530abfb"
+    },
+    {
+      "file": "iowa/59-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sulB.B3.mono.aif",
+      "end": 11.7,
+      "sha256": "5afbcddce7bb8a2135232872984a6d2403ff3da1c1daaf03dacb17f29b454489"
+    },
+    {
+      "file": "iowa/59-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sulB.B3.mono.aif",
+      "end": 8.7,
+      "sha256": "7f015af411e0f3efbb6d2ab83f4a03721d1fb05947a8cb7140ae94b8ee39c309"
+    },
+    {
+      "file": "iowa/55-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sulG.G3B3.mono.aif",
+      "end": 8,
+      "sha256": "8bbb85733df9471f0ad1a2a323b9f4b9cd1893ae2012c16470ded006582056bf"
+    },
+    {
+      "file": "iowa/55-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sulG.G3B3.mono.aif",
+      "end": 10.7,
+      "sha256": "6e9bcd0b29470ba131aa43d08e51f94b9daaf00a16fff07f52be95196d48bece"
+    },
+    {
+      "file": "iowa/55-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sulG.G3B3.mono.aif",
+      "end": 8.7,
+      "sha256": "9b25aea96d4f268067de6dec0f63802ed3878a52ab67ea6c7eb1d6c477cc1d24"
+    },
+    {
+      "file": "iowa/50-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sulD.D3B3.mono.aif",
+      "end": 14.5,
+      "sha256": "9db09f85d4714eff0018061d3d7db5b0258206c8d5211e06ab6015de4a01f183"
+    },
+    {
+      "file": "iowa/50-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sulD.D3B3.mono.aif",
+      "end": 16.9,
+      "sha256": "464a66a5fbd4c8f835bcddfeb9c875ee2d75e81e156cfe80a362473681c9ffa7"
+    },
+    {
+      "file": "iowa/50-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sulD.D3B3.mono.aif",
+      "end": 18.8,
+      "sha256": "b4dad827de4dd7a10c40df709b3695c3b51b12a4cc8f8c05a6ce01d7f896362c"
+    },
+    {
+      "file": "iowa/45-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sulA.A2B2.mono.aif",
+      "end": 12,
+      "sha256": "363638190f9ee854256182d07960d53f2704c2bf7206737b3e9a3d62a89b76d8"
+    },
+    {
+      "file": "iowa/45-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sulA.A2B2.mono.aif",
+      "end": 11.6,
+      "sha256": "a298fddd7cc2d5e83eb63852360040dc87b63caa1638cf82589f8614e158525c"
+    },
+    {
+      "file": "iowa/45-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sulA.A2B2.mono.aif",
+      "end": 15.7,
+      "sha256": "f750e2f42758ad946e630b74eb127e000dbdaf46dddec5b33d3664122bb21df2"
+    },
+    {
+      "file": "iowa/40-pp.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.pp.sulE.E2B2.mono.aif",
+      "end": 11.3,
+      "sha256": "8523d89b6a8e6c29d1f3c81502343ff6fb5e13280c2c5d2ccbf5d1315add9350"
+    },
+    {
+      "file": "iowa/40-mf.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.mf.sulE.E2B2.mono.aif",
+      "end": 10.3,
+      "sha256": "faef0e44dff6fcf99b2bd1cb50ab1ed519980e6c70951069cdbce38597c58b23"
+    },
+    {
+      "file": "iowa/40-ff.mp3",
+      "url": "https://theremin.music.uiowa.edu/sound%20files/MIS/Piano_Other/guitar/Guitar.ff.sulE.E2B2.mono.aif",
+      "end": 18.4,
+      "sha256": "3c1af9a8162241461d3b17cb7b36e17c151a74ab15cc0af69e623a31e91e47ee"
+    }
+  ],
+  "banks": [
+    {
+      "id": "shiny",
+      "gain": 0.9021232889648731,
+      "samples": [
+        {
+          "file": "shiny/eb4_vl1_rr1_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0004281581259213237
+        },
+        {
+          "file": "shiny/eb4_vl1_rr2_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0004055833027132876
+        },
+        {
+          "file": "shiny/eb4_vl2_rr1_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.001992413329670739
+        },
+        {
+          "file": "shiny/eb4_vl2_rr2_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0019090063510102443
+        },
+        {
+          "file": "shiny/eb4_vl3_rr1_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.003046505273485517
+        },
+        {
+          "file": "shiny/eb4_vl3_rr2_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0027996054416040074
+        },
+        {
+          "file": "shiny/eb4_vl4_rr1_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0046816580347271465
+        },
+        {
+          "file": "shiny/eb4_vl4_rr2_1.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 63,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0035378224254502084
+        },
+        {
+          "file": "shiny/c4_vl1_rr1_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0019114996145210633
+        },
+        {
+          "file": "shiny/c4_vl1_rr2_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0014365506702788164
+        },
+        {
+          "file": "shiny/c4_vl2_rr1_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.004144792367912871
+        },
+        {
+          "file": "shiny/c4_vl2_rr2_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.004037986988102354
+        },
+        {
+          "file": "shiny/c4_vl3_rr1_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0033471979584883474
+        },
+        {
+          "file": "shiny/c4_vl3_rr2_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0035023418762816405
+        },
+        {
+          "file": "shiny/c4_vl4_rr1_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0028116979857073284
+        },
+        {
+          "file": "shiny/c4_vl4_rr2_1.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 60,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.002466486098006926
+        },
+        {
+          "file": "shiny/gb3_vl1_rr1_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0007235034527997842
+        },
+        {
+          "file": "shiny/gb3_vl1_rr2_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.00103099778616523
+        },
+        {
+          "file": "shiny/gb3_vl2_rr1_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0017638200361174904
+        },
+        {
+          "file": "shiny/gb3_vl2_rr2_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0018683237882995045
+        },
+        {
+          "file": "shiny/gb3_vl3_rr1_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0027668518232597454
+        },
+        {
+          "file": "shiny/gb3_vl3_rr2_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0026407783465080426
+        },
+        {
+          "file": "shiny/gb3_vl4_rr1_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0023592811451163434
+        },
+        {
+          "file": "shiny/gb3_vl4_rr2_1.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 54,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0025050606986687465
+        },
+        {
+          "file": "shiny/eb3_vl1_rr1_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.000881219477639529
+        },
+        {
+          "file": "shiny/eb3_vl1_rr2_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0012767850137303733
+        },
+        {
+          "file": "shiny/eb3_vl2_rr1_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0024588142451283154
+        },
+        {
+          "file": "shiny/eb3_vl2_rr2_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0030079869104013856
+        },
+        {
+          "file": "shiny/eb3_vl3_rr1_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.003925742506718579
+        },
+        {
+          "file": "shiny/eb3_vl3_rr2_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.003897538945871906
+        },
+        {
+          "file": "shiny/eb3_vl4_rr1_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.00475566548252752
+        },
+        {
+          "file": "shiny/eb3_vl4_rr2_1.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 51,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.005070844814115649
+        },
+        {
+          "file": "shiny/a2_vl1_rr1_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.00014182545713998317
+        },
+        {
+          "file": "shiny/a2_vl1_rr2_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.00019439533617415263
+        },
+        {
+          "file": "shiny/a2_vl2_rr1_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0014940401133952455
+        },
+        {
+          "file": "shiny/a2_vl2_rr2_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.002440427060628347
+        },
+        {
+          "file": "shiny/a2_vl3_rr1_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.003112549985724574
+        },
+        {
+          "file": "shiny/a2_vl3_rr2_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.003839673508088731
+        },
+        {
+          "file": "shiny/a2_vl4_rr1_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.005668651061492504
+        },
+        {
+          "file": "shiny/a2_vl4_rr2_1.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.005438359639418781
+        },
+        {
+          "file": "shiny/e2_vl1_rr1_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0008846121027230306
+        },
+        {
+          "file": "shiny/e2_vl1_rr2_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0,
+          "high": 0.25196850393700787,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0014198691032632665
+        },
+        {
+          "file": "shiny/e2_vl2_rr1_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.0031597571075097836
+        },
+        {
+          "file": "shiny/e2_vl2_rr2_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.25984251968503935,
+          "high": 0.5039370078740157,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.0037375446197848825
+        },
+        {
+          "file": "shiny/e2_vl3_rr1_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.005494804960159213
+        },
+        {
+          "file": "shiny/e2_vl3_rr2_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.5118110236220472,
+          "high": 0.7559055118110236,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.006230515027182611
+        },
+        {
+          "file": "shiny/e2_vl4_rr1_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.010431076541658401
+        },
+        {
+          "file": "shiny/e2_vl4_rr2_1.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.7637795275590551,
+          "high": 1,
+          "take": 2,
+          "offset": 0,
+          "meanSquare": 0.010683278252548995
+        }
+      ]
+    },
+    {
+      "id": "fss",
+      "gain": 0.18914584343793167,
+      "samples": [
+        {
+          "file": "fss/MV_40.wav",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0,
+          "high": 0.6456692913385826,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.11203128891673927
+        },
+        {
+          "file": "fss/HV_40.wav",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "low": 0.6535433070866141,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.08536549620054386
+        },
+        {
+          "file": "fss/MV_45.wav",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0,
+          "high": 0.7795275590551181,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.19171859513578243
+        },
+        {
+          "file": "fss/HV_45.wav",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "low": 0.7874015748031497,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.2871471957716238
+        },
+        {
+          "file": "fss/MV_50.wav",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 50,
+          "low": 0,
+          "high": 0.6456692913385826,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.06691059545306201
+        },
+        {
+          "file": "fss/HV_50.wav",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 50,
+          "low": 0.6535433070866141,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.09787638950472077
+        },
+        {
+          "file": "fss/MV_55.wav",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 55,
+          "low": 0,
+          "high": 0.6456692913385826,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.049746804907763106
+        },
+        {
+          "file": "fss/HV_55.wav",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 55,
+          "low": 0.6535433070866141,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.07535185460096967
+        },
+        {
+          "file": "fss/HV_59.wav",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 59,
+          "low": 0,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.05340051814923605
+        },
+        {
+          "file": "fss/HV_64.wav",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 64,
+          "low": 0,
+          "high": 1,
+          "take": 1,
+          "offset": 0,
+          "meanSquare": 0.03351341434921267
+        }
+      ]
+    },
+    {
+      "id": "iowa",
+      "gain": 3.8572522976474963,
+      "samples": [
+        {
+          "file": "iowa/64-pp.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 64,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0,
+          "meanSquare": 0.0000035740011442138067
+        },
+        {
+          "file": "iowa/64-mf.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 64,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0.017596371882086168,
+          "meanSquare": 0.00008241005776155261
+        },
+        {
+          "file": "iowa/64-ff.mp3",
+          "stringIndex": 0,
+          "midi": 64,
+          "rootMidi": 64,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0.0007482993197278912,
+          "meanSquare": 0.0003736742495342681
+        },
+        {
+          "file": "iowa/59-pp.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 59,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0,
+          "meanSquare": 0.000004615188774233685
+        },
+        {
+          "file": "iowa/59-mf.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 59,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0,
+          "meanSquare": 0.00034639186313335264
+        },
+        {
+          "file": "iowa/59-ff.mp3",
+          "stringIndex": 1,
+          "midi": 59,
+          "rootMidi": 59,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0.0163265306122449,
+          "meanSquare": 0.001402256367523562
+        },
+        {
+          "file": "iowa/55-pp.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 55,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0,
+          "meanSquare": 0.00005890245389754564
+        },
+        {
+          "file": "iowa/55-mf.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 55,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0.005873015873015873,
+          "meanSquare": 0.0004552180053427202
+        },
+        {
+          "file": "iowa/55-ff.mp3",
+          "stringIndex": 2,
+          "midi": 55,
+          "rootMidi": 55,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0.014444444444444444,
+          "meanSquare": 0.0012725076790365915
+        },
+        {
+          "file": "iowa/50-pp.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 50,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0,
+          "meanSquare": 0.00029808879219023844
+        },
+        {
+          "file": "iowa/50-mf.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 50,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0.0007256235827664399,
+          "meanSquare": 0.0002143447491311519
+        },
+        {
+          "file": "iowa/50-ff.mp3",
+          "stringIndex": 3,
+          "midi": 50,
+          "rootMidi": 50,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0,
+          "meanSquare": 0.0010536060198905878
+        },
+        {
+          "file": "iowa/45-pp.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0.02433106575963719,
+          "meanSquare": 0.0003927160523476687
+        },
+        {
+          "file": "iowa/45-mf.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0.09886621315192744,
+          "meanSquare": 0.00003856047427488507
+        },
+        {
+          "file": "iowa/45-ff.mp3",
+          "stringIndex": 4,
+          "midi": 45,
+          "rootMidi": 45,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0.05587301587301587,
+          "meanSquare": 0.0009055599768268479
+        },
+        {
+          "file": "iowa/40-pp.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "take": 1,
+          "low": 0,
+          "high": 0.3228346456692913,
+          "offset": 0.014126984126984127,
+          "meanSquare": 0.00010091796349889645
+        },
+        {
+          "file": "iowa/40-mf.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "take": 1,
+          "low": 0.33070866141732286,
+          "high": 0.6614173228346457,
+          "offset": 0.08764172335600907,
+          "meanSquare": 0.00008296447212194821
+        },
+        {
+          "file": "iowa/40-ff.mp3",
+          "stringIndex": 5,
+          "midi": 40,
+          "rootMidi": 40,
+          "take": 1,
+          "low": 0.6692913385826772,
+          "high": 1,
+          "offset": 0.11374149659863945,
+          "meanSquare": 0.0016140057614309304
+        }
+      ]
+    }
+  ]
+}

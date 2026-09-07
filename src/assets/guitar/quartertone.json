@@ -1,0 +1,270 @@
+{
+  "id": "quartertone",
+  "gain": 0.396376638856874,
+  "samples": [
+    {
+      "file": "quartertone/183004.mp3",
+      "stringIndex": 0,
+      "midi": 64,
+      "rootMidi": 64,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.0021590469464651467
+    },
+    {
+      "file": "quartertone/183003.mp3",
+      "stringIndex": 0,
+      "midi": 64,
+      "rootMidi": 64,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.003139740433788957
+    },
+    {
+      "file": "quartertone/183002.mp3",
+      "stringIndex": 0,
+      "midi": 64,
+      "rootMidi": 64,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.002995379176545417
+    },
+    {
+      "file": "quartertone/183009.mp3",
+      "stringIndex": 0,
+      "midi": 64,
+      "rootMidi": 64,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.0028645714280587336
+    },
+    {
+      "file": "quartertone/183007.mp3",
+      "stringIndex": 1,
+      "midi": 59,
+      "rootMidi": 59,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.008597633342188467
+    },
+    {
+      "file": "quartertone/183006.mp3",
+      "stringIndex": 1,
+      "midi": 59,
+      "rootMidi": 59,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.008092063663309631
+    },
+    {
+      "file": "quartertone/183011.mp3",
+      "stringIndex": 1,
+      "midi": 59,
+      "rootMidi": 59,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.008913442562738747
+    },
+    {
+      "file": "quartertone/183010.mp3",
+      "stringIndex": 1,
+      "midi": 59,
+      "rootMidi": 59,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.007558923698661967
+    },
+    {
+      "file": "quartertone/182944.mp3",
+      "stringIndex": 2,
+      "midi": 55,
+      "rootMidi": 55,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.025257937411086083
+    },
+    {
+      "file": "quartertone/182941.mp3",
+      "stringIndex": 2,
+      "midi": 55,
+      "rootMidi": 55,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.01762850658085228
+    },
+    {
+      "file": "quartertone/182942.mp3",
+      "stringIndex": 2,
+      "midi": 55,
+      "rootMidi": 55,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.016278163015311757
+    },
+    {
+      "file": "quartertone/182947.mp3",
+      "stringIndex": 2,
+      "midi": 55,
+      "rootMidi": 55,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.01239843266328372
+    },
+    {
+      "file": "quartertone/182945.mp3",
+      "stringIndex": 3,
+      "midi": 50,
+      "rootMidi": 50,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.026245114865181354
+    },
+    {
+      "file": "quartertone/182946.mp3",
+      "stringIndex": 3,
+      "midi": 50,
+      "rootMidi": 50,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.03010401428344431
+    },
+    {
+      "file": "quartertone/182939.mp3",
+      "stringIndex": 3,
+      "midi": 50,
+      "rootMidi": 50,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.027714811250655117
+    },
+    {
+      "file": "quartertone/182940.mp3",
+      "stringIndex": 3,
+      "midi": 50,
+      "rootMidi": 50,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.020918846047502
+    },
+    {
+      "file": "quartertone/182961.mp3",
+      "stringIndex": 4,
+      "midi": 45,
+      "rootMidi": 45,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.0444963780513552
+    },
+    {
+      "file": "quartertone/182964.mp3",
+      "stringIndex": 4,
+      "midi": 45,
+      "rootMidi": 45,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.0471017552059039
+    },
+    {
+      "file": "quartertone/182963.mp3",
+      "stringIndex": 4,
+      "midi": 45,
+      "rootMidi": 45,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.045699649387439104
+    },
+    {
+      "file": "quartertone/182966.mp3",
+      "stringIndex": 4,
+      "midi": 45,
+      "rootMidi": 45,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.03726507800024861
+    },
+    {
+      "file": "quartertone/182968.mp3",
+      "stringIndex": 5,
+      "midi": 40,
+      "rootMidi": 40,
+      "take": 1,
+      "low": 0,
+      "high": 0.2440944881889764,
+      "offset": 0,
+      "meanSquare": 0.027948808931462246
+    },
+    {
+      "file": "quartertone/182967.mp3",
+      "stringIndex": 5,
+      "midi": 40,
+      "rootMidi": 40,
+      "take": 1,
+      "low": 0.25196850393700787,
+      "high": 0.49606299212598426,
+      "offset": 0,
+      "meanSquare": 0.03203280632373302
+    },
+    {
+      "file": "quartertone/182960.mp3",
+      "stringIndex": 5,
+      "midi": 40,
+      "rootMidi": 40,
+      "take": 1,
+      "low": 0.5039370078740157,
+      "high": 0.7480314960629921,
+      "offset": 0,
+      "meanSquare": 0.032619456016088184
+    },
+    {
+      "file": "quartertone/182959.mp3",
+      "stringIndex": 5,
+      "midi": 40,
+      "rootMidi": 40,
+      "take": 1,
+      "low": 0.7559055118110236,
+      "high": 1,
+      "offset": 0,
+      "meanSquare": 0.0345150386638973
+    }
+  ]
+}

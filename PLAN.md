@@ -38,7 +38,7 @@ The site is both a portfolio and a technical blog. It should feel like a careful
 | Content | Git-authored Markdown and MDX in Astro content collections |
 | Hosting | Cloudflare Workers Static Assets |
 | Rendering | Static generation by default; no SSR in v1 |
-| Guitar audio | Tone.js synthesized plucks, standard tuning |
+| Guitar audio | Recorded acoustic samples through lazy Tone.js, E♭m11/B♭ voicing |
 | Animation | Anime.js v4 for authored motion; custom `requestAnimationFrame` for string physics |
 | Theme | Warm light palette (`#FCF3E6` / `#38332F`) and brown dark palette (`#2B2724` / `#AE9877`) |
 | Contact | Display Brown and personal email addresses, supplied as deployment secrets, with anti-harvesting measures |
@@ -152,7 +152,7 @@ The hero pairs the identity block with the playable guitar. On wide screens, the
 Behavior:
 
 - Render a meaningful static six-string SVG before the React island hydrates.
-- The current guitar is silent: six strings and a sound hole,
+- Render six strings and a sound hole,
   with the neck pointing toward the upper left and string 6 (low E, thickest)
   below string 1 (high E).
 - Put `Click to pluck` and `Drag to strum` on separate lines in a right-side
@@ -163,9 +163,25 @@ Behavior:
   composition, using a 35-degree string angle. Compact identity copy sits at
   the bottom left, clear of the strings. The drawing spans the full hero so
   strings reach its outer edge without being cut off by the text column.
-  Below 768 px, the guitar stacks beneath the copy.
-- Resolve sound and explicit audio activation in the following commit; do not
-  show a mute/unmute control before an audio engine exists.
+  Below 768 px, the guitar stacks beneath the copy and uses an enlarged crop
+  for touch: the sound hole fills roughly 80% of the figure width and all six
+  strings stay individually reachable. Keep the complete sound hole centered
+  horizontally and vertically in the mobile figure.
+- Place a mobile-only `Skip guitar` link at the instrument's top left, opposite
+  the sound toggle. Keep it sticky below the header while the instrument is on
+  screen. Its native fragment link moves focus to the next content
+  panel, clear of the sticky header, without using a strumming gesture. Keep it
+  usable before hydration and without JavaScript, with a 44 px touch height.
+- An icon-only sound toggle activates the selected Yamaha recordings from the
+  hero's top-right corner, aligned with the header's theme toggle. Stack the six
+  note names beneath it along the inside of the right rail, highest first and
+  B♭ at the bottom. Give the icon equal top and right padding, and place the
+  note column slightly above the midpoint between its hit area and the first string. Use the blueprint rail
+  color token for the notes and 45% foreground opacity for the icon. On narrow screens,
+  anchor this column to the guitar beneath the copy. Keep the drawing slightly
+  lower and clear of the controls. Give the icon a 44 px target. Start muted on
+  every visit; show loading, cancellation, and retry states
+  without changing the drawing or blocking silent interaction. No volume slider.
 - Keep Tone.js out of the initial bundle and load it only after explicit unmute.
 - Preserve visual plucking while muted, but never produce sound before explicit activation.
 - Use the documented reduced-motion, keyboard, and touch alternatives without moving the instrument to another section.
@@ -433,6 +449,11 @@ Theme behavior:
 - Body: IBM Plex Sans, self-hosted variable WOFF2.
 - Technical metadata and code-adjacent UI: IBM Plex Mono.
 - Decorative annotations and the footer sign-off: Caveat, self-hosted through Fontsource.
+- Rail annotations: 20 px at 45% opacity, including their arrows.
+- The approved faint rail annotations are a decorative contrast exception; do not
+  rely on them for essential instructions. Duplicate interaction guidance in the
+  instrument's accessible description. Automated contrast scans explicitly omit
+  these decorative overlays while continuing to check the surrounding interface.
 - Use no more than these four role-specific font families. Handwritten text must
   remain decorative and cannot carry essential instructions or content.
 - Body: 16 px/1.65.
@@ -467,14 +488,20 @@ React owns lifecycle, controls, status text, and SVG structure. Per-frame pointe
 
 ### 7.2 String model
 
-| Index | Name | Tone.js note | Gauge (inches) | Visual width (approx.) |
-| ---: | --- | --- | ---: | ---: |
-| 0 | High E (string 1, top) | `E4` | .012 | 0.7 px |
-| 1 | B | `B3` | .016 | 0.933 px |
-| 2 | G | `G3` | .024 | 1.4 px |
-| 3 | D | `D3` | .032 | 1.867 px |
-| 4 | A | `A2` | .042 | 2.45 px |
-| 5 | Low E (string 6, bottom) | `E2` | .053 | 3.092 px |
+| Index | Physical string | Fret | Sounding note | Gauge (inches) | Visual width (approx.) |
+| ---: | --- | ---: | --- | ---: | ---: |
+| 0 | High E (string 1, top) | 4 | `A♭4` | .012 | 0.7 px |
+| 1 | B | 6 | `F4` | .016 | 0.933 px |
+| 2 | G | 6 | `D♭4` | .024 | 1.4 px |
+| 3 | D | 4 | `G♭3` | .032 | 1.867 px |
+| 4 | A | 6 | `E♭3` | .042 | 2.45 px |
+| 5 | Low E (string 6, bottom) | 6 | `B♭2` | .053 | 3.092 px |
+
+Use the E♭m11/B♭ chord shape `664664` on a standard-tuned guitar. From bass to
+treble, the exact degrees are `5–1–♭3–♭7–9–11`, with E♭ as the root. `voicing.ts` owns the chord name,
+frets, standard open-string pitches, and gauges; derive sounding pitches and
+note labels there so the SVG and every audition bank agree. Keep sample source
+pitches intact and transpose at playback time rather than regenerating assets.
 
 Derive each stroke width from `0.7 × gauge / .012`, keeping the thinnest string
 as the visual baseline. Use non-scaling SVG strokes to preserve these widths
@@ -496,13 +523,16 @@ States:
 Transitions:
 
 - Initial state is muted.
-- Clicking unmute dynamically loads Tone.js, calls `Tone.start()`, creates the audio graph, and moves to ready.
+- Clicking unmute creates and resumes a native audio context in the user gesture,
+  then dynamically loads Tone.js and the selected recordings before moving to ready.
 - Primary `pointerdown` within the instrument moves ready/muted to armed and captures that pointer.
 - `pointerup`, cancellation, lost capture, window blur, visibility change, component unmount, or pointer leaving the active region disarms safely.
 - Key repeat must not retrigger notes.
-- Pressing a string's hit area plucks that string once, immediately, for mouse,
-  pen, or touch. Holding without moving does not repeat it, and release never
-  adds another pluck. Holding and crossing other strings continues the strum.
+- Clicking or tapping a string's hit area plucks it once on release. Allow
+  6 CSS pixels of movement for a steady click, independent of the SVG scale.
+  Moving farther starts a held-pointer strum; retain crossings from the press
+  point and never add a release pluck after dragging, even if the pointer
+  returns to its starting point. Cancellation discards pending clicks.
 
 ### 7.4 Crossing and strum algorithm
 
@@ -521,7 +551,10 @@ Additional constraints:
 - Calculate crossing fraction `t` along the pointer segment.
 - Sort all strings crossed in the same pointer event by `t`.
 - Trigger notes in sorted order with tiny offsets derived from event timing so a six-string gesture sounds like a strum, not a block chord.
-- Map pointer velocity to a clamped amplitude/volume range.
+- Map pointer velocity to clamped visual amplitude. Audio uses a gentler
+  independent curve: `max(.15, min(1, velocity / 3) ** 1.35)`, with velocity in
+  SVG units/ms. Full audio strength requires a faster gesture than full visual
+  displacement, and selecting another recording bank never changes the motion.
 - Map crossing direction to the initial visual displacement direction.
 
 Unit-test the crossing function independently from React and the DOM.
@@ -547,16 +580,36 @@ Implementation choices:
 
 ### 7.6 Tone.js audio graph
 
-- Dynamically import Tone.js when the widget approaches the viewport or when unmute is selected.
+- Dynamically import Tone.js and fetch recordings only when unmute is selected.
 - Never start audio before an explicit visitor action.
-- Create six `Tone.PluckSynth` instances so notes can overlap.
+- Use recorded acoustic notes voiced as `B♭2 E♭3 G♭3 D♭4 F4 A♭4` (E♭m11/B♭),
+  selected by string and gesture strength. Alternate recorded takes where available.
+- Schedule each note with `ToneBufferSource`; independent strings can overlap,
+  while a new pluck damps the previous note on that string.
 - Route instruments through a shared gain node and conservative limiter.
 - Keep default output lower than typical system volume; avoid startling visitors.
-- Tune the six synths to `E2 A2 D3 G3 B3 E4`.
-- Vary dampening and resonance slightly by string gauge.
 - Ramp gain for mute/unmute to avoid clicks.
 - Dispose every Tone node when the island unmounts.
 - Do not store or record microphone/audio data.
+
+The user selected Quartertone's Yamaha Eterna recordings for the homepage. Keep
+the development-only `/lab/guitar` comparison, defaulting to that selection, with
+Shinyguitar's acoustic archtop microphone recordings, FreePats FSS steel-string
+recordings, Quartertone's classical guitar, and the University of Iowa guitar
+available. All use the same playback path,
+six-note phrase, and down/up strums. One gain trim per library preserves its internal
+dynamics; Shinyguitar has four strength layers and two alternate takes in the
+audition, while FSS has one or two layers per target note. Quartertone uses four
+strengths per open string, using public compressed previews with faded endings.
+Omit its strongest fifth tier and remap the remaining layers across all MIDI
+velocities. Preserve the previous whole-bank gain trim rather than boosting
+the quieter set. Only its 24 samples ship in production; dynamically import the
+bank and Tone.js on sound activation. The other banks remain entirely in the lab.
+Iowa has three dynamics, isolated from its scales and filtered below 30 Hz to
+remove subsonic rumble. There is no reverb or sustain looping. Preserve sample licenses
+and provenance, with public Quartertone credit and modification details on the
+privacy page. Blur/offscreen stop current notes; mute, page exit, and unmount
+release audio resources. Activation does not play a demonstration note.
 
 ### 7.7 Accessibility and mobile
 
@@ -1071,7 +1124,7 @@ Acceptance:
 - Implement pure crossing geometry and tests.
 - Implement six SVG strings and damped visual physics.
 - Implement primary-pointer capture and arming state machine.
-- Implement Tone.js lazy loading and six PluckSynth voices.
+- Implement Tone.js lazy loading and the selected recorded acoustic sample bank.
 - Implement ordered strums, mute control, error handling, mobile fallback, and keyboard fallback.
 
 Acceptance:
@@ -1147,4 +1200,4 @@ None of these block the initial scaffold.
 - Cloudflare form and rate-limit guidance: https://developers.cloudflare.com/use-cases/solutions/stop-malicious-bots/
 - Anime.js React integration: https://animejs.com/documentation/getting-started/using-with-react/
 - Tone.js: https://tonejs.github.io/
-- Tone.js PluckSynth: https://tonejs.github.io/docs/15.0.4/classes/PluckSynth.html
+- Tone.js sample playback: https://tonejs.github.io/docs/15.1.22/classes/ToneBufferSource.html

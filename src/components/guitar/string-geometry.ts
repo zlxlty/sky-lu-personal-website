@@ -1,3 +1,5 @@
+import { guitarVoicing } from "./voicing";
+
 export interface Point {
   readonly x: number;
   readonly y: number;
@@ -22,15 +24,6 @@ export interface GuitarString {
   readonly normal: Point;
 }
 
-// Screen order: treble above, bass below. String numbers retain guitar convention.
-const tuning = [
-  { name: "high E", note: "E4", gauge: 0.012 },
-  { name: "B", note: "B3", gauge: 0.016 },
-  { name: "G", note: "G3", gauge: 0.024 },
-  { name: "D", note: "D3", gauge: 0.032 },
-  { name: "A", note: "A2", gauge: 0.042 },
-  { name: "low E", note: "E2", gauge: 0.053 },
-] as const;
 // Preserve high E at 0.7 CSS px; the other widths follow the physical gauges.
 const baseStrokeWidth = 0.7;
 
@@ -38,7 +31,7 @@ export function createStrings(layout: GuitarLayout): readonly GuitarString[] {
   const angle = (layout.angle * Math.PI) / 180;
   const axis = { x: Math.cos(angle), y: Math.sin(angle) };
   const normal = { x: -axis.y, y: axis.x };
-  return tuning.map((string, index) => {
+  return guitarVoicing.strings.map((string, index) => {
     const offset = (index - 2.5) * layout.spacing;
     const center = {
       x: layout.hole.x + normal.x * offset,
@@ -47,7 +40,7 @@ export function createStrings(layout: GuitarLayout): readonly GuitarString[] {
     return {
       name: string.name,
       note: string.note,
-      strokeWidth: baseStrokeWidth * (string.gauge / tuning[0].gauge),
+      strokeWidth: baseStrokeWidth * (string.gauge / 0.012),
       index,
       normal,
       from: {

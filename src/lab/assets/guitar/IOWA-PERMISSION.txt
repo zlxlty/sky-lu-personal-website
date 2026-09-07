@@ -1,0 +1,19 @@
+University of Iowa Musical Instrument Samples
+https://theremin.music.uiowa.edu/MIS.html
+Permission checked 2026-09-06.
+
+The project states its recordings "may be downloaded and used for any projects,
+without restrictions." It explicitly includes application developers among users.
+This is the university's usage permission, not a Creative Commons license.
+
+Guitar recording: Raimundo 118, performed by Brian Penkrot, December 11, 2011.
+Recorded by Shane Hoose and Zach Zubow in the anechoic chamber with an Earthworks
+QTC40 microphone, at a distance of five feet.
+Instrument/source page: https://theremin.music.uiowa.edu/MISguitar.html
+Project: Lawrence Fritts, University of Iowa Electronic Music Studios.
+
+Audition changes: isolate the initial/open note from each pp/mf/ff chromatic scale;
+remove subsonic rumble with a 30 Hz high-pass filter; fade the last 150 ms; convert
+to mono 44.1 kHz MP3. No pitch shifting, looping, reverb or per-note normalization.
+One level trim is applied to the complete library. Exact URLs, source hashes,
+and note end times are retained in manifest.json and the preparation script.

@@ -117,7 +117,7 @@ The work is intentionally sequential even where branches could be parallelized. 
 | 04 | `codex/feat/homepage` | Complete static homepage without signature animations | 03 |
 | 05 | `codex/feat/rich-mdx` | Code, math, Mermaid, figures, forms, article layout | 04 |
 | 06 | `codex/feat/systems-motion` | Original research-section network diagram and authored motion | 05 |
-| 07 | `codex/feat/guitar-widget` | Six playable synthesized strings as the homepage hero visual | 06 |
+| 07 | `codex/feat/guitar-widget` | Six playable sampled strings as the homepage hero visual | 06 |
 | 08 | `codex/feat/command-search` | Keyboard-accessible site/post search | 07 |
 | 09 | `codex/feat/cloudflare-production` | Static deployment, email privacy, crawler and security policy | 08 |
 | 10 | `codex/chore/launch-hardening` | Accessibility, performance, observability, release checks | 09 |
@@ -1298,11 +1298,74 @@ Checks:
 - Hover alone does nothing; release, cancellation, and unmount clean up safely.
 - Mobile/desktop, both themes, static no-JavaScript content, and no audio initialization.
 
-### Commit 04.3 - connect the selected guitar's sound
+### Commit 04.3 - add sampled guitar audio and touch controls
 
-Choose the sound approach after visual approval. Keep audio activation, volume,
-mute behavior, and resource cleanup in this separate review candidate. Reuse the
-selected string geometry and gesture flow; do not introduce audio during 04.2.
+Proposed message:
+
+```text
+feat: add sampled guitar audio and touch controls
+```
+
+The user selected recorded samples and approved comparing Shinyguitar's acoustic
+archtop, FreePats FSS steel-string, Quartertone classical, and the University of
+Iowa guitar before choosing the homepage sound.
+
+The user subsequently selected Yamaha, refined its public controls and mobile
+layout, and approved committing the accumulated implementation together. The
+audition and public player share one audio engine, voicing, and asset pipeline.
+
+Scope:
+
+- A development-only `/lab/guitar` with library selection, explicit sound
+  activation, free plucking/strumming, and an identical six-note/down/up phrase.
+- Tone.js sample scheduling behind a lazy import. Load/decode each selected bank
+  on demand, reuse decoded buffers while enabled, and release resources on mute.
+- A minimal optional pluck callback and visual handle on the existing guitar.
+  Keep audio opt-in and ship only the selected recordings on the public homepage.
+- Refine pointer gestures after audition feedback: click/tap plucks on release,
+  with a small movement allowance; held dragging strums without a release note.
+  Preserve initial crossings and discard clicks after dragging or cancellation.
+- Use the requested bass-to-treble degrees `5–1–♭3–♭7–9–11`, with E♭ as root:
+  E♭m11/B♭, the standard-tuned `664664` shape. Share one voicing configuration across note
+  labels and audition banks; transpose the existing samples during playback.
+- Prepare only the six required pitches and their velocity layers; include
+  original licenses, provenance, repeatable asset preparation, and source research.
+- Disclose Quartertone's compressed-preview one-shots and Iowa's note isolation
+  and subsonic filter in the audition; retain creator credit and license links.
+
+Checks:
+
+- Cover all velocities, tuning, take alternation, scheduling cancellation,
+  per-string damping, bank changes, and cleanup independently of the browser.
+- Exercise actual browser decoding/scheduling, activation, gestures, loading
+  failure/retry, mute, and background cancellation without recording system audio.
+- Review mobile/desktop and both themes; verify no audition assets in production.
+
+#### Selected homepage sound and controls (included in 04.3)
+
+The user chose C (Quartertone's Yamaha Eterna) and asked to retain the complete
+lab comparison. Use one homepage guitar island with opt-in activation,
+mute, loading cancellation, failure/retry, and resource cleanup. Keep identity
+copy static and preserve the existing gestures. Lower the drawing slightly;
+place the mute/loading icon in the top-right corner and stack note names beneath
+it along the inside of the right rail, highest first. Match top and right icon
+padding and place the notes slightly above the midpoint between the icon and
+the first string. On mobile, anchor these
+controls to the guitar below the copy and enlarge the drawing for comfortable
+touch plucking and strumming. Omit the homepage volume slider.
+Provide a mobile `Skip guitar` link above the touch surface that moves focus to
+the next content panel without JavaScript or interference from strumming.
+
+- Move only the chosen Yamaha bank into shared assets; lazy-load its module and
+  Tone on activation. Exclude the three alternatives from production builds.
+- Omit the strongest fifth Yamaha layer and distribute the remaining four across
+  the MIDI velocity range. Keep its reviewed gain trim and soften the drag-speed
+  audio curve independently of the visual vibration.
+- Keep the lab's four choices, defaulting to C; fetch only the bank being enabled.
+- Preserve per-file source/license records and give public credit on `/privacy`.
+- Verify exact production asset membership, pre-activation network silence,
+  actual note scheduling, cancel/retry, mute, blur/offscreen, navigation, keyboard,
+  touch, responsive layout, and reduced-motion behavior.
 
 ### Commit 04.4 - add static hero and identity content
 
@@ -1621,7 +1684,7 @@ Checks:
 
 ### Goal
 
-Implement the six-string standard-tuned guitar as the homepage hero's primary interactive visual, with synthesized plucks, ordered strumming, primary-pointer arming, and accessible alternatives. Visual exploration and the next sound decision now begin in 04.2–04.3; deduplicate completed work when this stage is reached.
+Implement the six-string standard-tuned guitar as the homepage hero's primary interactive visual, with sampled acoustic plucks, ordered strumming, primary-pointer arming, and accessible alternatives. Visual exploration and the sound audition now begin in 04.2–04.3; deduplicate completed work when this stage is reached.
 
 ### Commit 07.1 - add pure string-crossing geometry
 
@@ -1675,19 +1738,19 @@ Checks:
 - Performance profile during six-string decay.
 - Reduced-motion behavior.
 
-### Commit 07.3 - add Tone.js pluck synthesis
+### Commit 07.3 - add Tone.js sample playback
 
 Proposed message:
 
 ```text
-feat: add synthesized guitar audio
+feat: add sampled acoustic guitar audio
 ```
 
 Scope:
 
 - Lazy Tone.js import.
 - Explicit audio-context unlock.
-- Six `Tone.PluckSynth` voices in standard tuning.
+- Standard-tuned sample voices from the library selected in 04.3.
 - Shared gain and limiter.
 - Gauge-specific dampening/resonance.
 - Mute ramp, error state, and node disposal.
@@ -1779,7 +1842,8 @@ Checks:
 
 - Desktop notes occur only after audio activation and during a held-pointer crossing.
 - Multi-string gestures schedule in geometric order.
-- Standard tuning is correct.
+- The configured E♭m11/B♭ voicing follows the playable `664664` shape and the
+  requested bass-to-treble degrees `5–1–♭3–♭7–9–11`, with E♭ as root.
 - Tone.js is lazy.
 - Animation and audio resources are cleaned up.
 - Mobile, keyboard, muted, error, and reduced-motion states work.

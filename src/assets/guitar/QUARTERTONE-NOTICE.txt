@@ -1,0 +1,22 @@
+ClassicalGuitar-multisampled by quartertone
+https://freesound.org/people/quartertone/packs/11573/
+https://freesound.org/people/quartertone/
+
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+Full terms: QUARTERTONE-CC-BY-4.0.txt.
+
+This subset uses 24 public high-quality MP3 previews: the first four recorded strengths
+of the six open strings of a Yamaha Eterna classical guitar, finger-plucked and
+recorded with a CAD E100 microphone. Every selected sound's license was checked
+on its individual Freesound page. Per-file source URLs and hashes are listed in
+scripts/guitar-sources/quartertone.json; docs/research/quartertone-audition.md
+provides a linked inventory.
+
+Changes: convert to mono 44.1 kHz MP3, fade the final 300 ms of each file,
+omit the strongest fifth tier, transpose at playback to the configured chord,
+and apply one level trim to the complete library. No looping or reverb.
+Original WAVs and verified sampler loop headers are
+not included; these are finite, compressed preview recordings.
+
+Neither the creator nor Freesound endorses this website or these modifications.

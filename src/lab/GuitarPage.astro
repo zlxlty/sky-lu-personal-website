@@ -1,0 +1,22 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { GuitarAudition } from "./GuitarAudition";
+---
+
+<BaseLayout
+  title="Guitar sounds · Component lab"
+  description="Compare four recorded acoustic guitars with the same gestures."
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <IndexHeading
+    title="Find the guitar’s voice."
+    eyebrow="Sound study / A–D"
+    description="Try the same phrase on each guitar, then play freely. Listen for the attack, the body, and how the notes fade."
+  />
+  <Panel
+    ><PanelContent className="py-8"><GuitarAudition client:load /></PanelContent
+    ></Panel
+  >
+</BaseLayout>

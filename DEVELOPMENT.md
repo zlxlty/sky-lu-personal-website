@@ -131,7 +131,8 @@ and keyboard focus indicators.
   For another divided stack inside padded content, nest a `Panel` there. Keep
   padding, margins, and layout gaps off the stack itself: those would separate
   edges that are meant to touch. Apply spacing within its sections instead.
-- `RailAnnotation` can appear before, between, or after sections. Its
+- `RailAnnotation` uses 20 px handwritten text at 45% opacity, including its
+  arrow. It can appear before, between, or after sections. Its
   `data-panel-overlay` marker excludes it from the flow count. Hidden elements,
   script/style/template nodes, and empty panels also do not introduce joins.
 
@@ -195,20 +196,96 @@ copy and layout. Only its guitar SVG hydrates as a React island. Development and
 production render the same selected design, with no variants or design chooser.
 The guitar uses a filled sound hole and a 35-degree angle, with compact copy at
 the bottom left. Its drawing spans the full hero on desktop; below 768 px it
-stacks below the text and crops to the instrument. The right rail annotation
+stacks below the text and crops to an enlarged instrument for touch. Its SVG
+uses 250% width with a -135% left margin and a 4% upward translation. These
+offsets center the sound hole in both axes at 80% of the figure width. Desktop
+restores the full SVG view. The right rail annotation
 places its arrow above the two-line interaction hint; the shared component hides
 it when there is no gutter space. The figure retains screen-reader instructions,
 with no visible caption/status or duplicate navigation row. Run the interaction
 and responsive checks with `pnpm test:e2e guitar.spec.ts`.
 
+On mobile, a static `Skip guitar` link sits opposite the sound toggle above the
+strings and stays below the sticky header while the guitar is on screen. Its
+sticky overlay uses a negative bottom margin to preserve the drawing's layout.
+It targets the focusable `#after-guitar` panel using native fragment
+navigation and a scroll margin for the sticky header. This offers a way past the
+touch surface before hydration and without JavaScript; it adds no input handler
+to the guitar island.
+
 `src/components/guitar/GuitarStrings.tsx` renders the static SVG and owns input
 lifecycle. `string-geometry.ts` owns finite-segment crossings and gauge order;
 `string-motion.ts` owns one on-demand animation loop and direct SVG updates.
-Clicking or tapping a string plucks it immediately; holding the primary pointer
-and crossing strings strums them. Release never adds another pluck. Touch uses
-the same one-finger gesture; Tab then Enter/Space is the keyboard alternative.
-Reduced motion gives a brief highlight instead of vibration. The guitar has no
-audio engine or audio-context initialization in this candidate.
+Clicking or tapping a string plucks it on release. A 6 CSS pixel movement allowance
+keeps small pointer jitter from starting a strum. Moving farther while holding
+the primary pointer strums crossed strings, retaining the segment from the press
+point. Releasing after a drag adds no pluck; cancellation discards pending clicks.
+Touch uses the same one-finger gesture; Tab then Enter/Space plucks immediately.
+Reduced motion gives a brief highlight instead of vibration. `GuitarPlayer.tsx`
+wraps the drawing as the single homepage island with an icon-only sound toggle
+at the top right and note names stacked below it, high to low. Both align with
+the header theme toggle; notes use `--color-blueprint-rule` and the icon uses
+45% foreground opacity. CSS anchors the icon
+with equal top/right padding inside the hero rail on desktop and inside the
+stacked guitar on mobile. A ResizeObserver measures where the first resting
+string reaches the column; flexbox centers the notes between the icon's hit area
+and that boundary, with a small upward optical adjustment in CSS. It runs on
+layout changes, not animation frames. No volume slider is
+shown on the homepage. No audio context, Tone import, bank module, or sample download is
+started before activation. Mute, loading failure, page exit, and unmount dispose
+the engine; blur and leaving the hero stop its current notes.
+
+#### Guitar sound audition
+
+Visit `/lab/guitar` during `pnpm dev` to compare Shinyguitar acoustic archtop,
+FreePats steel-string, Quartertone classical, and University of Iowa samples.
+Select a library, enable sound, and play the reference
+phrase or use the existing click/tap, drag, and keyboard gestures. C (Yamaha)
+is selected initially. The phrase uses
+six isolated notes and ordered down/up strums; the strength slider affects the
+phrase and note buttons, while drag speed controls the gesture's strength.
+
+The current chord is E♭m11/B♭: `664664` from low E to high E in standard tuning.
+It sounds `B♭2 E♭3 G♭3 D♭4 F4 A♭4`, the requested `5–1–♭3–♭7–9–11` voicing
+with E♭ as root. Labels use flat spellings to match the chord.
+Edit the chord name and frets in `src/components/guitar/voicing.ts` to change it;
+the SVG's accessible labels, audition note buttons, and all four sample banks
+derive their sounding pitches from that configuration. Sample source pitches
+stay unchanged; the engine adjusts playback rate to each fretted pitch, with
+no extra download or asset preparation step.
+
+`src/components/guitar/audio/guitar-audio.ts` owns one audio context, lazy Tone.js
+initialization, cached decoded buffers, sample voices, and cleanup. The visual
+component emits `GuitarPluck` data and imports no audio implementation. This keeps
+the drawing independent of audio. The homepage dynamically imports only the
+Yamaha bank; the other libraries remain lab-only. Changing libraries
+stops current/scheduled notes; mute, load failure, and unmount dispose the engine.
+Blur and hidden-page events stop playback. Returning to the page does not replay
+the reference phrase.
+
+`src/lab/guitar-samples.ts` connects Vite asset URLs to the generated manifest in
+`src/lab/assets/guitar/` and the shared Yamaha bank in `src/assets/guitar/`.
+The adjacent READMEs and license files document sources and
+processing. The explicit `pnpm samples:prepare` command requires `ffmpeg` and
+`tar` on PATH, downloads the pinned upstream recordings into an ignored cache,
+and regenerates the audition subset. It never runs on install or build. The FSS
+WAV files remain unmodified; Shinyguitar's CC0 WAVs are converted to mono MP3.
+Quartertone's public MP3 previews use a short tail fade with no sustain loops;
+the strongest fifth tier is omitted. Its remaining four tiers span the complete
+velocity range while preserving the original whole-bank gain trim. `strumStrength`
+in `pluck.ts` provides the gentler speed-to-loudness curve without changing visual
+vibration. Only the 24 selected Yamaha files are emitted in production.
+their versioned acquisition table records each file's attribution and checksum.
+Iowa's open notes are isolated from chromatic-scale recordings using reviewed
+end times, with a 30 Hz subsonic filter and short tail fade. Level matching uses
+one gain adjustment per library; no reverb is added. Only the selected library's
+audio files download when sound is enabled or the library is changed.
+
+Run `pnpm test guitar-audio guitar-samples` for mapping/lifecycle checks and
+`pnpm test:lab guitar-audio.spec.ts` for browser decoding, scheduling, gesture,
+failure, and accessibility checks. Browser tests observe Web Audio calls; they
+do not record microphone or system output. Judge the actual timbre by listening
+in the audition before choosing the production library.
 
 `src/components/site/SiteHeader.astro` owns the static `sky lu.` wordmark, public
 navigation records, and current-page labels. The wordmark reuses the preloaded
