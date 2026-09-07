@@ -1,5 +1,41 @@
 # Third-party notices
 
+## Guitar samples
+
+`src/lab/assets/guitar/` contains three development-only alternatives. The selected
+Yamaha recordings in `src/assets/guitar/` are shared by the homepage and lab:
+
+- **Shinyguitar** by D. Smolken / Karoryfer Lecolds, under CC0 1.0. Acoustic
+  microphone samples from revision `57243cca85277dbcc120ce17c6178032f93c80f3`
+  of [karoryfer.shinyguitar](https://github.com/sfzinstruments/karoryfer.shinyguitar).
+  Four velocity layers and two takes per source pitch were converted from WAV
+  to mono MP3. The complete dedication is in `SHINYGUITAR-CC0.txt`.
+- **FSS Steel-String Acoustic Guitar**, copyright 2008 Gary Campion;
+  modified 2016–2020 by Roberto for FreePats, release 2020-05-21.
+  The selected WAVs are unmodified source files under GPLv3 or later, with the
+  FreePats composition exception. The original attribution and exception are
+  in `FSS-NOTICE.txt`, and the complete GPL is in `FSS-GPL.txt`.
+  [Original source and mapping](https://freepats.zenvoid.org/Guitar/FSS-SteelStringGuitar/FSS-SteelStringGuitar-SFZ-20200521.tar.xz).
+- **ClassicalGuitar-multisampled** by **quartertone**, CC BY 4.0. Twenty-four public
+  MP3 previews from the [creator's pack](https://freesound.org/people/quartertone/packs/11573/)
+  were converted to mono 44.1 kHz with 300 ms tail fades. The strongest fifth tier
+  is omitted, and pitches are adjusted for the chord during playback. Full attribution,
+  modification details, and terms are in `QUARTERTONE-NOTICE.txt` and
+  `QUARTERTONE-CC-BY-4.0.txt`; `scripts/guitar-sources/quartertone.json` lists
+  every original sound page and verified download hash.
+- **University of Iowa Musical Instrument Samples**, Raimundo 118 guitar
+  performed by Brian Penkrot, recorded December 11, 2011. Used under the
+  [university's usage permission](https://theremin.music.uiowa.edu/MIS.html).
+  The open notes were isolated, filtered below 30 Hz, faded, and converted
+  to mono MP3. `IOWA-PERMISSION.txt` preserves credit and processing details;
+  `manifest.json` lists source URLs, hashes, and excerpt boundaries.
+
+Only Quartertone's selected subset ships in production; the three alternatives
+remain in the development lab. The adjacent READMEs,
+manifest, and `scripts/prepare-guitar-samples.ts` describe transformations, pitch
+mapping, and reproducible preparation. Upstream attribution files retain their
+original third-party contact details.
+
 ## Development jazz fixture
 
 `src/lab/assets/jazz-n-brass-demo.mp3` is a compressed version of

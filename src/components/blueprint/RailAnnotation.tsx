@@ -45,7 +45,7 @@ export function RailAnnotation({
       data-arrow-direction={arrowDirection}
       data-panel-overlay=""
       className={cn(
-        "pointer-events-none absolute z-10 hidden w-40 flex-col font-handwritten text-[22px]/none tracking-normal text-muted-foreground opacity-90 select-none xl:flex print:hidden",
+        "pointer-events-none absolute z-10 hidden w-40 flex-col font-handwritten text-xl/none tracking-normal text-muted-foreground opacity-45 select-none xl:flex print:hidden",
         alignmentClasses[align],
         side === "left"
           ? "right-full mr-3 items-end text-right"

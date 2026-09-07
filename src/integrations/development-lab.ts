@@ -40,5 +40,9 @@ export function getDevelopmentLabRoutes(command: AstroCommand) {
       pattern: "/lab/turntable",
       entrypoint: new URL("../lab/TurntablePage.astro", import.meta.url),
     },
+    {
+      pattern: "/lab/guitar",
+      entrypoint: new URL("../lab/GuitarPage.astro", import.meta.url),
+    },
   ];
 }

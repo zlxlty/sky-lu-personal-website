@@ -58,14 +58,20 @@ async function watchPlucks(page: Page) {
   });
 }
 
-test("clicking each string plucks it once; empty and secondary clicks do nothing", async ({
+test("releasing each string plucks it once; pressing, jitter, and secondary clicks do nothing", async ({
   page,
 }) => {
   await open(page);
   const plucks = await watchPlucks(page);
   for (let index = 0; index < 6; index++) {
     const point = await stringPoint(page, index);
-    await page.mouse.click(point.x, point.y);
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.down();
+    await expect(guitar(page)).toHaveAttribute("data-armed");
+    await expect(guitar(page)).not.toHaveAttribute("data-animating");
+    await page.mouse.move(point.x + 1, point.y + 1);
+    await expect(guitar(page)).not.toHaveAttribute("data-animating");
+    await page.mouse.up();
     const active = guitar(page).locator("[data-vibrating]");
     await expect(active).toHaveCount(1);
     await expect(active).toHaveAttribute("data-guitar-string", String(index));
@@ -85,24 +91,86 @@ test("clicking each string plucks it once; empty and secondary clicks do nothing
   await plucks.dispose();
 });
 
-test("a press on a string continues into a strum without a release pluck", async ({
+for (const order of [
+  [2, 3, 4, 5],
+  [3, 2, 1, 0],
+] as const) {
+  test(`strumming from the middle plays ${order.join(", ")} without a press or release pluck`, async ({
+    page,
+  }) => {
+    await open(page);
+    const plucks = await watchPlucks(page);
+    const first = await stringPoint(page, order[0]);
+    const last = await stringPoint(page, order[3]);
+    const distance = Math.hypot(last.x - first.x, last.y - first.y);
+    const dx = (last.x - first.x) / distance;
+    const dy = (last.y - first.y) / distance;
+    // Begin within the middle string's hit area, just before its centerline.
+    await page.mouse.move(first.x - dx * 2, first.y - dy * 2);
+    await page.mouse.down();
+    await expect(guitar(page)).not.toHaveAttribute("data-animating");
+    // Small movement across the line still leaves a click pending. A later
+    // strum must retain this crossing rather than drop its first note.
+    await page.mouse.move(first.x + dx * 2, first.y + dy * 2);
+    await expect(guitar(page)).not.toHaveAttribute("data-animating");
+    await page.mouse.move(last.x + dx * 2, last.y + dy * 2);
+    expect(await plucks.evaluate(({ hits }) => hits)).toEqual(order);
+    await page.mouse.up();
+    await expect(guitar(page)).not.toHaveAttribute("data-animating");
+    expect(await plucks.evaluate(({ hits }) => hits)).toEqual(order);
+    await plucks.evaluate((watcher) => watcher.disconnect());
+    await plucks.dispose();
+  });
+}
+
+test("dragging along a string and returning to the press point does not become a click", async ({
   page,
 }) => {
   await open(page);
   const plucks = await watchPlucks(page);
   const first = await stringPoint(page, 0);
   const last = await stringPoint(page, 5);
-  await page.mouse.move(first.x, first.y);
+  const distance = Math.hypot(last.x - first.x, last.y - first.y);
+  const dx = (last.x - first.x) / distance;
+  const dy = (last.y - first.y) / distance;
+  const start = { x: first.x - dx * 4, y: first.y - dy * 4 };
+  await page.mouse.move(start.x, start.y);
   await page.mouse.down();
-  // Cross the last centerline, but release within its hit area. Stopping
-  // exactly on the line is ambiguous after browser coordinate rounding.
-  await page.mouse.move(
-    last.x + (last.x - first.x) * 0.02,
-    last.y + (last.y - first.y) * 0.02,
-  );
+  await page.mouse.move(start.x + dy * 30, start.y - dx * 30);
+  await page.mouse.move(start.x, start.y);
   await page.mouse.up();
-  await expect(guitar(page)).not.toHaveAttribute("data-animating");
-  expect(await plucks.evaluate(({ hits }) => hits)).toEqual([0, 1, 2, 3, 4, 5]);
+  await expect(guitar(page)).not.toHaveAttribute("data-armed");
+  expect(await plucks.evaluate(({ hits }) => hits)).toEqual([]);
+  await plucks.evaluate((watcher) => watcher.disconnect());
+  await plucks.dispose();
+});
+
+test("cancelled clicks cannot pluck on release", async ({ page }) => {
+  await open(page);
+  const plucks = await watchPlucks(page);
+  for (const reason of ["outside", "blur", "cancel", "capture"]) {
+    const point = await stringPoint(page, 2);
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.down();
+    if (reason === "outside") await page.mouse.move(1, 1);
+    else if (reason === "blur")
+      await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+    else if (reason === "cancel")
+      await guitar(page).dispatchEvent("pointercancel", { pointerId: 1 });
+    else {
+      // Apply pending capture before taking it away, so the browser emits
+      // lostpointercapture rather than simply cancelling a pending request.
+      await page.mouse.move(point.x + 1, point.y);
+      await guitar(page).evaluate((element) =>
+        element.releasePointerCapture(1),
+      );
+      await page.mouse.move(point.x + 2, point.y);
+    }
+    await expect(guitar(page), reason).not.toHaveAttribute("data-armed");
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.up();
+  }
+  expect(await plucks.evaluate(({ hits }) => hits)).toEqual([]);
   await plucks.evaluate((watcher) => watcher.disconnect());
   await plucks.dispose();
 });
@@ -154,7 +222,7 @@ test("keyboard plucks honor reduced motion and have accessible controls", async 
   await page.emulateMedia({ reducedMotion: "reduce", colorScheme: "dark" });
   await open(page);
   const bass = guitar(page).getByRole("button", {
-    name: "Pluck string 6, low E",
+    name: "Pluck string 6, low E (B♭2)",
   });
   const path = bass.locator("[data-string-ink]");
   const resting = await path.getAttribute("d");
@@ -165,11 +233,13 @@ test("keyboard plucks honor reduced motion and have accessible controls", async 
   await expect(guitar(page)).not.toHaveAttribute("data-animating");
   const result = await new AxeBuilder({ page })
     .exclude("astro-dev-toolbar")
+    // Approved faint decorative hints; equivalent instructions remain in the figure.
+    .exclude('[data-slot="rail-annotation"]')
     .analyze();
   expect(result.violations).toEqual([]);
 });
 
-for (const width of [360, 767, 768, 1440]) {
+for (const width of [320, 360, 767, 768, 1440]) {
   test(`selected layout keeps strings clear of copy at ${width}px`, async ({
     page,
   }) => {
@@ -179,12 +249,94 @@ for (const width of [360, 767, 768, 1440]) {
     const instrument = await page
       .locator("[data-guitar-viewport]")
       .boundingBox();
-    if (!copy || !instrument) throw new Error("Missing hero content");
+    const panel = await page.locator("#hero-panel").boundingBox();
+    if (!copy || !instrument || !panel) throw new Error("Missing hero content");
+    const controls = page.locator("[data-guitar-sound-controls]");
+    const button = await controls.getByRole("button").boundingBox();
+    const notes = controls.getByRole("list", {
+      name: "Guitar notes, high to low",
+    });
+    await expect(notes.getByRole("listitem")).toHaveText([
+      "A♭",
+      "F",
+      "D♭",
+      "G♭",
+      "E♭",
+      "B♭",
+    ]);
+    const column = await notes.boundingBox();
+    if (!button || !column) throw new Error("Missing sound controls");
+    expect(button.width).toBeGreaterThanOrEqual(44);
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.y - instrument.y).toBeCloseTo(
+      panel.x + panel.width - button.x - button.width,
+      0,
+    );
+    expect(column.x + column.width / 2).toBeCloseTo(
+      button.x + button.width / 2,
+      0,
+    );
+    expect(column.y).toBeGreaterThan(button.y + button.height);
+    const theme = await page.locator("[data-theme-toggle]").boundingBox();
+    if (!theme) throw new Error("Missing theme toggle");
+    expect(button.x + button.width / 2).toBeCloseTo(
+      theme.x + theme.width / 2,
+      0,
+    );
+    const railColor = await page
+      .locator('[data-slot="blueprint-rail"]')
+      .evaluate((rail) => getComputedStyle(rail, "::after").borderRightColor);
+    await expect(controls.locator("[data-guitar-sound-icon]")).toHaveCSS(
+      "opacity",
+      "0.45",
+    );
+    await expect(notes).toHaveCSS("color", railColor);
+    expect(button.y).toBeGreaterThanOrEqual(instrument.y);
+    // Keep the notes slightly above the midpoint between icon and resting string.
+    // When the drawing is narrower than the rail, use its visible right edge.
+    const firstStringY = await guitar(page).evaluate(
+      (svg, x) => {
+        if (!(svg instanceof SVGSVGElement)) throw new Error("Expected SVG");
+        const matrix = svg.getScreenCTM();
+        const path = svg.querySelector<SVGPathElement>("[data-string-ink]");
+        if (!matrix || !path) throw new Error("Missing string");
+        const from = path.getPointAtLength(0).matrixTransform(matrix);
+        const to = path
+          .getPointAtLength(path.getTotalLength())
+          .matrixTransform(matrix);
+        return from.y + ((to.y - from.y) * (x - from.x)) / (to.x - from.x);
+      },
+      Math.min(column.x + column.width / 2, instrument.x + instrument.width),
+    );
+    const midpoint = (button.y + button.height + firstStringY) / 2;
+    expect(column.y + column.height / 2).toBeLessThan(midpoint);
+    expect(column.y + column.height / 2).toBeGreaterThan(midpoint - 20);
+    expect(column.y + column.height + 8).toBeLessThan(firstStringY);
     if (width < 768) {
+      await expect(
+        page.getByRole("link", { name: "Skip guitar" }),
+      ).toBeVisible();
       expect(instrument.y).toBeGreaterThan(copy.y + copy.height);
+      const hole = await guitar(page)
+        .locator(":scope > circle")
+        .first()
+        .boundingBox();
+      if (!hole) throw new Error("Missing sound hole");
+      expect(hole.width / instrument.width).toBeGreaterThanOrEqual(0.79);
+      expect(hole.x + hole.width / 2).toBeCloseTo(
+        instrument.x + instrument.width / 2,
+        0,
+      );
+      expect(hole.y + hole.height / 2).toBeCloseTo(
+        instrument.y + instrument.height / 2,
+        0,
+      );
+      expect(hole.x).toBeGreaterThan(instrument.x);
+      expect(hole.x + hole.width).toBeLessThan(instrument.x + instrument.width);
     } else {
-      const panel = await page.locator("#hero-panel").boundingBox();
-      if (!panel) throw new Error("Missing hero panel");
+      await expect(
+        page.getByRole("link", { name: "Skip guitar" }),
+      ).toBeHidden();
       expect(instrument.x).toBeCloseTo(panel.x, 0);
       expect(instrument.width).toBeCloseTo(panel.width, 0);
       const geometry = await guitar(page).evaluate((svg, text) => {
@@ -229,7 +381,7 @@ test("homepage hydrates only the guitar and has no design chooser", async ({
   await open(page);
   const island = page.locator("astro-island");
   await expect(island).toHaveCount(1);
-  await expect(island).toHaveAttribute("component-url", /GuitarStrings/);
+  await expect(island).toHaveAttribute("component-url", /GuitarPlayer/);
   await expect(island.locator("[data-hero-copy]")).toHaveCount(0);
   await expect(page.getByRole("button", { name: /guitar design/ })).toHaveCount(
     0,
@@ -240,12 +392,63 @@ test("homepage hydrates only the guitar and has no design chooser", async ({
 
 test.describe("touch", () => {
   test.use({ hasTouch: true, viewport: { width: 360, height: 900 } });
-  test("a tap plucks only the selected string", async ({ page }) => {
+  test("skip link bypasses the touch surface and resumes keyboard navigation below it", async ({
+    page,
+  }) => {
+    await open(page);
+    const skip = page.getByRole("link", { name: "Skip guitar" });
+    const bounds = await skip.boundingBox();
+    if (!bounds) throw new Error("Missing skip link");
+    expect(bounds.height).toBeGreaterThanOrEqual(44);
+    await page.locator("[data-guitar-viewport]").evaluate((element) => {
+      window.scrollTo(0, scrollY + element.getBoundingClientRect().top + 120);
+    });
+    const reachable = await skip.boundingBox();
+    const stickyHeader = await page.getByRole("banner").boundingBox();
+    if (!reachable || !stickyHeader) throw new Error("Missing skip controls");
+    expect(reachable.y).toBeGreaterThanOrEqual(
+      stickyHeader.y + stickyHeader.height,
+    );
+    await expect(skip).toBeInViewport();
+    await skip.tap();
+    const destination = page.getByRole("region", { name: "Explore more" });
+    await expect(destination).toBeFocused();
+    await expect(destination).toBeInViewport();
+    expect(new URL(page.url()).hash).toBe("#after-guitar");
+    await expect(guitar(page)).not.toBeInViewport();
+    await expect(guitar(page)).not.toHaveAttribute("data-armed");
+    await expect(page.locator("[data-guitar-player]")).toHaveAttribute(
+      "data-audio-state",
+      "off",
+    );
+    const target = await destination.boundingBox();
+    const header = await page.getByRole("banner").boundingBox();
+    if (!target || !header) throw new Error("Missing navigation landmarks");
+    expect(target.y).toBeGreaterThanOrEqual(header.y + header.height);
+    await page.keyboard.press("Tab");
+    await expect(
+      page.getByRole("link", { name: "Selected projects" }),
+    ).toBeFocused();
+  });
+  test("a tap plucks only the selected string on release", async ({
+    page,
+    context,
+  }) => {
     await open(page);
     await guitar(page).scrollIntoViewIfNeeded();
-    for (const index of [0, 5]) {
+    const session = await context.newCDPSession(page);
+    for (let index = 0; index < 6; index++) {
       const point = await stringPoint(page, index);
-      await page.touchscreen.tap(point.x, point.y);
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [point],
+      });
+      await expect(guitar(page)).toHaveAttribute("data-armed");
+      await expect(guitar(page)).not.toHaveAttribute("data-animating");
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
+      });
       const active = guitar(page).locator("[data-vibrating]");
       await expect(active).toHaveCount(1);
       await expect(active).toHaveAttribute("data-guitar-string", String(index));
@@ -280,5 +483,19 @@ test.describe("touch", () => {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(360);
+  });
+});
+
+test.describe("mobile without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 360, height: 900 } });
+  test("skip guitar works before any client enhancement", async ({ page }) => {
+    await page.goto("/");
+    const skip = page.getByRole("link", { name: "Skip guitar" });
+    await skip.focus();
+    await page.keyboard.press("Enter");
+    const destination = page.getByRole("region", { name: "Explore more" });
+    await expect(destination).toBeFocused();
+    await expect(destination).toBeInViewport();
+    expect(new URL(page.url()).hash).toBe("#after-guitar");
   });
 });

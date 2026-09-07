@@ -32,6 +32,13 @@ describe("development lab route", () => {
     ).toBe(true);
   });
 
+  it("provides a dedicated guitar audition in development", () => {
+    expect(getDevelopmentLabRoutes("dev")).toContainEqual({
+      pattern: "/lab/guitar",
+      entrypoint: new URL("../../src/lab/GuitarPage.astro", import.meta.url),
+    });
+  });
+
   it.each(["build", "preview", "sync"] as const)(
     "does not inject the lab during %s",
     (command) => {

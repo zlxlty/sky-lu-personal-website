@@ -27,6 +27,7 @@
     "test:lab:ci": "playwright test --config=playwright.lab.config.ts --grep-invert \"visual target\"",
     "test:lab:ui": "playwright test --config=playwright.lab.config.ts --ui",
     "test:lab:update": "playwright test --config=playwright.lab.config.ts --update-snapshots",
+    "samples:prepare": "node scripts/prepare-guitar-samples.ts",
     "verify": "pnpm format:check && pnpm lint && pnpm check && pnpm test && pnpm build",
     "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:lab:ci",
     "prepare": "simple-git-hooks"
@@ -44,7 +45,8 @@
     "cmdk": "^1.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "tone": "15.1.22"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

@@ -1,10 +1,12 @@
 import {
   useEffect,
   useId,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
   type PointerEvent,
+  type Ref,
 } from "react";
 import {
   createStrings,
@@ -18,24 +20,74 @@ import { createStringMotion } from "./string-motion";
 import { cn } from "@/lib/cn";
 import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import "./guitar.css";
+import {
+  strumStrength,
+  type GuitarPluck,
+  type GuitarStringsHandle,
+} from "./pluck";
 
 const directPluckAmplitude = 4;
+// CSS pixels, independent of the SVG's responsive scale.
+const dragThreshold = 6;
+
+interface StringGesture {
+  id: number;
+  point: Point;
+  time: number;
+  pressClient: Point;
+  pluckIndex: number | undefined;
+  strumming: boolean;
+}
 
 interface Props {
   layout: GuitarLayout;
   className?: string;
+  onPluck?: (pluck: GuitarPluck) => void;
+  silent?: boolean;
+  ref?: Ref<GuitarStringsHandle>;
 }
 
-/** Silent visual instrument; audio will connect to plucks in the next candidate. */
-export function GuitarStrings({ layout, className }: Props) {
+/** Visual instrument with an optional sound adapter; silent by default. */
+export function GuitarStrings({
+  layout,
+  className,
+  onPluck,
+  silent = true,
+  ref,
+}: Props) {
   const id = useId();
   const svg = useRef<SVGSVGElement>(null);
   const motion = useRef<ReturnType<typeof createStringMotion> | null>(null);
-  const drag = useRef<{ id: number; point: Point; time: number } | null>(null);
+  const drag = useRef<StringGesture | null>(null);
   const lastPluck = useRef<number[]>([]);
   const [armed, setArmed] = useState(false);
   const strings = useMemo(() => createStrings(layout), [layout]);
   const { hole } = layout;
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      pluck: (index, strength) =>
+        motion.current?.pluck(index, 2 + strength * 7, 1),
+      reset: () => motion.current?.reset(),
+    }),
+    [],
+  );
+
+  const pluck = (
+    index: number,
+    amplitude: number,
+    direction: number,
+    audio?: Pick<GuitarPluck, "strength" | "delay">,
+  ) => {
+    motion.current?.pluck(index, amplitude, direction);
+    onPluck?.({
+      index,
+      strength: Math.max(0.15, (amplitude - 2) / 7),
+      delay: 0,
+      ...audio,
+    });
+  };
 
   useEffect(() => {
     const element = svg.current;
@@ -99,6 +151,28 @@ export function GuitarStrings({ layout, className }: Props) {
     setArmed(false);
   };
 
+  const movedFromPress = (
+    event: PointerEvent<SVGSVGElement>,
+    gesture: StringGesture,
+  ) =>
+    Math.hypot(
+      event.clientX - gesture.pressClient.x,
+      event.clientY - gesture.pressClient.y,
+    ) > dragThreshold;
+
+  const insideViewport = (event: PointerEvent<SVGSVGElement>) => {
+    // The host may crop the SVG for a narrow layout. Captured pointers must
+    // remain in the visible instrument for both strums and release plucks.
+    const viewport = event.currentTarget.parentElement?.getBoundingClientRect();
+    return (
+      viewport !== undefined &&
+      event.clientX >= viewport.left &&
+      event.clientX <= viewport.right &&
+      event.clientY >= viewport.top &&
+      event.clientY <= viewport.bottom
+    );
+  };
+
   const move = (event: PointerEvent<SVGSVGElement>) => {
     const previous = drag.current;
     if (!previous || previous.id !== event.pointerId) return;
@@ -108,19 +182,14 @@ export function GuitarStrings({ layout, className }: Props) {
     }
     const current = point(event);
     if (!current) return;
-    // The host may crop the SVG for a narrow layout. End the gesture at the
-    // visible viewport, rather than letting a captured pointer strum offscreen.
-    const viewport = event.currentTarget.parentElement?.getBoundingClientRect();
-    if (
-      !viewport ||
-      event.clientX < viewport.left ||
-      event.clientX > viewport.right ||
-      event.clientY < viewport.top ||
-      event.clientY > viewport.bottom
-    ) {
+    if (!insideViewport(event)) {
       release();
       return;
     }
+    // Keep the original segment while a click is pending, so crossing a nearby
+    // string is not lost when movement becomes a strum. Once started, a strum
+    // cannot turn back into a click even if the pointer returns to its origin.
+    if (!previous.strumming && !movedFromPress(event, previous)) return;
     const velocity =
       Math.hypot(current.x - previous.point.x, current.y - previous.point.y) /
       Math.max(1, event.timeStamp - previous.time);
@@ -131,13 +200,23 @@ export function GuitarStrings({ layout, className }: Props) {
       )
         continue;
       lastPluck.current[crossing.index] = event.timeStamp;
-      motion.current?.pluck(
-        crossing.index,
-        pluckAmplitude(velocity),
-        crossing.direction,
-      );
+      pluck(crossing.index, pluckAmplitude(velocity), crossing.direction, {
+        strength: strumStrength(velocity),
+        delay:
+          (crossing.fraction * Math.min(40, event.timeStamp - previous.time)) /
+          1000,
+      });
     }
-    drag.current = { ...previous, point: current, time: event.timeStamp };
+    drag.current = {
+      ...previous,
+      point: current,
+      time: event.timeStamp,
+      strumming: true,
+    };
+  };
+
+  const cancel = (event: PointerEvent<SVGSVGElement>) => {
+    if (event.pointerId === drag.current?.id) release();
   };
 
   return (
@@ -159,14 +238,6 @@ export function GuitarStrings({ layout, className }: Props) {
             if (!current) return;
             event.preventDefault();
             event.currentTarget.setPointerCapture(event.pointerId);
-            drag.current = {
-              id: event.pointerId,
-              point: current,
-              time: event.timeStamp,
-            };
-            // Pluck on press so both mouse clicks and touch taps feel immediate.
-            // Pointer capture keeps the ensuing drag on the shared strum path;
-            // release never plucks again.
             const hit =
               event.target instanceof Element
                 ? event.target.closest("[data-guitar-string]")
@@ -175,18 +246,32 @@ export function GuitarStrings({ layout, className }: Props) {
               ({ index }) =>
                 String(index) === hit?.getAttribute("data-guitar-string"),
             );
-            if (string) {
-              lastPluck.current[string.index] = event.timeStamp;
-              motion.current?.pluck(string.index, directPluckAmplitude, 1);
-            }
+            drag.current = {
+              id: event.pointerId,
+              point: current,
+              time: event.timeStamp,
+              pressClient: { x: event.clientX, y: event.clientY },
+              pluckIndex: string?.index,
+              strumming: false,
+            };
+            lastPluck.current = [];
             setArmed(true);
           }}
           onPointerMove={move}
           onPointerUp={(event) => {
-            if (event.pointerId === drag.current?.id) release();
+            const current = drag.current;
+            if (!current || event.pointerId !== current.id) return;
+            release();
+            if (
+              !current.strumming &&
+              current.pluckIndex !== undefined &&
+              !movedFromPress(event, current) &&
+              insideViewport(event)
+            )
+              pluck(current.pluckIndex, directPluckAmplitude, 1);
           }}
-          onPointerCancel={release}
-          onLostPointerCapture={release}
+          onPointerCancel={cancel}
+          onLostPointerCapture={cancel}
         >
           <defs>
             <clipPath id={`${id}-hole`}>
@@ -219,14 +304,14 @@ export function GuitarStrings({ layout, className }: Props) {
               role="button"
               tabIndex={-1}
               aria-disabled="true"
-              aria-label={`Pluck string ${string.index + 1}, ${string.name}`}
+              aria-label={`Pluck string ${string.index + 1}, ${string.name} (${string.note})`}
               onKeyDown={(event) => {
                 if (
                   (event.key === "Enter" || event.key === " ") &&
                   !event.repeat
                 ) {
                   event.preventDefault();
-                  motion.current?.pluck(string.index, directPluckAmplitude, 1);
+                  pluck(string.index, directPluckAmplitude, 1);
                 }
               }}
             >
@@ -270,7 +355,13 @@ export function GuitarStrings({ layout, className }: Props) {
           or Space to pluck.
         </span>
         <span aria-live="polite">
-          {armed ? "Strumming · silent" : "Visual study · no sound"}
+          {silent
+            ? armed
+              ? "Strumming · silent"
+              : "Visual study · no sound"
+            : armed
+              ? "Strumming"
+              : "Ready to play"}
         </span>
       </figcaption>
     </figure>

@@ -22,12 +22,12 @@ describe("guitar string geometry", () => {
     (angle) => {
       const strings = createStrings({ ...layout, angle });
       expect(strings.map((string) => string.note)).toEqual([
-        "E4",
-        "B3",
-        "G3",
-        "D3",
-        "A2",
-        "E2",
+        "A♭4",
+        "F4",
+        "D♭4",
+        "G♭3",
+        "E♭3",
+        "B♭2",
       ]);
       for (const [index, string] of strings.entries()) {
         const previous = strings[index - 1];

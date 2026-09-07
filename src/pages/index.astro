@@ -18,7 +18,12 @@ import { profile } from "@/data/profile";
   <HomeHero />
   <StripeSeparator />
   <PanelRuleBand />
-  <Panel>
+  <Panel
+    id="after-guitar"
+    tabIndex={-1}
+    aria-label="Explore more"
+    className="scroll-mt-16"
+  >
     <PanelContent
       className="flex flex-wrap items-center justify-between gap-4 py-7 text-sm"
     >

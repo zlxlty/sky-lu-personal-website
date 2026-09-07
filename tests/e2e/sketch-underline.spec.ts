@@ -125,9 +125,11 @@ test("all public page sketches are hidden at rest, including current navigation"
     "/missing-page",
   ]) {
     await page.goto(route);
-    await expect(
-      page.locator("sketch-underline:not([data-ready])"),
-    ).toHaveCount(0);
+    // Hidden responsive links have no measurable width until they become visible.
+    for (const sketch of await page.locator("sketch-underline").all()) {
+      if (await sketch.isVisible())
+        await expect(sketch).toHaveAttribute("data-ready");
+    }
     for (const svg of await page.locator("sketch-underline svg").all()) {
       await expect(svg).toHaveCSS("visibility", "hidden");
     }

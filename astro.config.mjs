@@ -16,8 +16,8 @@ export default defineConfig({
     },
   },
   vite: {
-    // Lazy motion must not trigger Vite's first-interaction dependency reload.
-    optimizeDeps: { include: ["animejs/waapi"] },
+    // Lazy interactions must not trigger Vite's first-use dependency reload.
+    optimizeDeps: { include: ["animejs/waapi", "tone"] },
     plugins: [tailwindcss()],
   },
 });

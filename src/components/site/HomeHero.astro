@@ -1,13 +1,14 @@
 ---
 import { Panel, PanelContent } from "@/components/blueprint/Panel";
-import { GuitarStrings } from "@/components/guitar/GuitarStrings";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { GuitarPlayer } from "@/components/guitar/GuitarPlayer";
 import type { GuitarLayout } from "@/components/guitar/string-geometry";
 import { profile } from "@/data/profile";
 
 const guitarLayout = {
   width: 800,
-  height: 470,
-  hole: { x: 592, y: 245, radius: 128 },
+  height: 500,
+  hole: { x: 592, y: 270, radius: 128 },
   angle: 35,
   length: 1500,
   spacing: 22,
@@ -15,7 +16,7 @@ const guitarLayout = {
 ---
 
 <Panel id="hero-panel" aria-labelledby="hero-heading">
-  <div class="grid items-end md:grid-cols-[0.85fr_1.15fr]">
+  <div class="relative grid items-end md:grid-cols-[0.85fr_1.15fr]">
     <PanelContent
       className="z-10 min-w-0 pt-10 pb-6 md:col-start-1 md:row-start-1 md:pt-14 md:pb-12"
     >
@@ -38,12 +39,34 @@ const guitarLayout = {
       </div>
     </PanelContent>
     <div
-      class="mx-auto w-full max-w-lg min-w-0 md:col-span-2 md:col-start-1 md:row-start-1 md:max-w-none md:pb-8"
+      class="relative w-full min-w-0 md:static md:col-span-2 md:col-start-1 md:row-start-1"
     >
-      <GuitarStrings
+      <!-- Keep the exit reachable while the touch surface is on screen. -->
+      <div class="pointer-events-none sticky top-14 z-20 -mb-14 h-14 md:hidden">
+        <a
+          href="#after-guitar"
+          class="pointer-events-auto absolute top-1.5 left-2 inline-flex min-h-11 items-center gap-1.5 rounded-(--radius-small) bg-background/95 px-2 font-mono text-xs"
+        >
+          <SketchUnderline text="Skip guitar" seed="hero:skip-guitar" />
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-3.5 shrink-0"
+          >
+            <path d="m4 9 4 4 4-4M8 13V3"></path>
+          </svg>
+        </a>
+      </div>
+      <GuitarPlayer
         client:load
         layout={guitarLayout}
-        className="[&_[data-guitar]]:ml-[-66.666667%] [&_[data-guitar]]:w-[166.666667%] md:[&_[data-guitar]]:ml-0 md:[&_[data-guitar]]:w-full"
+        className="mx-auto max-w-lg md:max-w-none [&_[data-guitar]]:ml-[-135%] [&_[data-guitar]]:w-[250%] [&_[data-guitar]]:-translate-y-[4%] md:[&_[data-guitar]]:ml-0 md:[&_[data-guitar]]:w-full md:[&_[data-guitar]]:translate-y-0"
       />
     </div>
   </div>

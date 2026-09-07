@@ -1,4 +1,6 @@
 import { existsSync, readdirSync } from "node:fs";
+import { basename } from "node:path";
+import quartertone from "../../src/assets/guitar/quartertone.json" with { type: "json" };
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
@@ -6,11 +8,28 @@ import { inspectBlueprintRules } from "../support/blueprint-rules";
 
 test("development lab is absent from the production build", async ({
   page,
+  request,
 }) => {
   expect(existsSync("dist/lab")).toBe(false);
   expect(
     readdirSync("dist/_astro").some((file) => file.includes("jazz-n-brass")),
   ).toBe(false);
+  const files = readdirSync("dist/_astro");
+  expect(
+    files.filter((file) =>
+      /GuitarAudition|guitar-samples|shiny|fss|iowa/i.test(file),
+    ),
+  ).toEqual([]);
+  expect(
+    files
+      .filter((file) => /\.(mp3|wav)$/.test(file))
+      .map((file) => file.split(".")[0])
+      .sort(),
+  ).toEqual(
+    quartertone.samples.map((sample) => basename(sample.file, ".mp3")).sort(),
+  );
+  expect(quartertone.samples).toHaveLength(24);
+  expect((await request.get("/lab/guitar")).status()).toBe(404);
 
   await page.goto("/lab");
   await expect(
@@ -27,7 +46,10 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
 
   const response = await page.goto("/");
   await expect(page.locator("[data-guitar]")).toHaveAttribute("data-ready");
-  const accessibility = await new AxeBuilder({ page }).analyze();
+  const accessibility = await new AxeBuilder({ page })
+    // Approved decorative contrast exception, documented in PLAN.md.
+    .exclude('[data-slot="rail-annotation"]')
+    .analyze();
 
   expect({
     status: response?.status(),
