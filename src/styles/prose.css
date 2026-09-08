@@ -1,5 +1,8 @@
 @reference "./global.css";
 
+/* Astro can load this reader chunk before the shell's Tailwind stylesheet. */
+@layer theme, base, components, utilities;
+
 /* Content typography is scoped to authored Markdown/MDX, never the page shell. */
 @layer components {
   .content-prose {
