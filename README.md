@@ -95,8 +95,10 @@ when testing another checkout at the same time.
 | `pnpm verify:full`  | Run all required quality and browser checks.             |
 
 See [DEVELOPMENT.md](./DEVELOPMENT.md) for every command, test selection,
-debugging, CI behavior, editor setup, and Git workflow. `pnpm cf:preview` is
-reserved for the Cloudflare deployment stage and is not available yet.
+debugging, CI behavior, editor setup, and Git workflow. Use `pnpm cf:preview`
+for local Cloudflare serving and `pnpm cf:dry-run` to validate an upload without
+publishing. [DEPLOYMENT.md](./DEPLOYMENT.md) explains authentication, explicit
+preview publication, audio hosting, and the remaining production release steps.
 
 See [CONTENT.md](./CONTENT.md) to author writing and project pages, preview
 draft specimens, and understand the shared reading layouts.

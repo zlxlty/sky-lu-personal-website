@@ -12,6 +12,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cf:preview": "pnpm build && wrangler dev --local --ip 127.0.0.1 --port 8787 --config wrangler.jsonc",
+    "cf:dry-run": "pnpm build && wrangler deploy --dry-run --config wrangler.jsonc",
+    "cf:deploy:preview": "pnpm build && wrangler deploy --config wrangler.jsonc",
+    "cf:check": "node scripts/check-cloudflare.ts",
     "check": "astro check && tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -70,7 +74,8 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.11",
+    "wrangler": "4.129.1"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged",

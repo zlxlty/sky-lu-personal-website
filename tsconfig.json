@@ -9,6 +9,7 @@
   },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": [
+    ".wrangler",
     "blob-report",
     "coverage",
     "dist",

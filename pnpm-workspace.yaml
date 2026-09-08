@@ -2,5 +2,10 @@ allowBuilds:
   esbuild: true
   # The root prepare script installs the hook after dependencies are available.
   simple-git-hooks: false
+  # Wrangler's local Cloudflare runtime validates its platform binary on install.
+  workerd: true
+minimumReleaseAgeExclude:
+  - miniflare@5.20260907.0-alpha
+  - wrangler@4.129.1
 patchedDependencies:
   simple-git-hooks@2.13.1: patches/simple-git-hooks@2.13.1.patch

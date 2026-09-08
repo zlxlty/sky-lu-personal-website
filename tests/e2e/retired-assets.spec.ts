@@ -11,7 +11,10 @@ test("the retired resume is absent from source, build output, and public URLs", 
   for (const path of ["/cv", "/cv/", "/cv.pdf"]) {
     const response = await request.get(path);
     expect(response.status(), path).toBe(404);
-    expect(response.headers()["content-type"]).not.toContain("application/pdf");
+    // Astro may reject a noncanonical missing path with an empty 404 response.
+    expect(response.headers()["content-type"] ?? "").not.toContain(
+      "application/pdf",
+    );
   }
   const files = await readdir("dist", { recursive: true });
   for (const file of files.filter((file) => file.endsWith(".html"))) {

@@ -9,6 +9,7 @@ export default defineConfig([
     [
       ".agents/**",
       ".astro/**",
+      ".wrangler/**",
       "coverage/**",
       "dist/**",
       "node_modules/**",

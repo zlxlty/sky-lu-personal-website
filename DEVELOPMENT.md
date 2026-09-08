@@ -453,8 +453,17 @@ personal content, portraits, illustrations, or branded assets.
 | `pnpm verify:full`     | Run `verify`, production browser, and portable lab checks.    |
 | `pnpm run prepare`     | Reinstall the local pre-commit hook.                          |
 
-`pnpm cf:preview` is intentionally unavailable until Stage 09 adds Wrangler. No
-install, build, preview, verify, or Git hook command deploys the website.
+Cloudflare commands are described in [DEPLOYMENT.md](./DEPLOYMENT.md):
+
+- `pnpm cf:preview` builds and serves locally through Wrangler on port 8787.
+- `pnpm cf:dry-run` builds and validates an upload without publishing.
+- `pnpm cf:deploy:preview` explicitly publishes the current tree to the
+  `sky-lu-website-preview` Worker on `workers.dev`; it needs authorization.
+- `pnpm cf:check [URL]` runs read-only delivery checks against the given host,
+  defaulting to the local Wrangler server, plus small public audio range checks.
+
+No install, build, preview, verify, or Git hook command deploys the website.
+Wrangler's generated `.wrangler/` state is ignored by Git and quality tools.
 
 Both lint commands run `astro sync` first to generate the ignored `.astro` content
 types. A fresh checkout can run `pnpm lint`, `pnpm lint:fix`, or `pnpm verify`
@@ -607,7 +616,8 @@ Production Playwright independently verifies that the build contains no `/lab`
 artifact. Its `scripts/serve-preview.ts` starts Astro's programmatic static preview
 with a strict port, preserving directory-index routing and the real 404 response.
 It does not use Vite's standalone SPA fallback, which can serve the homepage for
-an extensionless content URL. The deployed Cloudflare policy remains Stage 09.
+an extensionless content URL. Wrangler also uses extensionless page URLs without
+trailing slashes and serves the static 404 page for missing routes.
 
 ### Content page development
 
@@ -679,8 +689,8 @@ pnpm preview
 ```
 
 Inspect `dist/`, loaded client chunks, browser console output, navigation, and the
-no-JavaScript state. After Stage 09, use `pnpm cf:preview` specifically for
-Cloudflare routing, bindings, and headers.
+no-JavaScript state. Use `pnpm cf:preview` specifically for Cloudflare routing and
+headers, then run `pnpm cf:check` in a second terminal. No runtime bindings are used.
 
 ## Debugging
 
