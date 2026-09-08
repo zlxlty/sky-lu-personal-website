@@ -28,7 +28,7 @@ nvm install
 nvm use
 corepack enable
 pnpm install --frozen-lockfile
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium webkit
 cp .env.example .env.local
 pnpm dev
 ```
@@ -534,6 +534,9 @@ pnpm exec playwright test --project=chromium
 ### Browser servers and worktrees
 
 Each browser suite starts and stops its own server from the current checkout.
+The production suite also runs focused mobile guitar tests in WebKit, alongside
+the full Chromium suite. Native taps and a capture-transfer replay cover the
+touch path; physical iPhone checks remain useful for platform-specific issues.
 Production tests build first and use port 4322; lab tests use port 4323. Your
 interactive `pnpm dev` server can keep running on its usual port 4321. Tests refuse
 to reuse an occupied port, so another worktree cannot silently supply the page
@@ -780,7 +783,7 @@ GitHub Actions uses two stable required jobs:
 
 - **Quality** installs the frozen lockfile, runs `pnpm verify`, and reports unit
   coverage.
-- **Browser** waits for Quality, installs Chromium, runs the production suite and the
+- **Browser** waits for Quality, installs Chromium and WebKit, runs the production suite and the
   non-visual `/lab` checks, and uploads seven-day failure artifacts.
 
 Run `pnpm verify:full` for the same required quality, production-browser, and portable
@@ -958,18 +961,18 @@ Run `pnpm install --frozen-lockfile` or `pnpm run prepare`. Do not approve
 If a GUI Git client cannot find pnpm, launch it from the configured shell or add the
 version manager's shims to the GUI environment.
 
-### Playwright cannot find Chromium
+### Playwright cannot find a browser
 
-Install the repository's configured browser:
+Install the repository's configured browsers:
 
 ```bash
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium webkit
 ```
 
 On a Linux machine missing browser system libraries, use:
 
 ```bash
-pnpm exec playwright install --with-deps chromium
+pnpm exec playwright install --with-deps chromium webkit
 ```
 
 ### A local port is already in use

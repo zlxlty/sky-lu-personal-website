@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { Panel, PanelContent } from "@/components/blueprint/Panel";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { ArrowUpRight } from "@/components/blueprint/ArrowUpRight";
 import { formatContentDate } from "@/lib/content";
 
 interface Props {
@@ -74,8 +75,7 @@ const { entries, previewHref } = Astro.props;
           href="/projects"
           class="inline-flex min-h-10 items-center gap-3 text-sm"
         >
-          <SketchUnderline text="Explore the projects" />{" "}
-          <span aria-hidden="true">↗</span>
+          <SketchUnderline text="Explore the projects" /> <ArrowUpRight />
         </a>
       </PanelContent>
     </Panel>

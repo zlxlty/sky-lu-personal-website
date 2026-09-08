@@ -7,6 +7,7 @@ import {
 } from "@/components/blueprint/Panel";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { ArrowUpRight } from "@/components/blueprint/ArrowUpRight";
 import IndexHeading from "@/components/content/IndexHeading.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { profile } from "@/data/profile";
@@ -51,7 +52,7 @@ const projects = await getProjects();
                     />
                   </span>
                   <span aria-hidden="true" class="shrink-0 text-xl">
-                    ↗
+                    <ArrowUpRight />
                   </span>
                 </a>
               </h2>

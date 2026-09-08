@@ -1,5 +1,6 @@
 ---
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { ArrowUpRight } from "@/components/blueprint/ArrowUpRight";
 import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import { profile } from "@/data/profile";
 import { listeningTracks } from "@/data/listening";
@@ -59,7 +60,7 @@ import FooterListening from "./FooterListening.astro";
             class="inline-flex min-h-10 items-center gap-2 text-sm"
           >
             <SketchUnderline text={label} seed={`footer:${label}`} />
-            <span aria-hidden="true">↗</span>
+            <ArrowUpRight />
           </a>
         ))
       }
