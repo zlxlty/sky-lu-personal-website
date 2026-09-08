@@ -14,6 +14,7 @@ export const writingIdeas = [
   },
   {
     title: "The pursuit of expressive freedom on strings",
+    annotation: "Dumping all my short recordings here.",
     description:
       "My jazz guitar learning journal: what worked, what didn't, and what I'm still figuring out.",
   },

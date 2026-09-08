@@ -48,6 +48,23 @@ for (const colorScheme of ["light", "dark"] as const) {
             .getByRole("link", { name: "Back to top" })
             .boundingBox();
           if (!backToTop) throw new Error("Missing back-to-top link");
+          const privacy = await footer
+            .getByRole("link", { name: "Privacy", exact: true })
+            .boundingBox();
+          const build = await footer
+            .locator("[data-footer-meta] > p")
+            .boundingBox();
+          if (!privacy || !build) throw new Error("Missing footer metadata");
+          expect(backToTop.y + backToTop.height / 2).toBeCloseTo(
+            privacy.y + privacy.height / 2,
+            1,
+          );
+          // When the build text shares the row, its center follows both links.
+          if (Math.abs(build.y - privacy.y) < 40)
+            expect(build.y + build.height / 2).toBeCloseTo(
+              privacy.y + privacy.height / 2,
+              1,
+            );
           if (width >= 1024)
             expect(backToTop.x).toBeGreaterThan(frame.x + frame.width);
           else

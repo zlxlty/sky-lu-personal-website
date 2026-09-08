@@ -254,6 +254,8 @@ let scrolling continue down or up the page. Preserve native horizontal trackpad
 and touch swipes, focused-region Left/Right/Home/End keys, reduced motion, and
 native horizontal scrolling without JavaScript. Keep the
 user's humor and their supplied Cave and Zacc links with sketch underlines.
+Place a right RailAnnotation beside the timeline: "Scroll to the past", with
+the arrow below the text. Preserve its existing narrow-screen hiding behavior.
 The next section is Writings, separated by a StripeSeparator and PanelRuleBand.
 Research context remains in the Tundra project.
 
@@ -326,6 +328,9 @@ Keep the introduction and ideas in `src/data/writings.ts`, shared by the homepag
 and `/writing`. These are ideas, not published articles: no invented dates or
 article links. The navigation label is Writings; retain existing `/writing` URLs.
 The former homepage research figure is no longer planned for this section.
+Place a left RailAnnotation beside the jazz guitar journal idea, with its arrow
+above "Dumping all my short recordings here." Keep the note with the idea in
+the shared content data so it appears on both the homepage and Writings page.
 
 The following research proposal is superseded, retained as historical context:
 
@@ -410,6 +415,8 @@ Include:
 - GitHub, LinkedIn, Brown email, and personal email.
 - Back-to-top link outside the right rail on desktop, inside the footer row when
   the viewport has no room for a gutter. Keep the theme toggle in the header only.
+- Align build metadata, Privacy, and Back to top with shared 40px control heights
+  and 20px line heights, including mobile layouts.
 - Explicit attribution: "Design system inspired in part by chanhdai.com" with a link.
 
 The static homepage phase first completes navigation for the existing public
