@@ -1581,6 +1581,31 @@ Proposed message: `fix: bind guitar gestures directly and use vector arrows`
   Run full verification, inspect mobile/desktop in both themes, and present the
   updated candidate for approval before committing or releasing it.
 
+### Supplemental fix - deterministic touch regression coordinates
+
+Proposed message: `test: avoid string-boundary rounding in touch regression`
+
+- Keep application behavior unchanged. CI observed six crossed strings where
+  the capture-transfer test expected five because its press began exactly on
+  the first string's centerline. A half-pixel offset reproduces the failure.
+- Exercise both sides of the centerline with a three-pixel clearance, assert
+  that each press still hits the first string, and check the corresponding
+  six- or five-string strum after capture transfer.
+- Repeat the focused test without retries, then run full verification. Leave
+  committing, pushing, merging, and publishing to the user as requested.
+
+### Supplemental improvement - browser CI throughput
+
+Proposed message: `ci: parallelize quality and browser verification`
+
+- The last successful GitHub Browser job spent 100 seconds on production tests
+  and 94 seconds on lab tests, each with one worker. Run each suite with two CI
+  workers, preserving sequential tests within each lab file and local visual runs.
+- Start Browser alongside Quality; keep both as production prerequisites and
+  retain the existing protected production approval gate.
+- Preserve behavioral coverage. Compare suite timings with the serial baseline
+  and rerun checks before the user commits and pushes this separate candidate.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

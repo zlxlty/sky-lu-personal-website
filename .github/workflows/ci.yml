@@ -48,7 +48,6 @@ jobs:
 
   browser:
     name: Browser
-    needs: quality
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

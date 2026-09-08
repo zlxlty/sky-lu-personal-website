@@ -13,7 +13,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: isCI,
   retries: 0,
-  workers: 1,
+  workers: isCI ? 2 : 1,
   reporter: "list",
   outputDir: "test-results/lab",
   preserveOutput: "failures-only",
