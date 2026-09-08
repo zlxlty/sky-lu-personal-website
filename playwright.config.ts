@@ -27,6 +27,11 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "webkit-mobile",
+      testMatch: "guitar-mobile.spec.ts",
+      use: { ...devices["iPhone 13"] },
+    },
   ],
   webServer,
 });

@@ -1,5 +1,6 @@
 ---
 import TurntableDrawing from "./TurntableDrawing.astro";
+import { ArrowUpRight } from "@/components/blueprint/ArrowUpRight";
 import { definePlaylist, type RecordTrack } from "@/lib/record-playlist";
 interface Props {
   tracks: readonly RecordTrack[];
@@ -64,7 +65,7 @@ const multiple = tracks.length > 1;
                 rel="noopener noreferrer"
                 class="mt-2 inline-block text-[10px] text-muted-foreground"
               >
-                Watch my cover <span aria-hidden="true">↗</span>
+                Watch my cover <ArrowUpRight />
                 <span class="sr-only"> (opens in a new tab)</span>
               </a>
             )}

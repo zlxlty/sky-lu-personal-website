@@ -1558,6 +1558,29 @@ Proposed message: `fix: preserve prose styles across production CSS chunks`
 - Verify the failing test before the fix, then run `pnpm verify:full` and inspect
   desktop/mobile production previews in both themes before commit approval.
 
+### Supplemental fix - mobile guitar capture and link arrows
+
+Proposed message: `fix: bind guitar gestures directly and use vector arrows`
+
+- Keep this candidate separate from the approved production-prose commit on
+  `codex/fix/project-prose-styles`. Hold its merge while checking the reported
+  iPhone interaction failure on the preview deployment.
+- Bind native pointer handlers directly on the guitar SVG. The iPhone failed
+  with delegated handlers, worked with temporary native diagnostics, then failed
+  again when diagnostics were removed. Keep gesture logic and opt-in sound in the
+  same React island, with current callbacks and listener cleanup on unmount.
+- Ignore a descendant's bubbling capture-loss event when the guitar SVG still
+  owns the gesture. Preserve cancellation when the instrument loses capture,
+  tap-on-release, and held-pointer strums.
+- Cover native mobile taps in Chromium and WebKit, plus capture transfers during
+  taps and strums. Desktop WebKit does not reproduce the device's event delivery;
+  require a clean iPhone preview check with all diagnostics removed.
+- Replace the five Unicode northeast-arrow call sites with a small static SVG
+  component in the blueprint seam, using the surrounding text's color and size.
+- Add the focused WebKit tests to CI and document its browser installation.
+  Run full verification, inspect mobile/desktop in both themes, and present the
+  updated candidate for approval before committing or releasing it.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

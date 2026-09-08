@@ -38,7 +38,7 @@ nvm install
 nvm use
 corepack enable
 pnpm install --frozen-lockfile
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium webkit
 cp .env.example .env.local
 ```
 

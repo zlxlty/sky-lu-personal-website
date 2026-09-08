@@ -184,7 +184,14 @@ test.describe("native decoration fallbacks", () => {
       "text-decoration-line",
       "underline",
     );
-    await expect(link.locator("svg")).toHaveCSS("visibility", "hidden");
+    await expect(link.locator("[data-sketch-lines]")).toHaveCSS(
+      "visibility",
+      "hidden",
+    );
+    await expect(link.locator("svg:not([data-sketch-lines])")).toHaveCSS(
+      "visibility",
+      "visible",
+    );
     await expect(link).toHaveCSS("outline-style", "solid");
   });
 });

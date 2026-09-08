@@ -1,11 +1,11 @@
 import {
   useEffect,
+  useEffectEvent,
   useId,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  type PointerEvent,
   type Ref,
 } from "react";
 import {
@@ -135,8 +135,8 @@ export function GuitarStrings({
     };
   }, [strings]);
 
-  const point = (event: PointerEvent<SVGSVGElement>): Point | null => {
-    const matrix = event.currentTarget.getScreenCTM();
+  const point = (event: PointerEvent): Point | null => {
+    const matrix = svg.current?.getScreenCTM();
     if (!matrix) return null;
     return new DOMPoint(event.clientX, event.clientY).matrixTransform(
       matrix.inverse(),
@@ -151,19 +151,16 @@ export function GuitarStrings({
     setArmed(false);
   };
 
-  const movedFromPress = (
-    event: PointerEvent<SVGSVGElement>,
-    gesture: StringGesture,
-  ) =>
+  const movedFromPress = (event: PointerEvent, gesture: StringGesture) =>
     Math.hypot(
       event.clientX - gesture.pressClient.x,
       event.clientY - gesture.pressClient.y,
     ) > dragThreshold;
 
-  const insideViewport = (event: PointerEvent<SVGSVGElement>) => {
+  const insideViewport = (event: PointerEvent) => {
     // The host may crop the SVG for a narrow layout. Captured pointers must
     // remain in the visible instrument for both strums and release plucks.
-    const viewport = event.currentTarget.parentElement?.getBoundingClientRect();
+    const viewport = svg.current?.parentElement?.getBoundingClientRect();
     return (
       viewport !== undefined &&
       event.clientX >= viewport.left &&
@@ -173,7 +170,7 @@ export function GuitarStrings({
     );
   };
 
-  const move = (event: PointerEvent<SVGSVGElement>) => {
+  const move = (event: PointerEvent) => {
     const previous = drag.current;
     if (!previous || previous.id !== event.pointerId) return;
     if (!(event.buttons & 1)) {
@@ -215,9 +212,78 @@ export function GuitarStrings({
     };
   };
 
-  const cancel = (event: PointerEvent<SVGSVGElement>) => {
+  const cancel = (event: PointerEvent) => {
     if (event.pointerId === drag.current?.id) release();
   };
+
+  const interact = useEffectEvent((event: PointerEvent) => {
+    const element = svg.current;
+    if (!element) return;
+    if (event.type === "pointerdown") {
+      if (!event.isPrimary || event.button !== 0 || drag.current) return;
+      const current = point(event);
+      if (!current) return;
+      event.preventDefault();
+      element.setPointerCapture(event.pointerId);
+      const hit =
+        event.target instanceof Element
+          ? event.target.closest("[data-guitar-string]")
+          : null;
+      const string = strings.find(
+        ({ index }) =>
+          String(index) === hit?.getAttribute("data-guitar-string"),
+      );
+      drag.current = {
+        id: event.pointerId,
+        point: current,
+        time: event.timeStamp,
+        pressClient: { x: event.clientX, y: event.clientY },
+        pluckIndex: string?.index,
+        strumming: false,
+      };
+      lastPluck.current = [];
+      setArmed(true);
+    } else if (event.type === "pointermove") {
+      move(event);
+    } else if (event.type === "pointerup") {
+      const current = drag.current;
+      if (!current || event.pointerId !== current.id) return;
+      release();
+      if (
+        !current.strumming &&
+        current.pluckIndex !== undefined &&
+        !movedFromPress(event, current) &&
+        insideViewport(event)
+      )
+        pluck(current.pluckIndex, directPluckAmplitude, 1);
+    } else if (event.type === "pointercancel") {
+      cancel(event);
+    } else if (
+      event.type === "lostpointercapture" &&
+      event.target === element
+    ) {
+      // A child's capture loss can bubble while capture moves to this SVG.
+      cancel(event);
+    }
+  });
+
+  useEffect(() => {
+    const element = svg.current;
+    if (!element) return;
+    const events = new AbortController();
+    const handle = (event: PointerEvent) => interact(event);
+    // Register on the drawn surface itself: iOS Safari can miss touch input
+    // when these handlers are delegated through an Astro island's display:contents.
+    for (const type of [
+      "pointerdown",
+      "pointermove",
+      "pointerup",
+      "pointercancel",
+      "lostpointercapture",
+    ] as const)
+      element.addEventListener(type, handle, { signal: events.signal });
+    return () => events.abort();
+  }, []);
 
   return (
     <figure className={cn("relative m-0", className)}>
@@ -232,46 +298,6 @@ export function GuitarStrings({
           className="guitar-strings block h-auto w-full touch-none select-none"
           aria-label="Six guitar strings and a sound hole"
           aria-describedby={`${id}-instructions`}
-          onPointerDown={(event) => {
-            if (!event.isPrimary || event.button !== 0 || drag.current) return;
-            const current = point(event);
-            if (!current) return;
-            event.preventDefault();
-            event.currentTarget.setPointerCapture(event.pointerId);
-            const hit =
-              event.target instanceof Element
-                ? event.target.closest("[data-guitar-string]")
-                : null;
-            const string = strings.find(
-              ({ index }) =>
-                String(index) === hit?.getAttribute("data-guitar-string"),
-            );
-            drag.current = {
-              id: event.pointerId,
-              point: current,
-              time: event.timeStamp,
-              pressClient: { x: event.clientX, y: event.clientY },
-              pluckIndex: string?.index,
-              strumming: false,
-            };
-            lastPluck.current = [];
-            setArmed(true);
-          }}
-          onPointerMove={move}
-          onPointerUp={(event) => {
-            const current = drag.current;
-            if (!current || event.pointerId !== current.id) return;
-            release();
-            if (
-              !current.strumming &&
-              current.pluckIndex !== undefined &&
-              !movedFromPress(event, current) &&
-              insideViewport(event)
-            )
-              pluck(current.pluckIndex, directPluckAmplitude, 1);
-          }}
-          onPointerCancel={cancel}
-          onLostPointerCapture={cancel}
         >
           <defs>
             <clipPath id={`${id}-hole`}>
