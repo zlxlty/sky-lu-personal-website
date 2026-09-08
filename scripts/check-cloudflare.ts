@@ -46,6 +46,12 @@ for (const path of [
     "same-origin",
   );
   if (isPreview) assert.equal(response.headers.get("x-robots-tag"), "noindex");
+  if (origin.hostname === "skylu.me") {
+    assert(
+      !/noindex/i.test(response.headers.get("x-robots-tag") ?? ""),
+      `${path}: production must be indexable`,
+    );
+  }
   const html = await response.text();
   assert(!rawEmail.test(html), `${path}: raw email found in served HTML`);
   assert(

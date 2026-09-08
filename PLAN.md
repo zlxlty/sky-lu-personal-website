@@ -1004,6 +1004,11 @@ Git repository
 - Use static `404.html` handling, not SPA fallback.
 - Enable preview deployments from pull requests if the chosen CI workflow supports them cleanly.
 - Production deploys only from the protected main branch.
+- The explicit production environment uses Worker `sky-lu-website` with custom
+  domain `skylu.me`. The release command rejects uncommitted, feature-branch, and
+  outdated builds. GitHub publication follows Quality and Browser checks and a
+  protected `production` environment, with a repository enable flag kept off
+  until account configuration and launch are approved.
 - The approved early preview uses a separate `sky-lu-website-preview` Worker on
   `workers.dev`, deployed explicitly from the current homepage feature branch.
   It has no custom-domain route; preview responses discourage indexing.

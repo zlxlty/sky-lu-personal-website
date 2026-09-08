@@ -1494,6 +1494,22 @@ Proposed message: `feat: prepare Cloudflare static preview hosting`
 - Step 3 authorizes publishing this preview; committing, pushing, merging, and
   production deployment still require their own approval.
 
+### Commit 04.5h - prepare production release controls
+
+Proposed message: `ci: prepare protected Cloudflare production releases`
+
+- Continue the user-approved hosting setup in the existing homepage branch.
+- Add a separate production Worker and `skylu.me` custom-domain configuration.
+  Explicitly select the preview environment in all existing preview commands.
+- Add a production dry-run and a release command that accepts only clean,
+  current remote main revisions; CI may use the exact tested detached main SHA.
+- Extend CI with a production job after Quality and Browser, behind a repository
+  enable flag and GitHub environment. Preserve the existing required job names.
+- Document required main/environment protections and scoped deployment secrets.
+  Test refusal paths, local routing, both dry-runs, and production noindex checks.
+- Preparation does not activate CI, configure account protections, push, merge,
+  publish production, or connect DNS. Review those actions before first launch.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

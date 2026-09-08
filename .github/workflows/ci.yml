@@ -16,7 +16,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
+  # A new main push must not interrupt a production upload already in progress.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   quality:
@@ -81,3 +82,42 @@ jobs:
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  production:
+    name: Deploy production
+    needs: [quality, browser]
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      vars.CLOUDFLARE_PRODUCTION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: https://skylu.me
+    steps:
+      - name: Check out the verified commit
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.19.0
+          cache: true
+          cache-dependency-path: pnpm-lock.yaml
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish and check production
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          WRANGLER_SEND_METRICS: "false"
+        run: |
+          : "${CLOUDFLARE_ACCOUNT_ID:?Configure the production environment account ID}"
+          : "${CLOUDFLARE_API_TOKEN:?Configure the production environment API token}"
+          pnpm cf:deploy:production

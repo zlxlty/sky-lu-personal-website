@@ -4,12 +4,19 @@ The website is an Astro static build served by Workers Static Assets. Recordings
 live in the existing R2 bucket at `audio.skylu.me`. The website has no Worker
 script, SSR adapter, R2 binding, or deployment credentials in source.
 
-## Current target
+## Deployment targets
 
-`wrangler.jsonc` deploys **sky-lu-website-preview** to its account's `workers.dev`
-address. It declares no custom domain or route. This is a public preview of the
-current feature branch; production at `skylu.me` and automatic GitHub deployments
-remain separate release steps.
+`wrangler.jsonc` has two explicitly selected environments:
+
+| Environment  | Worker                   | Address                                                                    |
+| ------------ | ------------------------ | -------------------------------------------------------------------------- |
+| `preview`    | `sky-lu-website-preview` | [workers.dev preview](https://sky-lu-website-preview.skylty01.workers.dev) |
+| `production` | `sky-lu-website`         | `https://skylu.me`                                                         |
+
+The preview is deployed. The production configuration is prepared but has not
+been deployed or connected to the domain. Production publishing creates the
+custom-domain route and Cloudflare-managed DNS/certificate; editing this file
+or running a dry-run does not. The preview environment has no custom-domain route.
 
 Astro's site URL is `https://skylu.me`. Public pages advertise that canonical
 origin even on the preview. Workers preview responses carry `X-Robots-Tag:
@@ -26,10 +33,13 @@ The package build allowlist permits that binary's installation check.
 pnpm install --frozen-lockfile
 pnpm verify
 pnpm cf:dry-run
+pnpm cf:dry-run:production
 pnpm cf:preview
 ```
 
-`cf:dry-run` builds and validates the upload without publishing. `cf:preview`
+Both dry-run commands build and validate their named targets without publishing.
+Preview commands explicitly select `--env preview`, even if a shell has
+`CLOUDFLARE_ENV=production` set. `cf:preview`
 builds and serves through local Wrangler at `http://127.0.0.1:8787`; it does not
 deploy. From a second terminal, run:
 
@@ -85,24 +95,63 @@ record switching. `/lab` is deliberately absent from deployed builds.
 - Full CSP and the final robots, sitemap, feed, and bot policy remain launch
   follow-ups. This preview does not render email contact links or add analytics.
 
-## Production and recovery
+## Production release
 
-Before production, review and merge the intended commits into `main`, finish
-the remaining launch checks, and add a separately reviewed production target.
-The current configuration cannot attach a hostname or deploy a production Worker.
+Before the first publication, review and rebase-merge the intended commits into
+`main`, finish the agreed launch checks, and authorize connecting `skylu.me`.
+Do not attach the production domain to the preview Worker.
 
-After a production Worker is ready, add `skylu.me` in **Workers & Pages → Worker
-→ Settings → Domains & Routes → Add → Custom Domain**. The R2 custom domain stays
-`audio.skylu.me`. Cloudflare manages the website's DNS record and certificate.
+For a local release, switch the existing checkout to the reviewed, clean `main`
+and run `pnpm cf:deploy:production`. The command refuses feature branches,
+uncommitted/untracked changes, and revisions that do not match the current
+remote `main`. It runs `verify:full`, builds with the commit ID in the footer,
+checks the revision again, publishes with `--env production`, then checks
+`https://skylu.me`. The first publication can require time for the custom domain
+and certificate to become active; rerun the read-only delivery check once active.
+The R2 custom domain remains `audio.skylu.me`.
+
+## GitHub releases
+
+The existing CI workflow adds a production job after **Quality** and **Browser**
+pass. It runs only for `main` pushes or manual CI runs on `main`, and only when the
+repository variable `CLOUDFLARE_PRODUCTION_ENABLED` is `true`. Leave that variable
+unset until the following settings are configured and launch is approved:
+
+1. Protect `main`: require pull requests, the **Quality** and **Browser** checks,
+   and linear history. Keep rebase merging enabled and do not allow force pushes.
+2. Create a GitHub environment named `production`, restrict deployment branches
+   to `main`, and require your approval. For a solo-maintained repository, allow
+   the person starting a run to approve it. A workflow's environment name alone
+   does not configure these protections.
+3. In that environment, add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` as
+   secrets. Create the token through Cloudflare's **Edit Cloudflare Workers**
+   template, scoped to this account and the `skylu.me` zone. It must support
+   script/asset deployment and custom-domain management. Do not reuse or copy
+   Wrangler's local OAuth token into GitHub; no R2 key is needed.
+4. Enable the repository variable after approval. Either merge the next reviewed
+   change or run CI manually on `main` to begin the first protected release.
+
+CI checks out the exact tested revision, permits its detached checkout only when
+the CI ref and commit identify `main`, and refuses an outdated commit if remote
+`main` has advanced. Main runs are serialized so a new push cannot interrupt an
+upload. Superseded runs can fail the revision guard; let the newer run publish.
+Credentials are passed only to the publish step. This workflow has not yet been
+pushed, executed on GitHub, or supplied with deployment secrets.
+
+The repository inspection for this setup found no effective `main` protection
+rules and no `production` environment. Configure them before enabling releases.
+
+## Recovery
 
 For an existing preview, **Workers & Pages → sky-lu-website-preview → Deployments**
 shows its versions. To undo a bad preview, use Cloudflare's rollback control for
 a known-good deployment; a first deployment has no earlier version to restore.
 Do not roll back, delete a Worker, or alter production without explicit approval.
 
-GitHub CI deployment and credentials are not configured yet. A later workflow
-will deploy reviewed `main` commits using scoped Cloudflare credentials stored in
-GitHub secrets, with a protected production environment.
+For production recovery, select a known-good version under the production
+Worker's Deployments page after approval. If a post-deploy check fails, deployment
+may already have succeeded; inspect the version and domain status before retrying
+or rolling back. A rollback changes served code, not Git history or R2 objects.
 
 References: [Astro static hosting](https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/),
 [static asset headers](https://developers.cloudflare.com/workers/static-assets/headers/),
