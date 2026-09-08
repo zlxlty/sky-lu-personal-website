@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { education } from "../../src/data/profile";
+import { lifeTimeline } from "../../src/data/timeline";
 import { research } from "../../src/data/research";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
 
@@ -42,12 +42,15 @@ for (const colorScheme of ["light", "dark"] as const) {
           "title",
           "The dry one. Tables, cues, that sort of thing.",
         );
-        for (const entry of education) {
+        const timeline = overview.getByRole("region", {
+          name: "Life events, newest first",
+        });
+        await expect(timeline.getByRole("heading", { level: 4 })).toHaveText(
+          lifeTimeline.map((entry) => entry.title),
+        );
+        for (const entry of lifeTimeline) {
           await expect(
-            overview.getByText(entry.institution, { exact: true }),
-          ).toBeVisible();
-          await expect(
-            overview.locator(`time[datetime="${entry.graduation.date}"]`),
+            timeline.locator(`time[datetime="${entry.date}"]`),
           ).toHaveCount(1);
         }
         await expect(

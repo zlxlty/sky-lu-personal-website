@@ -44,5 +44,9 @@ export function getDevelopmentLabRoutes(command: AstroCommand) {
       pattern: "/lab/guitar",
       entrypoint: new URL("../lab/GuitarPage.astro", import.meta.url),
     },
+    {
+      pattern: "/lab/timeline",
+      entrypoint: new URL("../lab/TimelinePage.astro", import.meta.url),
+    },
   ];
 }

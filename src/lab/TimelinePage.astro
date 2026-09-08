@@ -1,0 +1,45 @@
+---
+import HorizontalTimeline from "@/components/blueprint/HorizontalTimeline.astro";
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import { lifeTimeline } from "@/data/timeline";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Horizontal timeline · Component lab"
+  description="Native scrolling, independent instances, and short timelines."
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <IndexHeading
+    title="Horizontal timeline"
+    eyebrow="Component specimen"
+    description="Scroll sideways through milestones. Compare independent instances and timelines that fit without scrolling."
+  />
+  <Panel>
+    <PanelContent>
+      <HorizontalTimeline
+        id="timeline-full"
+        label="All milestones"
+        entries={lifeTimeline}
+        headingTag="h2"
+      />
+    </PanelContent>
+    <PanelContent>
+      <HorizontalTimeline
+        id="timeline-short"
+        label="Two milestones"
+        entries={lifeTimeline.slice(0, 2)}
+        headingTag="h2"
+      />
+    </PanelContent>
+    <PanelContent>
+      <HorizontalTimeline
+        id="timeline-single"
+        label="One milestone"
+        entries={lifeTimeline.slice(0, 1)}
+        headingTag="h2"
+      />
+    </PanelContent>
+  </Panel>
+</BaseLayout>

@@ -246,6 +246,16 @@ above four labeled rows—Drives, Communities, Enjoyments, and Timeline. Narrow
 screens stack labels above content. Nested panels own the row rules, and normal
 content rows use equal horizontal and vertical padding from `PanelContent`.
 Keep `#after-guitar` as the native, focusable guitar skip destination.
+The Timeline row contains personal milestones from May 2027 back to May 2020,
+authored together in `src/data/timeline.ts`. Use a reusable static horizontal
+timeline: dates above connected open circles, titles and short anecdotes below.
+Show the most recent entries first, with the next card partially visible. Hide
+the scrollbar and omit direction labels and arrow buttons. While the pointer is
+over the timeline, vertical wheel gestures move it horizontally; at either end,
+let scrolling continue down or up the page. Preserve native horizontal trackpad
+and touch swipes, focused-region Left/Right/Home/End keys, reduced motion, and
+native horizontal scrolling without JavaScript. Keep the
+user's humor and their supplied Cave and Zacc links with sketch underlines.
 Research attribution belongs in the following research section; keep its
 existing student-researcher wording.
 
