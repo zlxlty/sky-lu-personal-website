@@ -1439,6 +1439,20 @@ Proposed message: `chore: remove the hosted resume and CV navigation`
 - Run `pnpm verify:full` and review the smaller header in both themes. This
   candidate does not rewrite Git history or change an external deployment.
 
+### Commit 04.5d - replace homepage research with Writings
+
+Proposed message: `feat: introduce personal writings and tentative topics`
+
+- Replace HomeResearch with a static HomeWritings section matching Selected Work.
+- Share polished introduction and four unnumbered ideas with `/writing`.
+- Rename public navigation to Writings without changing route URLs.
+- Add the stripe separator and rule band after the personal timeline.
+- Keep tentative ideas separate from published collection entries and preserve
+  draft exclusion. Remove unused homepage research data; Tundra remains a project.
+- Verify mobile/desktop, both themes, no-JavaScript content, blueprint borders,
+  book-link hover, navigation, and production draft filtering with `pnpm verify:full`.
+- No dependency, hydration, or audio changes.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
