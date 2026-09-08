@@ -1523,6 +1523,25 @@ Proposed message: `fix: isolate content build fixture caches`
   assertions afterward, and rerun verification and coverage before resuming CI.
 - No production rendering, content, deployment guard, or dependency changes.
 
+### Supplemental release - default dark theme
+
+Branch: `codex/fix/default-dark-theme`, from released `main` in the existing checkout.
+
+Proposed message: `fix: default to dark and verify protected publication`
+
+- Include the owner's description edit from “technical writing” to “writing”.
+- Default to dark in static HTML and the pre-paint bootstrap; preserve saved
+  light/dark choices, cross-tab updates, accessible toggles, and blocked-storage behavior.
+- Remove OS preference listeners and unused CSS fallbacks. Keep both palettes
+  under explicit selection in rendering tests and assert the new default separately.
+- Separate branch and PR CI concurrency groups so neither cancels required checks;
+  retain serialization for main pushes and manual production runs.
+- Update the deployment guide to reflect the live site and configured protections.
+- Run `pnpm verify:full`, coverage, workflow validation, and a production dry-run.
+  Inspect mobile/desktop and both themes. Under the user's commit/push/merge
+  authorization, test publication through the protected main workflow after the
+  user supplies the CI token through GitHub environment secrets.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

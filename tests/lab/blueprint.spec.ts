@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { showStaticTheme, storeTheme } from "../support/theme";
 
 import {
   inspectBlueprintRules,
@@ -29,6 +30,7 @@ test.describe("static blueprint compositions", () => {
             reducedMotion: "reduce",
           });
           await page.goto(`/lab/blueprint/${example}`);
+          await showStaticTheme(page, theme);
           await expect(page.locator("[data-region]").first()).toBeVisible();
           await page.evaluate(() => document.fonts.ready.then(() => undefined));
           const report = await inspectBlueprintRules(page, "[data-region]");
@@ -74,6 +76,7 @@ test("rules remain visible above opaque panel backgrounds", async ({
 }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.emulateMedia({ colorScheme: "light" });
+  await storeTheme(page, "light");
   await page.goto("/lab/blueprint/surfaces");
   const samples = await page
     .locator('[data-region="surface-content"], [data-region="paper-content"]')
@@ -116,6 +119,7 @@ for (const theme of ["light", "dark"] as const) {
   }) => {
     await page.setViewportSize({ width: 1024, height: 600 });
     await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+    await storeTheme(page, theme);
     await page.goto("/lab/blueprint/pairs");
     await page
       .locator('[data-slot="stripe-separator"]')
@@ -137,6 +141,7 @@ for (const theme of ["light", "dark"] as const) {
 
   test(`blueprint examples remain accessible in ${theme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: theme });
+    await storeTheme(page, theme);
     await page.goto("/lab/blueprint/pairs");
     const accessibility = await new AxeBuilder({ page })
       .exclude("astro-dev-toolbar")

@@ -28,7 +28,7 @@ const name = "Sky Lu";
 export const profile: Profile = {
   name,
   legalName: "Tianyi Lu",
-  siteDescription: `Personal website and technical writing by ${name}.`,
+  siteDescription: `Personal website and writing by ${name}.`,
   // Nonbreaking spaces keep the phrase together without forcing a line break.
   introduction:
     "I'm a CS master's student at Brown, learning\u00a0and\u00a0building abstractions.",

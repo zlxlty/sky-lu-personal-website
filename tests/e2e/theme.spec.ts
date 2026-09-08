@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 for (const change of ["clear", "remove", "invalid"] as const) {
-  test(`${change} saved preferences in another tab restores the live system theme`, async ({
+  test(`${change} saved preferences in another tab restores the dark default`, async ({
     page,
     context,
   }) => {
@@ -9,9 +9,9 @@ for (const change of ["clear", "remove", "invalid"] as const) {
     await page.goto("/");
     await page
       .getByRole("banner")
-      .getByRole("button", { name: "Switch to dark theme" })
+      .getByRole("button", { name: "Switch to light theme" })
       .click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
     const otherTab = await context.newPage();
     await otherTab.goto("/");
@@ -21,13 +21,13 @@ for (const change of ["clear", "remove", "invalid"] as const) {
       if (operation === "invalid") localStorage.setItem("theme", "invalid");
     }, change);
 
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await expect(page.locator("[data-theme-status]")).toHaveText(
-      "Light theme active.",
+      "Dark theme active.",
     );
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
       "content",
-      "#fcf3e6",
+      "#2b2724",
     );
     await page.emulateMedia({ colorScheme: "dark" });
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -48,17 +48,17 @@ test("explicit theme choices stay synchronized across tabs", async ({
   await otherTab.goto("/");
   await otherTab
     .getByRole("banner")
-    .getByRole("button", { name: "Switch to dark theme" })
-    .click();
-
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page
-    .getByRole("banner")
     .getByRole("button", { name: "Switch to light theme" })
     .click();
-  await expect(otherTab.locator("html")).toHaveAttribute("data-theme", "light");
+
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await otherTab.emulateMedia({ colorScheme: "dark" });
   await expect(otherTab.locator("html")).toHaveAttribute("data-theme", "light");
+  await page
+    .getByRole("banner")
+    .getByRole("button", { name: "Switch to dark theme" })
+    .click();
+  await expect(otherTab.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
 test("session storage events from a same-origin frame do not change the theme", async ({
@@ -84,12 +84,12 @@ test("session storage events from a same-origin frame do not change the theme", 
         { once: true },
       );
     });
-    frameWindow.sessionStorage.setItem("theme", "dark");
+    frameWindow.sessionStorage.setItem("theme", "light");
     await received;
     frame.remove();
   });
 
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
 for (const failure of ["access", "write"] as const) {
@@ -111,7 +111,7 @@ for (const failure of ["access", "write"] as const) {
     }, failure);
     await page.goto("/");
 
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.emulateMedia({ colorScheme: "dark" });
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page

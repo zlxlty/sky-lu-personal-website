@@ -119,7 +119,7 @@ paints above section backgrounds, while the sticky header's backdrop spans the
 viewport so scrolling stripes do not show through the side gutters.
 
 `--color-blueprint-rule` controls the decorative rails, horizontal rules, and
-hatching at 12% ink opacity in both themes, including the system-theme fallback.
+hatching at 12% ink opacity in both themes, including the static dark default.
 Use this token to tune the sketch treatment independently of UI control borders
 and keyboard focus indicators.
 
@@ -177,7 +177,12 @@ to count flow sections even when overlays interrupt the DOM order.
 theme does not wait for a downloaded module. Keep that synchronous first-paint
 step when extending theme behavior.
 
-`src/lib/theme-controller.ts` owns browser state, persistence, system changes,
+Dark is the default regardless of OS appearance. Static HTML carries
+`data-theme="dark"`; the inline bootstrap restores an explicit saved light/dark
+choice before first paint. Missing, invalid, cleared, or blocked storage falls
+back to dark. OS appearance changes do not change the site's theme.
+
+`src/lib/theme-controller.ts` owns browser state, persistence,
 cross-tab updates, metadata, and all theme controls' accessible labels. The Astro
 theme control calls `initializeTheme()` after the document is parsed. Repeated calls
 reuse the same controller for the current document. This lifecycle follows the

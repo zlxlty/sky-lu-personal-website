@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { storeTheme } from "../support/theme";
 import { screenshotPixels } from "../support/blueprint-rules";
 
 const background = (page: Page) =>
@@ -29,6 +30,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme });
+    await storeTheme(page, colorScheme);
     await open(page);
     for (const [y, opacity] of [
       [0, 0],

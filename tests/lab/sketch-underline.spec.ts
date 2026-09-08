@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { storeTheme } from "../support/theme";
 import AxeBuilder from "@axe-core/playwright";
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -8,6 +9,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     }) => {
       await page.setViewportSize({ width, height: 1000 });
       await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+      await storeTheme(page, colorScheme);
       await page.goto("/lab/underline");
       await expect(
         page.locator("sketch-underline:not([data-ready])"),

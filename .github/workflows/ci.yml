@@ -15,7 +15,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  # Branch and PR checks must not cancel each other; main push/manual runs share a group.
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   # A new main push must not interrupt a production upload already in progress.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 

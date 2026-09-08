@@ -13,10 +13,10 @@ script, SSR adapter, R2 binding, or deployment credentials in source.
 | `preview`    | `sky-lu-website-preview` | [workers.dev preview](https://sky-lu-website-preview.skylty01.workers.dev) |
 | `production` | `sky-lu-website`         | `https://skylu.me`                                                         |
 
-The preview is deployed. The production configuration is prepared but has not
-been deployed or connected to the domain. Production publishing creates the
-custom-domain route and Cloudflare-managed DNS/certificate; editing this file
-or running a dry-run does not. The preview environment has no custom-domain route.
+Both preview and production are deployed. Production serves `https://skylu.me`
+through its custom-domain route and Cloudflare-managed DNS/certificate. Editing
+this file or running a dry-run does not publish anything. The preview environment
+has no custom-domain route.
 
 Astro's site URL is `https://skylu.me`. Public pages advertise that canonical
 origin even on the preview. Workers preview responses carry `X-Robots-Tag:
@@ -134,12 +134,16 @@ unset until the following settings are configured and launch is approved:
 CI checks out the exact tested revision, permits its detached checkout only when
 the CI ref and commit identify `main`, and refuses an outdated commit if remote
 `main` has advanced. Main runs are serialized so a new push cannot interrupt an
-upload. Superseded runs can fail the revision guard; let the newer run publish.
-Credentials are passed only to the publish step. This workflow has not yet been
-pushed, executed on GitHub, or supplied with deployment secrets.
+upload. Branch pushes and PR runs have separate concurrency groups so they do
+not cancel each other's required checks. Superseded main runs can fail the
+revision guard; let the newer run publish. Credentials are passed only to the
+publish step.
 
-The repository inspection for this setup found no effective `main` protection
-rules and no `production` environment. Configure them before enabling releases.
+The first release configured required PRs, **Quality** and **Browser** checks,
+linear history, and rebase-only merging on `main`. The `production` environment
+allows only `main` and requires the owner's approval. These settings live in
+GitHub; cloning this repository does not reproduce them. Before a CI release,
+verify both environment secrets and the enable variable above are configured.
 
 ## Recovery
 

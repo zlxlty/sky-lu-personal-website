@@ -26,7 +26,7 @@ test("the retired resume is absent from source, build output, and public URLs", 
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
-  test.describe(`site navigation in ${colorScheme} without JavaScript`, () => {
+  test.describe(`site navigation with ${colorScheme} OS preference without JavaScript`, () => {
     test.use({ colorScheme, javaScriptEnabled: false });
     for (const width of [320, 1440]) {
       test(`only Writings and Projects appear in navigation at ${width}px`, async ({

@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
+import { showStaticTheme, storeTheme } from "../support/theme";
 
 const regions =
   '[data-slot="panel"], [data-slot="panel-header"], [data-slot="panel-body"], [data-slot="panel-rule-band"], [data-slot="stripe-separator"]';
@@ -19,6 +20,7 @@ for (const colorScheme of ["light", "dark"] as const) {
           page,
         }) => {
           await page.goto(path);
+          await showStaticTheme(page, colorScheme);
           await page.evaluate(() => document.fonts.ready);
           await expect(page.locator("h1")).toHaveCount(1);
           await expect(page.locator("h1")).toHaveText(
@@ -50,6 +52,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   }
   test(`content accessibility in ${colorScheme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme });
+    await storeTheme(page, colorScheme);
     for (const path of [
       "/writing",
       "/projects",

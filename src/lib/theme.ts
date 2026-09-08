@@ -3,7 +3,7 @@ export const THEMES = ["light", "dark"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_STORAGE_KEY = "theme";
-export const DARK_THEME_QUERY = "(prefers-color-scheme: dark)";
+export const DEFAULT_THEME = "dark" satisfies Theme;
 
 export const THEME_COLORS = {
   light: "#fcf3e6",
@@ -19,11 +19,8 @@ export function parseTheme(value: string | null | undefined): Theme | null {
   return value === "light" || value === "dark" ? value : null;
 }
 
-export function resolveTheme(
-  storedTheme: string | null | undefined,
-  prefersDark: boolean,
-): Theme {
-  return parseTheme(storedTheme) ?? (prefersDark ? "dark" : "light");
+export function resolveTheme(storedTheme: string | null | undefined): Theme {
+  return parseTheme(storedTheme) ?? DEFAULT_THEME;
 }
 
 export function getNextTheme(theme: Theme): Theme {

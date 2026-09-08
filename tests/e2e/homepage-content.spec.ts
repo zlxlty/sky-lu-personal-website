@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { showStaticTheme, storeTheme } from "../support/theme";
 import { lifeTimeline } from "../../src/data/timeline";
 import { writingIdeas } from "../../src/data/writings";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
@@ -17,6 +18,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         page,
       }) => {
         await page.goto("/");
+        await showStaticTheme(page, colorScheme);
         await page.evaluate(() => document.fonts.ready);
         const overview = page.getByRole("region", { name: "Explore more" });
         await expect(
@@ -112,6 +114,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   // Axe runs page scripts; keep this separate from the no-JavaScript contract.
   test(`homepage content is accessible in ${colorScheme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme });
+    await storeTheme(page, colorScheme);
     await page.goto("/");
     const accessibility = await new AxeBuilder({ page })
       .include("#after-guitar")

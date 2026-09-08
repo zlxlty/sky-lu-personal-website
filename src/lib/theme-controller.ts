@@ -1,5 +1,4 @@
 import {
-  DARK_THEME_QUERY,
   getNextTheme,
   parseTheme,
   resolveTheme,
@@ -33,7 +32,6 @@ function createThemeController() {
   const themeColor = document.querySelector<HTMLMetaElement>(
     'meta[name="theme-color"]',
   );
-  const systemPreference = window.matchMedia(DARK_THEME_QUERY);
   let storage: Storage | undefined;
   let explicitTheme: Theme | null = null;
 
@@ -41,22 +39,15 @@ function createThemeController() {
     storage = window.localStorage;
     explicitTheme = parseTheme(storage.getItem(THEME_STORAGE_KEY));
   } catch {
-    // System preference remains available when storage is blocked.
+    // The dark default remains available when storage is blocked.
   }
 
   applyTheme(
-    parseTheme(root.dataset.theme) ??
-      resolveTheme(explicitTheme, systemPreference.matches),
+    parseTheme(root.dataset.theme) ?? resolveTheme(explicitTheme),
     false,
   );
 
   toggles.forEach((toggle) => toggle.addEventListener("click", toggleTheme));
-
-  systemPreference.addEventListener("change", ({ matches }) => {
-    if (explicitTheme === null) {
-      applyTheme(resolveTheme(null, matches), true);
-    }
-  });
 
   window.addEventListener("storage", ({ key, newValue, storageArea }) => {
     // clear() has no key; session storage and unrelated preferences are ignored.
@@ -68,13 +59,12 @@ function createThemeController() {
     }
 
     explicitTheme = parseTheme(newValue);
-    applyTheme(resolveTheme(explicitTheme, systemPreference.matches), true);
+    applyTheme(resolveTheme(explicitTheme), true);
   });
 
   function togglePreference() {
     const theme = getNextTheme(
-      parseTheme(root.dataset.theme) ??
-        resolveTheme(explicitTheme, systemPreference.matches),
+      parseTheme(root.dataset.theme) ?? resolveTheme(explicitTheme),
     );
 
     explicitTheme = theme;

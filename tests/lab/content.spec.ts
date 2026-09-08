@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
+import { showStaticTheme, storeTheme } from "../support/theme";
 
 for (const colorScheme of ["light", "dark"] as const) {
   for (const width of [320, 768, 1440]) {
@@ -13,6 +14,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       });
       test("populated index composes correctly", async ({ page }) => {
         await page.goto("/lab/content/writing");
+        await showStaticTheme(page, colorScheme);
         await page.evaluate(() => document.fonts.ready);
         await expect(page.locator("[data-content-row]")).toHaveCount(3);
         expect(
@@ -30,6 +32,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         page,
       }) => {
         await page.goto("/lab/content/article");
+        await showStaticTheme(page, colorScheme);
         await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
           "content",
           "noindex,nofollow",
@@ -53,6 +56,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   }
   test(`content specimen accessibility in ${colorScheme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme });
+    await storeTheme(page, colorScheme);
     for (const path of ["/lab/content/article", "/lab/content/writing"]) {
       await page.goto(path);
       expect(

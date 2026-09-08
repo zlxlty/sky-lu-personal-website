@@ -1,10 +1,14 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
+import { storeTheme } from "../support/theme";
 
 for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`site shell in ${colorScheme}`, () => {
     test.use({ colorScheme });
+    test.beforeEach(async ({ page }) => {
+      await storeTheme(page, colorScheme);
+    });
 
     for (const width of [320, 768, 1024, 1440]) {
       test(`short and long pages share footer rails at ${width}px`, async ({
@@ -182,6 +186,7 @@ test("the record fetches no audio until a listening gesture", async ({
 test("the sole header theme control updates with one announcement", async ({
   page,
 }) => {
+  await storeTheme(page, "light");
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/writing");
   const header = page.getByRole("banner").getByRole("button");
