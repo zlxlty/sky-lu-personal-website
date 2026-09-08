@@ -1542,6 +1542,22 @@ Proposed message: `fix: default to dark and verify protected publication`
   authorization, test publication through the protected main workflow after the
   user supplies the CI token through GitHub environment secrets.
 
+### Supplemental fix - production prose layer order
+
+Branch: `codex/fix/project-prose-styles`, from released `main` in the existing checkout.
+
+Proposed message: `fix: preserve prose styles across production CSS chunks`
+
+- Reproduce missing heading hierarchy and paragraph spacing on the live Tundra
+  page and a local production build. Prose selectors and assets are present;
+  the reader chunk registers the components layer before the shell's base reset.
+- Reserve Tailwind's layer order in the reader stylesheet before its component
+  rules. Keep reader-only CSS loading, content, palettes, and layout unchanged.
+- Add browser regressions on public project pages for heading hierarchy,
+  paragraph rhythm, list markers, and indentation without page JavaScript.
+- Verify the failing test before the fix, then run `pnpm verify:full` and inspect
+  desktop/mobile production previews in both themes before commit approval.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

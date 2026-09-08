@@ -168,6 +168,9 @@ frontmatter values plain; the templates supply the brackets.
 
 `src/styles/prose.css` is scoped to `.content-prose` and loaded only by the reader
 layout. It handles heading rhythm, lists, quotes, tables, and code overflow.
+It declares Tailwind's layer order before its component rules because Astro can
+load the reader's CSS chunk before the shell's CSS. Keep that declaration so
+the base reset cannot override authored prose typography in production.
 Astro's existing Shiki renderer produces both light and dark syntax colors at
 build time; the page theme selects them with CSS. Code uses the site's warm
 surface token. Wide code and tables scroll inside the rail.
