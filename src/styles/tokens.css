@@ -75,30 +75,6 @@
   --color-on-danger: #e7d6be;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-
-    --color-paper: #2b2724;
-    --color-surface: #332e2a;
-    --color-surface-raised: #38322d;
-    --color-ink: #ae9877;
-    --color-muted: #ae9877;
-    --color-brass: #ae9877;
-    --color-brass-soft: #4a4033;
-    --color-on-brass: #2b2724;
-    --color-link: #ae9877;
-    --color-rule: rgb(174 152 119 / 18%);
-    --color-blueprint-rule: rgb(174 152 119 / 12%);
-    --color-rule-strong: rgb(174 152 119 / 32%);
-    --color-overlay: rgb(0 0 0 / 50%);
-    --color-focus: #ae9877;
-    --color-danger: #b98279;
-    --color-danger-emphasis: #82443d;
-    --color-on-danger: #e7d6be;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-feedback: 1ms;

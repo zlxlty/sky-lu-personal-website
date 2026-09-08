@@ -1,4 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
+import { storeTheme } from "../support/theme";
 
 async function strokeProgress(mark: Locator, progress: number) {
   return mark
@@ -25,6 +26,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     page,
   }, testInfo) => {
     await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    await storeTheme(page, colorScheme);
     await page.goto("/projects");
     await page.evaluate(() => document.fonts.ready);
     const link = page.getByRole("link", { name: "Dynamic Pages", exact: true });

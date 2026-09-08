@@ -17,7 +17,6 @@ const packageManifest = JSON.parse(
 
 const lightTokens = extractTokens(extractRule(":root"));
 const darkTokens = extractTokens(extractRule('[data-theme="dark"]'));
-const systemDarkTokens = extractTokens(extractRule(":root:not([data-theme])"));
 
 describe.each([
   ["light", lightTokens],
@@ -144,10 +143,6 @@ describe("browser theme surfaces", () => {
     expect(darkTokens["--color-danger"]).toBe("#b98279");
     expect(darkTokens["--color-danger-emphasis"]).toBe("#82443d");
     expect(darkTokens["--color-on-danger"]).toBe("#e7d6be");
-  });
-
-  it("keeps the no-JavaScript system fallback aligned with dark mode", () => {
-    expect(systemDarkTokens).toEqual(darkTokens);
   });
 });
 

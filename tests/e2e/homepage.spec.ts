@@ -6,6 +6,7 @@ import { profile } from "../../src/data/profile";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
+import { storeTheme } from "../support/theme";
 
 test("development lab is absent from the production build", async ({
   page,
@@ -85,6 +86,7 @@ for (const theme of ["light", "dark"] as const) {
   test(`hero name hint supports hover, focus, and dismissal in ${theme} mode`, async ({
     page,
   }) => {
+    await storeTheme(page, theme);
     await page.emulateMedia({ colorScheme: theme });
     await page.goto("/");
     const trigger = page.locator("[data-name-hint-trigger]");
@@ -117,13 +119,13 @@ for (const theme of ["light", "dark"] as const) {
     await expect(tooltip).toBeHidden();
   });
 
-  test(`first visit follows the ${theme} system theme before styles load`, async ({
+  test(`first visit is dark with a ${theme} system theme before styles load`, async ({
     page,
   }) => {
     await page.emulateMedia({ colorScheme: theme });
     const response = await page.goto("/");
     const html = (await response?.text()) ?? "";
-    const expected = themeExpectation(theme);
+    const expected = themeExpectation("dark");
 
     expect(html.indexOf("<script>")).toBeGreaterThan(
       html.indexOf('name="theme-color"'),
@@ -131,7 +133,7 @@ for (const theme of ["light", "dark"] as const) {
     expect(html.indexOf("<script>")).toBeLessThan(
       html.indexOf('rel="stylesheet"'),
     );
-    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await expect(
       page
         .getByRole("banner")
@@ -143,7 +145,7 @@ for (const theme of ["light", "dark"] as const) {
         .locator(`[data-theme-icon="${expected.nextTheme}"]`),
     ).toBeVisible();
     await expect(
-      page.getByRole("banner").locator(`[data-theme-icon="${theme}"]`),
+      page.getByRole("banner").locator('[data-theme-icon="dark"]'),
     ).toBeHidden();
     expect(await readThemeState(page)).toEqual(expected.state);
   });
@@ -185,14 +187,15 @@ test("explicit theme choice persists and overrides later system changes", async 
   expect(await readThemeState(page)).toEqual(themeExpectation("dark").state);
 });
 
-test("system theme changes remain live until the visitor chooses", async ({
+test("system theme changes do not override the dark default", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
 
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.emulateMedia({ colorScheme: "dark" });
+  await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(await readThemeState(page)).toEqual(themeExpectation("dark").state);
 });
@@ -200,6 +203,7 @@ test("system theme changes remain live until the visitor chooses", async ({
 test("theme control stays unboxed and fills only over the icon", async ({
   page,
 }) => {
+  await storeTheme(page, "light");
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
 
@@ -450,6 +454,7 @@ test("each physical screen rule has one visible paint owner", async ({
 test("homepage serves both visual themes and local typography", async ({
   page,
 }) => {
+  await storeTheme(page, "light");
   const fontResponses = new Map<string, number>();
   const fontOrigins = new Set<string>();
   page.on("response", (response) => {
@@ -573,9 +578,9 @@ function themeExpectation(theme: "light" | "dark") {
 }
 
 test.describe("without JavaScript", () => {
-  test.use({ colorScheme: "dark", javaScriptEnabled: false });
+  test.use({ colorScheme: "light", javaScriptEnabled: false });
 
-  test("content remains available and CSS follows the dark system theme", async ({
+  test("content remains available in dark despite a light system theme", async ({
     page,
   }) => {
     await page.goto("/");
@@ -599,7 +604,7 @@ test.describe("without JavaScript", () => {
     await expect(
       page.getByRole("banner").locator("[data-theme-toggle]"),
     ).toBeHidden();
-    await expect(page.locator("html")).not.toHaveAttribute("data-theme", /.+/);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     expect(
       await page.locator("html").evaluate((root) => ({
         colorScheme: getComputedStyle(root).colorScheme,

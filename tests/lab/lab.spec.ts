@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { storeTheme } from "../support/theme";
 
 const waitForLabControls = async (page: Page) => {
   await page.addStyleTag({
@@ -48,6 +49,7 @@ for (const theme of ["light", "dark"] as const) {
 test("the lab theme command and header share the same preference", async ({
   page,
 }) => {
+  await storeTheme(page, "light");
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/lab");
   await waitForLabControls(page);

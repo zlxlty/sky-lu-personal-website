@@ -16,14 +16,15 @@ describe("theme preference policy", () => {
     expect(parseTheme(null)).toBeNull();
   });
 
-  it("prefers an explicit choice over the system preference", () => {
-    expect(resolveTheme("light", true)).toBe("light");
-    expect(resolveTheme("dark", false)).toBe("dark");
+  it("preserves an explicit choice", () => {
+    expect(resolveTheme("light")).toBe("light");
+    expect(resolveTheme("dark")).toBe("dark");
   });
 
-  it("uses the system preference when no explicit choice exists", () => {
-    expect(resolveTheme(null, true)).toBe("dark");
-    expect(resolveTheme(undefined, false)).toBe("light");
+  it("defaults to dark when the saved preference is absent or invalid", () => {
+    expect(resolveTheme(null)).toBe("dark");
+    expect(resolveTheme(undefined)).toBe("dark");
+    expect(resolveTheme("system")).toBe("dark");
   });
 
   it("toggles between the two supported themes", () => {

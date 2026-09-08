@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { storeTheme } from "../support/theme";
 import AxeBuilder from "@axe-core/playwright";
 import {
   observeGuitarAudio,
@@ -222,6 +223,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   }) => {
     await page.setViewportSize({ width: 360, height: 900 });
     await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    await storeTheme(page, colorScheme);
     await open(page);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),

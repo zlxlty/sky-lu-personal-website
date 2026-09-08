@@ -17,6 +17,9 @@ for (const theme of ["light", "dark"] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+    if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
+      await page.locator("[data-theme-toggle]").click();
+    }
     await page.setViewportSize({ width: 360, height: 200 });
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
 
@@ -68,6 +71,9 @@ for (const theme of ["light", "dark"] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+    if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
+      await page.locator("[data-theme-toggle]").click();
+    }
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     const runtimeErrors: string[] = [];
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
@@ -134,6 +140,11 @@ for (const mode of ["light", "dark", "forced-colors"] as const) {
       reducedMotion: "reduce",
     });
     await page.setViewportSize({ width: 1440, height: 900 });
+
+    const theme = mode === "dark" ? "dark" : "light";
+    if ((await page.locator("html").getAttribute("data-theme")) !== theme) {
+      await page.locator("[data-theme-toggle]").click();
+    }
 
     const inlineInput = page.getByRole("combobox", {
       name: "Filter lab destinations",

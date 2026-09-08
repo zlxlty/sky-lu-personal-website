@@ -429,6 +429,11 @@ deferred to the environment-backed contact phase.
 
 ## 6. Visual design system
 
+Dark is the default on every route, independent of operating-system preference.
+An explicit saved light or dark choice takes precedence before first paint and
+stays synchronized across tabs. Missing, invalid, cleared, or unavailable storage
+falls back to dark. Static HTML also renders dark without JavaScript.
+
 ### 6.1 Layout
 
 - Main rail maximum width: 768 px.

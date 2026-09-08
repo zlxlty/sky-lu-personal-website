@@ -3,7 +3,7 @@ import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
 import SiteHeader from "@/components/site/SiteHeader.astro";
 import SiteFooter from "@/components/site/SiteFooter.astro";
 import {
-  DARK_THEME_QUERY,
+  DEFAULT_THEME,
   THEME_COLORS,
   THEME_COLOR_SCHEMES,
   THEME_STORAGE_KEY,
@@ -29,24 +29,24 @@ const canonicalUrl =
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-theme={DEFAULT_THEME}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="dark light" />
     <meta
       name="theme-color"
-      content={THEME_COLORS.light}
+      content={THEME_COLORS[DEFAULT_THEME]}
       data-theme-light={THEME_COLORS.light}
       data-theme-dark={THEME_COLORS.dark}
     />
     <script
       is:inline
       define:vars={{
-        darkThemeQuery: DARK_THEME_QUERY,
+        defaultTheme: DEFAULT_THEME,
         darkThemeColorScheme: THEME_COLOR_SCHEMES.dark,
         lightThemeColorScheme: THEME_COLOR_SCHEMES.light,
         storageKey: THEME_STORAGE_KEY,
@@ -61,12 +61,10 @@ const canonicalUrl =
           const value = localStorage.getItem(storageKey);
           if (value === "light" || value === "dark") storedTheme = value;
         } catch {
-          // System preference remains available when storage is blocked.
+          // Keep the dark default when storage is blocked.
         }
 
-        const theme =
-          storedTheme ??
-          (window.matchMedia(darkThemeQuery).matches ? "dark" : "light");
+        const theme = storedTheme ?? defaultTheme;
         const metaColor =
           theme === "dark"
             ? themeColor?.dataset.themeDark
