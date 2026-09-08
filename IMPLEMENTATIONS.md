@@ -1407,6 +1407,23 @@ Checks:
 - No invented research title, paper, or Tundra URL.
 - Responsive presentation of long technical phrases.
 
+### Commit 04.5a - refine the personal overview
+
+Proposed message: `feat: refine the personal homepage overview`
+
+- Polish the user's essay, preserve its candid tone, and transition into current
+  interests. Use the selected C layout: a split introduction followed by four
+  labeled blueprint rows with equal horizontal and vertical content padding.
+- Add UWCCSC and X Academy links with the existing sketch underline.
+- Address the pool-tooltip comment, sharing static hint behavior with the hero.
+- Remove the comparison layouts, switcher, and temporary development route
+  override after promoting C; the homepage remains statically generated.
+- Include the user's final overview copy, labels, title sizing, and punctuation
+  edits across the homepage, privacy page, and guitar lab. Retain semantic
+  heading levels independently of their visual size.
+- Verify responsive layout, accessible hints, keyboard dismissal, no-JavaScript
+  content, and the links' draw/undraw behavior.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

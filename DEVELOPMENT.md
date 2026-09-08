@@ -202,6 +202,17 @@ to update both the homepage and projects page. The overview remains the native
 `tests/e2e/homepage-content.spec.ts` covers their static rendering, project links,
 accessible content, and nested border ownership in both themes.
 
+The overview's essay and community links are authored directly in
+`HomeOverview.astro`; education remains in the shared profile data. Inline prose
+hints use `TextHint.astro` with a unique `id`, visible `label`, and explanatory
+`text`. Its small `text-hints.ts` controller also enhances the hero's name hint,
+whose markup keeps the explanation outside the heading. Both retain native
+titles without JavaScript and add no React islands.
+
+The overview uses four labeled, nested blueprint panels. Normal content rows
+inherit `PanelContent`'s equal horizontal and vertical padding; the section
+heading has its own spacing. Edit the selected layout in `HomeOverview.astro`.
+
 The homepage at `/` uses `src/components/site/HomeHero.astro` for static identity
 and `home-header.ts` for a scroll-driven header mask. Only the homepage imports
 Anime.js WAAPI for this effect: a paused opacity animation follows the first
