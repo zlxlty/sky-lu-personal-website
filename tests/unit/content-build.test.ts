@@ -20,7 +20,15 @@ it("builds published article paths and navigation while excluding drafts", async
   const root = await realpath(
     await mkdtemp(join(tmpdir(), "sky-content-build-")),
   );
+  const sharedCachePath = resolve("node_modules/.astro/data-store.json");
+  const readSharedCache = () =>
+    readFile(sharedCachePath, "utf8").catch((error: unknown) => {
+      if (error instanceof Error && "code" in error && error.code === "ENOENT")
+        return undefined;
+      throw error;
+    });
   try {
+    const sharedCacheBefore = await readSharedCache();
     await Promise.all([
       cp(resolve("src"), join(root, "src"), { recursive: true }),
       cp(resolve("public"), join(root, "public"), { recursive: true }),
@@ -65,18 +73,21 @@ const related = ids.map((id) => {
         "draft: true",
       ),
     );
+    // node_modules is shared, so Astro's default cache would let this fixture
+    // overwrite (or read) another build's content store. Keep its cache local.
     const build = () =>
       run(
         process.execPath,
         [
           "--input-type=module",
           "--eval",
-          'import {build} from "astro"; import {pathToFileURL} from "node:url"; await build({root:pathToFileURL(process.argv[1]+"/")});',
+          'import {build} from "astro"; import {pathToFileURL} from "node:url"; const root=pathToFileURL(process.argv[1]+"/"); await build({root,cacheDir:".astro-cache"});',
           root,
         ],
         { cwd: process.cwd(), maxBuffer: 8 * 1024 * 1024 },
       );
     await build();
+    expect(await readSharedCache()).toBe(sharedCacheBefore);
     const output = (path: string) => readFile(join(root, "dist", path), "utf8");
     expect(await output("profile-data-check/index.html")).toContain(
       'href="/projects/dynamic-pages"',
@@ -112,6 +123,7 @@ const related = ids.map((id) => {
       "---\ntitle: Missing publication fields\n---\n",
     );
     await expect(build()).rejects.toMatchObject({ code: 1 });
+    expect(await readSharedCache()).toBe(sharedCacheBefore);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
