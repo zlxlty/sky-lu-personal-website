@@ -1624,6 +1624,16 @@ Proposed message: `feat: add a personal People page`
 - Verify the static route, supplied links, keyboard access, both palettes,
   mobile layout, and full existing suite. No new runtime dependency or island.
 
+### Supplemental feature - supplied site favicon
+
+Proposed message: `feat: add supplied SL favicon`
+
+- Use the owner's supplied favicon artwork unchanged in ICO, 16/32px PNG,
+  Apple touch icon, and 192/512px Android formats under `public/`.
+- Link icons and the web manifest from the shared static page head. Set the
+  manifest name to Sky Lu and its colors to the site's default dark background.
+- Verify production output and icon delivery; add no dependency or client code.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
