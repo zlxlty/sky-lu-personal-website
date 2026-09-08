@@ -783,14 +783,19 @@ GitHub Actions uses two stable required jobs:
 
 - **Quality** installs the frozen lockfile, runs `pnpm verify`, and reports unit
   coverage.
-- **Browser** waits for Quality, installs Chromium and WebKit, runs the production suite and the
+- **Browser** runs alongside Quality, installs Chromium and WebKit, runs the production suite and the
   non-visual `/lab` checks, and uploads seven-day failure artifacts.
+
+Both browser suites use two workers in CI. Production tests run independently;
+lab files run in parallel while tests within each lab file remain sequential.
+Local lab runs keep one worker for visual review. The protected production job
+still waits for both Quality and Browser to pass before it can deploy.
 
 Run `pnpm verify:full` for the same required quality, production-browser, and portable
 lab checks. CI also runs `pnpm test:coverage` for reporting. Local visual snapshots
 remain a separate `pnpm test:lab` check because they are platform-specific. CI has
-read-only repository contents permission and no deployment credentials or deployment
-step.
+read-only repository contents permission. Quality and Browser receive no deployment
+credentials; only the separately approved production job receives them.
 
 ## Git and review workflow
 

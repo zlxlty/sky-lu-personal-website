@@ -13,7 +13,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : undefined,
+  workers: isCI ? 2 : undefined,
   reporter: isCI ? "github" : "list",
   outputDir: "test-results/e2e",
   preserveOutput: "failures-only",
