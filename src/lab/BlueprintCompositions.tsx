@@ -8,6 +8,7 @@ import {
 } from "@/components/blueprint/Panel";
 import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import { PanelGrid, PanelGridItem } from "@/components/blueprint/PanelGrid";
 
 export const blueprintCases = [
   "adjacent",
@@ -18,11 +19,42 @@ export const blueprintCases = [
   "pairs",
   "descriptions",
   "surfaces",
+  "grid",
 ] as const;
 type BlueprintCase = (typeof blueprintCases)[number];
 
 /** Static examples exercise the same Astro/React composition as real routes. */
 export function BlueprintCompositions({ example }: { example: BlueprintCase }) {
+  if (example === "grid") {
+    return (
+      <>
+        {[1, 3, 4].map((count) => (
+          <Panel key={count} data-region={`grid-panel-${count}`}>
+            <PanelHeader className="py-4" data-region={`grid-heading-${count}`}>
+              <PanelTitle>{count} grid items</PanelTitle>
+            </PanelHeader>
+            <PanelGrid data-region={`grid-${count}`}>
+              {Array.from({ length: count }, (_, index) => (
+                <PanelGridItem
+                  key={index}
+                  data-region={`grid-${count}-item-${index}`}
+                >
+                  <PanelContent>
+                    <h3 className="m-0 text-lg">Item {index + 1}</h3>
+                    <p className="mt-2 mb-0">
+                      {index % 2
+                        ? "A short description."
+                        : "A longer description that wraps across several lines, keeping both cells in the row the same height and their rules aligned."}
+                    </p>
+                  </PanelContent>
+                </PanelGridItem>
+              ))}
+            </PanelGrid>
+          </Panel>
+        ))}
+      </>
+    );
+  }
   if (example === "surfaces") {
     return (
       <Panel
