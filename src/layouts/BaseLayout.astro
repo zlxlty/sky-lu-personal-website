@@ -20,6 +20,12 @@ interface Props {
 
 const { title, description, lang = "en", mainLabel } = Astro.props;
 const mainId = "main-content";
+const canonicalUrl =
+  Astro.site &&
+  !Astro.url.pathname.startsWith("/lab") &&
+  Astro.url.pathname !== "/404"
+    ? new URL(Astro.url.pathname.replace(/\/+$/, "") || "/", Astro.site)
+    : undefined;
 ---
 
 <!doctype html>
@@ -27,6 +33,7 @@ const mainId = "main-content";
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />

@@ -1004,12 +1004,17 @@ Git repository
 - Use static `404.html` handling, not SPA fallback.
 - Enable preview deployments from pull requests if the chosen CI workflow supports them cleanly.
 - Production deploys only from the protected main branch.
+- The approved early preview uses a separate `sky-lu-website-preview` Worker on
+  `workers.dev`, deployed explicitly from the current homepage feature branch.
+  It has no custom-domain route; preview responses discourage indexing.
+- Recordings use the existing R2 bucket at `audio.skylu.me`, independently of
+  website deployment. The browser requests public audio directly, without a
+  Worker binding. Retired root-domain recording paths return 404, without redirects.
 
 ### Not used in v1
 
 - Durable Objects
 - KV
-- R2
 - D1
 - Access
 - SSR

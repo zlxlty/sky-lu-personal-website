@@ -6,6 +6,8 @@ import { defineConfig } from "astro/config";
 import { developmentLab } from "./src/integrations/development-lab";
 
 export default defineConfig({
+  site: "https://skylu.me",
+  trailingSlash: "never",
   output: "static",
   integrations: [mdx(), react(), developmentLab()],
   markdown: {

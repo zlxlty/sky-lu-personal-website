@@ -20,7 +20,7 @@ place for the ordered playlist and its metadata:
 ```ts
 {
   id: "my-next-cover", // Unique, stable identifier.
-  audioSrc: "https://skylu.me/my-next-cover.m4a",
+  audioSrc: "https://audio.skylu.me/my-next-cover.m4a",
   title: "Song title",
   author: "Original artist / composer",
   record: "Album title", // Or "Single".

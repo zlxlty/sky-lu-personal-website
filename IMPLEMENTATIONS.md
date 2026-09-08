@@ -1475,6 +1475,25 @@ Proposed message: `style: add contextual rail notes and align footer metadata`
 - Verify annotation side and arrow placement, mobile hiding, footer alignment,
   shared border ownership, and keyboard navigation.
 
+### Commit 04.5g - prepare and publish a Cloudflare preview
+
+Proposed message: `feat: prepare Cloudflare static preview hosting`
+
+- User-approved early execution of the static hosting portion of 09.1 and its
+  necessary documentation, on the existing homepage branch. No stacked branch,
+  main merge, production domain, or CI deployment is introduced.
+- Pin Wrangler as a development tool, configure assets-only serving of `dist`,
+  canonical site origin, extensionless paths, and static 404 responses.
+- Move the playlist and authoring example to `audio.skylu.me`. Old root audio
+  paths deliberately return 404; do not preserve them with redirects.
+- Add local preview, upload dry-run, explicit preview deploy, and read-only
+  delivery checks. Include baseline headers, immutable hashed-asset caching, and
+  preview-host noindex. Full CSP and production crawler policy remain in Stage 09.
+- Verify the build and browser suite, local Wrangler routing/headers/assets,
+  missing CV/lab/old-audio routes, R2 range requests, and live preview HTML.
+- Step 3 authorizes publishing this preview; committing, pushing, merging, and
+  production deployment still require their own approval.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
@@ -2000,6 +2019,9 @@ Scope:
 Make the static application safely deployable to Cloudflare with protected contact data, explicit crawler policy, cache/security headers, and reviewable GitHub Actions.
 
 ### Commit 09.1 - configure Workers Static Assets
+
+The assets-only preview foundation is brought forward into 04.5g at the user's
+request. This stage still owns the separately reviewed production target.
 
 Proposed message:
 
