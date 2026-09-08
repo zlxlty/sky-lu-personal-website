@@ -1,6 +1,7 @@
 ---
 import { Panel, PanelContent, PanelHeader } from "@/components/blueprint/Panel";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import HorizontalTimeline from "@/components/blueprint/HorizontalTimeline.astro";
 import { lifeTimeline } from "@/data/timeline";
 import TextHint from "./TextHint.astro";
@@ -98,6 +99,9 @@ import TextHint from "./TextHint.astro";
     </PanelContent>
   </Panel>
   <Panel aria-labelledby="overview-timeline-heading">
+    <RailAnnotation className="pb-24" side="right" arrowDirection="down">
+      Scroll to the past
+    </RailAnnotation>
     <PanelContent
       className="grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-10"
     >

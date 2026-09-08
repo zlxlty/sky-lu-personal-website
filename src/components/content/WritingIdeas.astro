@@ -1,6 +1,7 @@
 ---
 import { Panel, PanelContent } from "@/components/blueprint/Panel";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
 import { writingIdeas } from "@/data/writings";
 ---
 
@@ -16,6 +17,11 @@ import { writingIdeas } from "@/data/writings";
   {
     writingIdeas.map((idea, index) => (
       <Panel aria-labelledby={`writing-idea-${index}`}>
+        {"annotation" in idea && (
+          <RailAnnotation side="left" arrowDirection="up">
+            {idea.annotation}
+          </RailAnnotation>
+        )}
         <PanelContent>
           <div>
             <h3

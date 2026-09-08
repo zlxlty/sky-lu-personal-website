@@ -1465,6 +1465,16 @@ Proposed message: `feat: arrange selected work in a blueprint grid`
   and metrics.
 - Verify shared borders, responsive layout, and odd/single-item grids in both themes.
 
+### Commit 04.5f - add contextual rail notes and align footer metadata
+
+Proposed message: `style: add contextual rail notes and align footer metadata`
+
+- Add the requested timeline and jazz-writing annotations using RailAnnotation.
+- Align the footer's build metadata and links with consistent line/control
+  heights, preserving the desktop Back to top placement outside the right rail.
+- Verify annotation side and arrow placement, mobile hiding, footer alignment,
+  shared border ownership, and keyboard navigation.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
