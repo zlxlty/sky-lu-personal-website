@@ -1510,6 +1510,19 @@ Proposed message: `ci: prepare protected Cloudflare production releases`
 - Preparation does not activate CI, configure account protections, push, merge,
   publish production, or connect DNS. Review those actions before first launch.
 
+### Commit 04.5i - isolate the publication fixture cache
+
+Proposed message: `fix: isolate content build fixture caches`
+
+- Fix the coverage-stage CI failure found during the first production release.
+  The temporary article fixture shares dependencies with the repository, so
+  Astro's default cache also shared its mutable content store.
+- Keep the fixture cache inside its temporary root and assert that successful
+  and rejected fixture builds leave the repository's content cache unchanged.
+- Reproduce a competing cache write before the fix, verify the same article
+  assertions afterward, and rerun verification and coverage before resuming CI.
+- No production rendering, content, deployment guard, or dependency changes.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
