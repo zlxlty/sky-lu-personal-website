@@ -484,65 +484,84 @@ test.describe("touch", () => {
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(360);
   });
-  test("touch capture transferring from a string to the instrument preserves taps and strums", async ({
-    page,
-    context,
-  }) => {
-    await open(page);
-    await guitar(page).scrollIntoViewIfNeeded();
-    const session = await context.newCDPSession(page);
-    const point = await stringPoint(page, 0);
-    const pointer = await guitar(page).evaluateHandle((svg) => {
-      const touch = { id: -1 };
-      svg.addEventListener("pointerdown", (event) => {
-        if (event instanceof PointerEvent) touch.id = event.pointerId;
-      });
-      return touch;
-    });
-    for (const strum of [false, true]) {
-      await session.send("Input.dispatchTouchEvent", {
-        type: "touchStart",
-        touchPoints: [point],
-      });
-      await expect(guitar(page)).toHaveAttribute("data-armed");
-      // Replay the old target's bubbling capture-loss event during a transfer.
-      // Losing a child's capture must not cancel capture owned by the SVG.
-      await guitar(page).evaluate(
-        (svg, id) => {
-          const hit = svg.querySelector("[data-string-hit]");
-          if (!hit) throw new Error("Missing string hit area");
-          if (!svg.hasPointerCapture(id))
-            throw new Error("Missing touch capture");
-          hit.dispatchEvent(
-            new PointerEvent("lostpointercapture", {
-              bubbles: true,
-              pointerId: id,
-              pointerType: "touch",
-            }),
-          );
-        },
-        await pointer.evaluate((touch) => touch.id),
-      );
-      await expect(guitar(page)).toHaveAttribute("data-armed");
-      if (strum) {
-        const { end } = await crossing(page);
-        await session.send("Input.dispatchTouchEvent", {
-          type: "touchMove",
-          touchPoints: [end],
+  for (const offset of [-3, 3]) {
+    test(`touch capture transferring from a string preserves taps and strums (${offset}px)`, async ({
+      page,
+      context,
+    }) => {
+      await open(page);
+      await guitar(page).scrollIntoViewIfNeeded();
+      const session = await context.newCDPSession(page);
+      const point = await stringPoint(page, 0);
+      // Stay inside the first string's hit area, but away from its centerline:
+      // subpixel rounding at the line changes whether a strum crosses it.
+      point.y += offset;
+      const pointer = await guitar(page).evaluateHandle((svg) => {
+        const touch: { id: number; string: string | null } = {
+          id: -1,
+          string: null,
+        };
+        svg.addEventListener("pointerdown", (event) => {
+          if (event instanceof PointerEvent) {
+            touch.id = event.pointerId;
+            touch.string =
+              event.target instanceof Element
+                ? (event.target
+                    .closest("[data-guitar-string]")
+                    ?.getAttribute("data-guitar-string") ?? null)
+                : null;
+          }
         });
-        await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(5);
-      }
-      await session.send("Input.dispatchTouchEvent", {
-        type: "touchEnd",
-        touchPoints: [],
+        return touch;
       });
-      await expect(guitar(page)).not.toHaveAttribute("data-armed");
-      if (!strum)
-        await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(1);
-      await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(0);
-    }
-    await pointer.dispose();
-  });
+      for (const strum of [false, true]) {
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchStart",
+          touchPoints: [point],
+        });
+        await expect(guitar(page)).toHaveAttribute("data-armed");
+        expect(await pointer.evaluate((touch) => touch.string)).toBe("0");
+        // Replay the old target's bubbling capture-loss event during a transfer.
+        // Losing a child's capture must not cancel capture owned by the SVG.
+        await guitar(page).evaluate(
+          (svg, id) => {
+            const hit = svg.querySelector("[data-string-hit]");
+            if (!hit) throw new Error("Missing string hit area");
+            if (!svg.hasPointerCapture(id))
+              throw new Error("Missing touch capture");
+            hit.dispatchEvent(
+              new PointerEvent("lostpointercapture", {
+                bubbles: true,
+                pointerId: id,
+                pointerType: "touch",
+              }),
+            );
+          },
+          await pointer.evaluate((touch) => touch.id),
+        );
+        await expect(guitar(page)).toHaveAttribute("data-armed");
+        if (strum) {
+          const { end } = await crossing(page);
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchMove",
+            touchPoints: [end],
+          });
+          await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(
+            offset < 0 ? 6 : 5,
+          );
+        }
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchEnd",
+          touchPoints: [],
+        });
+        await expect(guitar(page)).not.toHaveAttribute("data-armed");
+        if (!strum)
+          await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(1);
+        await expect(guitar(page).locator("[data-vibrating]")).toHaveCount(0);
+      }
+      await pointer.dispose();
+    });
+  }
 });
 
 test.describe("mobile without JavaScript", () => {
