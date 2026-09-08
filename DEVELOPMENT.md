@@ -99,6 +99,14 @@ target.
 
 ### Blueprint composition
 
+For a two-column collection inside a `Panel`, use `PanelGrid` with direct
+`PanelGridItem` children from `src/components/blueprint/PanelGrid.tsx`. Put each
+record's content inside `PanelContent`. The grid stacks below `sm`, owns the
+paired center rules, and lets the first item in each row draw the horizontal
+rules. Keep its 16px gaps and padding together; do not add borders to individual
+records or wrap them in a vertical-stack `Panel`. See `/lab/blueprint/grid` for
+single, odd, and even collections with unequal text lengths.
+
 `BlueprintPage` creates one frame at least as tall as the viewport. Pass
 `BlueprintNavbar` in its `header` slot and footer content in its `footer` slot,
 as the site modules in `BaseLayout.astro` do. The footer landmark sits outside

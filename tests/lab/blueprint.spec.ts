@@ -18,6 +18,7 @@ test.describe("static blueprint compositions", () => {
         "pairs",
         "descriptions",
         "surfaces",
+        "grid",
       ]) {
         test(`${example}: one rule per boundary at ${width}px in ${theme}`, async ({
           page,

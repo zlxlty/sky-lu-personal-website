@@ -1453,6 +1453,18 @@ Proposed message: `feat: introduce personal writings and tentative topics`
   book-link hover, navigation, and production draft filtering with `pnpm verify:full`.
 - No dependency, hydration, or audio changes.
 
+### Commit 04.5e - arrange Selected Work in a blueprint grid
+
+Proposed message: `feat: arrange selected work in a blueprint grid`
+
+- Match the Writings title size and equal 16px header padding.
+- Add StripeSeparator before the existing divider band.
+- Add static PanelGrid and PanelGridItem primitives: two columns above `sm`,
+  stacked below, with paired rules around 16px gutters and row bands.
+- Omit project numbering; preserve company/category labels, text, links, tags,
+  and metrics.
+- Verify shared borders, responsive layout, and odd/single-item grids in both themes.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

@@ -261,6 +261,16 @@ Research context remains in the Tundra project.
 
 Show four editorial project records. Each record has a short summary, measurable outcome, technology tags, and optional details disclosure.
 
+Match the Writings section header: a `text-4xl` title, 16px padding on every side,
+and a StripeSeparator followed by PanelRuleBand before the section.
+
+Arrange homepage project records in two columns from the `sm` breakpoint, and
+one column below it. Preserve all record content except per-project numbering;
+retain company and category labels. The blueprint PanelGrid owns
+a 16px center gutter with paired vertical lines and 16px ruled horizontal bands.
+Only the first cell in each row paints full-width horizontal rules; the page
+continues to own its outer rails. Metrics sit below the project text.
+
 #### Dynamic Pages at Cloudflare
 
 - Drove delivery across six Kubernetes services.

@@ -62,6 +62,31 @@ for (const colorScheme of ["light", "dark"] as const) {
           ),
         ).toHaveCount(1);
         await expect(page.locator("#selected-work h3 a")).toHaveCount(4);
+        const grid = page.locator('#selected-work [data-slot="panel-grid"]');
+        const cells = await grid
+          .locator('[data-slot="panel-grid-item"]')
+          .evaluateAll((items) =>
+            items.map((item) => {
+              const box = item.getBoundingClientRect();
+              return {
+                left: box.left,
+                top: box.top,
+                right: box.right,
+                bottom: box.bottom,
+              };
+            }),
+          );
+        expect(cells).toHaveLength(4);
+        if (width >= 640) {
+          expect(cells[0].top).toBe(cells[1].top);
+          expect(cells[0].bottom).toBe(cells[1].bottom);
+          expect(cells[1].left - cells[0].right).toBeCloseTo(16);
+          expect(cells[2].top - cells[0].bottom).toBeCloseTo(16);
+          await expect(grid).toHaveCSS("column-gap", "16px");
+        } else {
+          expect(cells[0].left).toBe(cells[1].left);
+          expect(cells[1].top - cells[0].bottom).toBeCloseTo(16);
+        }
         await expect(
           page.locator(
             "#after-guitar astro-island, #writings astro-island, #selected-work astro-island",
@@ -75,7 +100,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         ).toBe(width);
         const edges = await inspectBlueprintRules(
           page,
-          '#after-guitar, #after-guitar [data-slot="panel"], #after-guitar [data-slot="panel-header"], #writings, #writings [data-slot="panel"], #selected-work, #selected-work [data-slot="panel"], #selected-work [data-slot="panel-header"]',
+          '#after-guitar, #after-guitar [data-slot="panel"], #after-guitar [data-slot="panel-header"], #writings, #writings [data-slot="panel"], #selected-work, #selected-work [data-slot="panel-grid"], #selected-work [data-slot="panel-grid-item"], #selected-work [data-slot="panel-header"]',
         );
         for (const edge of edges) {
           expect(edge.owners, JSON.stringify(edge)).toHaveLength(1);
