@@ -1,0 +1,88 @@
+---
+import { SketchUnderline } from "./SketchUnderline";
+import type { TimelineEntry } from "./timeline-types";
+
+interface Props {
+  id: string;
+  label: string;
+  entries: readonly TimelineEntry[];
+  headingTag?: "h2" | "h3" | "h4" | "h5" | "h6";
+}
+
+const { id, label, entries, headingTag: Heading = "h4" } = Astro.props;
+const monthYear = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<horizontal-timeline class="block min-w-0">
+  <p id={`${id}-help`} class="sr-only">
+    Scroll to explore the timeline, or use Left and Right arrow keys. Home and
+    End jump to the first and last events.
+  </p>
+  <div
+    id={id}
+    data-timeline-viewport
+    role="region"
+    aria-label={label}
+    aria-describedby={`${id}-help`}
+    tabindex="0"
+    class="overflow-x-auto overscroll-x-contain scroll-smooth motion-reduce:scroll-auto"
+  >
+    <ol class="m-0 flex list-none py-1 pl-1">
+      {
+        entries.map((entry) => (
+          <li class="group min-w-0 shrink-0 grow-0 basis-[min(18rem,85%)]">
+            <time
+              datetime={entry.date}
+              class="block pr-8 font-mono text-xs text-muted-foreground"
+            >
+              {monthYear.format(new Date(`${entry.date}-01T00:00:00Z`))}
+            </time>
+            <div aria-hidden="true" class="relative my-4 flex h-3 items-center">
+              <span class="absolute inset-x-0 h-px bg-(--color-blueprint-rule) group-last:hidden" />
+              <span class="relative size-3 rounded-full border border-current bg-background text-muted-foreground" />
+            </div>
+            <div class="pr-8">
+              <Heading class="m-0 font-heading text-sm leading-6 font-medium [text-wrap:wrap]">
+                {entry.title}
+              </Heading>
+              <p class="m-0 mt-2 text-sm leading-6 [text-wrap:wrap]">
+                {entry.description.map((part) =>
+                  typeof part === "string" ? (
+                    part
+                  ) : (
+                    <a href={part.href}>
+                      <SketchUnderline
+                        text={part.text}
+                        seed={`timeline:${entry.date}:${part.href}`}
+                      />
+                    </a>
+                  ),
+                )}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</horizontal-timeline>
+
+<style>
+  [data-timeline-viewport] {
+    scrollbar-width: none;
+    /* Keep keyboard outlines inside the scrollport, clear of the panel rails. */
+    outline-offset: -2px;
+  }
+
+  [data-timeline-viewport]::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  import "@/lib/horizontal-timeline";
+</script>

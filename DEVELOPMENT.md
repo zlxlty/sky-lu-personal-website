@@ -192,8 +192,8 @@ checks. The lab suite exercises the shared command and header behavior.
 ### Shared site navigation and footer
 
 The homepage content is static Astro, composed in `src/pages/index.astro`:
-`HomeOverview.astro` owns the short personal introduction and displays education
-from `src/data/profile.ts`; `HomeResearch.astro` uses `src/data/research.ts` for
+`HomeOverview.astro` owns the short personal introduction and displays milestones
+from `src/data/timeline.ts`; `HomeResearch.astro` uses `src/data/research.ts` for
 ATLAS attribution and resolves its project IDs against published content;
 `HomeSelectedWork.astro` previews the first four published projects in collection
 order. Edit a project's title, description, tags, or results in its content file
@@ -203,7 +203,7 @@ to update both the homepage and projects page. The overview remains the native
 accessible content, and nested border ownership in both themes.
 
 The overview's essay and community links are authored directly in
-`HomeOverview.astro`; education remains in the shared profile data. Inline prose
+`HomeOverview.astro`; personal milestones live in `src/data/timeline.ts`. Inline prose
 hints use `TextHint.astro` with a unique `id`, visible `label`, and explanatory
 `text`. Its small `text-hints.ts` controller also enhances the hero's name hint,
 whose markup keeps the explanation outside the heading. Both retain native
@@ -212,6 +212,36 @@ titles without JavaScript and add no React islands.
 The overview uses four labeled, nested blueprint panels. Normal content rows
 inherit `PanelContent`'s equal horizontal and vertical padding; the section
 heading has its own spacing. Edit the selected layout in `HomeOverview.astro`.
+
+`HorizontalTimeline.astro` is a static content component within the blueprint
+library. Pass a unique `id`, an accessible `label`, and `entries`; optional
+`headingTag` adapts the heading hierarchy to other sections. It preserves the
+supplied order instead of sorting silently.
+In `src/data/timeline.ts`, add events newest first with a `YYYY-MM` date, title,
+and description segments. Strings render as text; `{ text, href }` segments
+render links with the shared sketch underline. No raw HTML is needed:
+
+```ts
+{
+  date: "2024-11",
+  title: "重名島 Isle Island",
+  description: [
+    "First band performance at ",
+    { text: "the Cave", href: "https://www.instagram.com/cc_thecave/" },
+    ".",
+  ],
+}
+```
+
+The custom element in `horizontal-timeline.ts` maps vertical wheel input over
+the timeline to horizontal movement. At an endpoint, or when all events fit,
+vertical input scrolls the page. Native horizontal wheel input, pinch zoom, and
+touch behavior stay intact. Left/Right keys move one event; Home/End jump to an
+endpoint, only while the region is focused. The scrollbar and visible controls
+are omitted; a partially visible card indicates more content. Without JavaScript,
+native horizontal scrolling still works. Event listeners are cleaned up when an
+instance disconnects. Reduced motion uses immediate keyboard scrolling. The
+`/lab/timeline` specimens exercise independent instances and a single-event list.
 
 The homepage at `/` uses `src/components/site/HomeHero.astro` for static identity
 and `home-header.ts` for a scroll-driven header mask. Only the homepage imports

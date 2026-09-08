@@ -1424,6 +1424,22 @@ Proposed message: `feat: refine the personal homepage overview`
 - Verify responsive layout, accessible hints, keyboard dismissal, no-JavaScript
   content, and the links' draw/undraw behavior.
 
+### Commit 04.5b - add the personal milestone timeline
+
+Proposed message: `feat: add a horizontal personal timeline`
+
+- Replace the overview's education summary with the user's eleven personal
+  milestones, newest first, keeping their voice with minor grammar corrections.
+- Add a reusable static `HorizontalTimeline.astro` and typed event data in one
+  file. Date, title, and inline linked description are authored per milestone.
+- Use native horizontal scrolling with a hidden scrollbar and no visible
+  controls. Map vertical wheel gestures over the timeline to horizontal scrolling,
+  handing back to page scrolling at the endpoints. Keep focused keyboard
+  navigation and reduced-motion support without hydration or new dependencies.
+- Verify mobile touch scrolling, laptop trackpad scrolling, wheel handoff,
+  keyboard/link focus, endpoints, resizing, and no-JavaScript access. Include
+  multiple instances and short timelines in the development lab.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:
