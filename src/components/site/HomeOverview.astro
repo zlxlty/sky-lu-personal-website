@@ -1,7 +1,8 @@
 ---
-import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { Panel, PanelContent, PanelHeader } from "@/components/blueprint/Panel";
 import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
 import { education } from "@/data/profile";
+import TextHint from "./TextHint.astro";
 
 const monthYear = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -14,41 +15,111 @@ const monthYear = new Intl.DateTimeFormat("en-US", {
   id="after-guitar"
   tabIndex={-1}
   aria-label="Explore more"
-  className="scroll-mt-16"
+  className="scroll-mt-16 focus-visible:outline-none"
 >
-  <PanelContent className="py-8 sm:py-10">
+  <PanelHeader className="py-4">
     <p class="m-0 mb-6 font-mono text-xs tracking-wide uppercase">
-      01 / A little context
+      01 / A little honesty
     </p>
-    <div class="grid gap-8 sm:grid-cols-[1.3fr_1fr] sm:gap-12">
-      <div class="min-w-0">
-        <h2 class="m-0 font-heading text-2xl font-medium tracking-tight">
-          Systems, and the ideas underneath.
-        </h2>
-        <p class="mt-4 mb-0 text-sm leading-relaxed">
-          Most of my work is in distributed systems: network communication, edge
-          infrastructure, and efficient AI serving.
-        </p>
-        <p class="mt-3 mb-0 text-sm leading-relaxed">
-          Alongside that, I’m learning category theory and type theory. Away
-          from the desk, I like cooking and playing jazz guitar.
-        </p>
-        <a
-          href="#selected-work"
-          class="mt-4 inline-flex min-h-11 items-center gap-2 text-sm"
+    <div class="grid gap-6 sm:grid-cols-[1.2fr_1fr] sm:items-end sm:gap-12">
+      <h2
+        class="m-0 max-w-xs font-heading text-3xl leading-tight font-medium tracking-tight sm:text-[40px]"
+      >
+        This is <span
+          class="font-(family-name:--font-handwritten-family) text-[1.15em] font-normal"
+          >[not]</span
         >
-          <SketchUnderline text="Selected projects" seed="home:projects" />
-          <span aria-hidden="true">↓</span>
-        </a>
+        <br />a résumé.
+      </h2>
+      <div
+        class="m-0 w-fit max-w-full justify-self-end text-left text-sm leading-relaxed"
+      >
+        <p class="m-0">I try to keep the professional façade to a</p>
+        <p class="m-0">minimum here</p>
       </div>
-      <dl class="m-0 space-y-6">
+    </div>
+  </PanelHeader>
+  <Panel aria-labelledby="overview-people-heading">
+    <PanelContent
+      className="grid gap-3 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-10"
+    >
+      <h3
+        id="overview-people-heading"
+        class="m-0 font-mono text-xs leading-7 font-normal tracking-wide text-muted-foreground uppercase"
+      >
+        Drives
+      </h3>
+      <p class="m-0 text-sm leading-7">
+        The people around me have always been my strongest motivation. I try to
+        be sincere, act with compassion, and make room for difference. For me,
+        that's a way of getting through the world, not a claim to moral high
+        ground.
+      </p>
+    </PanelContent>
+  </Panel>
+  <Panel aria-labelledby="overview-communities-heading">
+    <PanelContent
+      className="grid gap-3 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-10"
+    >
+      <h3
+        id="overview-communities-heading"
+        class="m-0 font-mono text-xs leading-7 font-normal tracking-wide text-muted-foreground uppercase"
+      >
+        Communities
+      </h3>
+      <p class="m-0 text-sm leading-7">
+        That's why I have a track record of being drawn to places with a little,
+        perhaps silly, idealism. [
+        <a href="https://www.uwcchina.org/en" class="whitespace-nowrap"
+          ><SketchUnderline text="UWCCSC" seed="home:community:uwccsc" /></a
+        >, <a href="https://info.xacademy.cc/" class="whitespace-nowrap"
+          ><SketchUnderline
+            text="X Academy"
+            seed="home:community:x-academy"
+          /></a
+        >] and to finding ways to contribute to them.
+      </p>
+    </PanelContent>
+  </Panel>
+  <Panel aria-labelledby="overview-daily-heading">
+    <PanelContent
+      className="grid gap-3 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-10"
+    >
+      <h3
+        id="overview-daily-heading"
+        class="m-0 font-mono text-xs leading-7 font-normal tracking-wide text-muted-foreground uppercase"
+      >
+        Enjoyments
+      </h3>
+      <p class="m-0 text-sm leading-7">
+        For myself, I devote most of my time studying distributed inference
+        systems, learning jazz guitar, and cooking. Sometimes I go bouldering,
+        play badminton, or <TextHint
+          id="pool-hint"
+          label="pool"
+          text="The dry one. Tables, cues, that sort of thing."
+        />.
+      </p>
+    </PanelContent>
+  </Panel>
+  <Panel aria-labelledby="overview-education-heading">
+    <PanelContent
+      className="grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-10"
+    >
+      <h3
+        id="overview-education-heading"
+        class="m-0 font-mono text-xs leading-7 font-normal tracking-wide text-muted-foreground uppercase"
+      >
+        Timeline
+      </h3>
+      <dl class="m-0 grid gap-6 sm:grid-cols-2">
         {
           education.map((entry) => (
             <div>
-              <dt class="font-heading text-base font-medium">
+              <dt class="font-heading text-sm font-medium">
                 {entry.institution}
               </dt>
-              <dd class="m-0 mt-1 text-sm leading-relaxed">{entry.degree}</dd>
+              <dd class="m-0 mt-1 text-xs leading-5">{entry.degree}</dd>
               <dd class="m-0 mt-2 font-mono text-xs leading-5 text-muted-foreground">
                 {entry.graduation.status === "expected" ? "Expected " : ""}
                 <time datetime={entry.graduation.date}>
@@ -61,6 +132,6 @@ const monthYear = new Intl.DateTimeFormat("en-US", {
           ))
         }
       </dl>
-    </div>
-  </PanelContent>
+    </PanelContent>
+  </Panel>
 </Panel>

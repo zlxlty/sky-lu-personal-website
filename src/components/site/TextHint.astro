@@ -1,0 +1,35 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  text: string;
+}
+
+const { id, label, text } = Astro.props;
+---
+
+<span data-text-hint class="relative inline-block"
+  ><span
+    data-text-hint-trigger
+    tabindex="0"
+    aria-describedby={id}
+    title={text}
+    class="cursor-help underline decoration-muted-foreground decoration-dotted underline-offset-4"
+    >{label}</span
+  ><span
+    id={id}
+    role="tooltip"
+    hidden
+    class="absolute bottom-full left-0 z-30 w-max max-w-[min(18rem,calc(100vw-2rem))] pb-2"
+    ><span
+      class="block rounded-(--radius-small) bg-foreground px-3 py-1.5 font-mono text-xs leading-normal font-normal tracking-normal text-background shadow-lg"
+      >{text}</span
+    ></span
+  ></span
+>
+
+<script>
+  import { initializeTextHints } from "@/lib/text-hints";
+
+  initializeTextHints();
+</script>

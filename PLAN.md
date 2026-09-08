@@ -212,9 +212,8 @@ the tooltip outside the heading's accessible name, dismissible with Escape,
 and available as a native title without JavaScript.
 
 The hero eyebrow reads `Sincere,Compassionate,Tolerant`. Keep “learning and building”
-together when the introduction wraps. The overview below connects distributed
-systems, cooking, jazz guitar, and learning category/type theory without implying
-expertise in the latter.
+together when the introduction wraps. The overview below introduces the people,
+communities, and everyday pursuits that motivate Sky.
 
 Compact identity labels:
 
@@ -230,22 +229,25 @@ Reserve a portrait slot that can initially contain an abstract monogram or neutr
 
 ### 5.4 Overview
 
-Use compact metadata rows:
+Lead with the personal essay `This is [not] a résumé.` under `01 / A little
+honesty`. Preserve the user's candid voice: motivation from people and
+communities, sincerity, compassion, tolerance, and a little idealism. Use short
+paragraphs and a natural transition into distributed inference systems, learning
+jazz guitar, cooking, bouldering, badminton, and pool.
 
-| Label | Value |
-| --- | --- |
-| Studying | M.S. in Computer Science, Brown University, expected May 2027 |
-| Research | ATLAS Group, network and distributed systems |
-| Advisor/collaborator | Nikos Vasilakis |
-| Previously | Cloudflare, Z.ai, Flowith, QuantInfinite |
-| Background | B.A. in Computer Science and Mathematics, Carleton College |
-| Contact | Brown email and personal email |
+Link `UWCCSC` to `https://www.uwcchina.org/en` and `X Academy` to
+`https://info.xacademy.cc/`, using the shared hover-only sketch underline. The
+word `pool` has a hover/focus hint: `The dry one. Tables, cues, that sort of thing.`
+Hints remain hoverable, support Escape, fit the viewport, and use native titles
+without JavaScript.
 
-Draft introduction:
-
-> I am a software engineer and systems researcher interested in what happens between an application and the infrastructure beneath it: network protocols, edge execution, storage systems, and efficient AI serving. At Brown's ATLAS Group, I worked with Nikos Vasilakis on Tundra, a library for building composable network communication pipelines.
-
-Use the phrase "student researcher in the ATLAS Group" rather than implying a faculty, staff, or Ph.D. appointment.
+Use the selected blueprint-notes composition: a split title and introduction
+above four labeled rows—Drives, Communities, Enjoyments, and Timeline. Narrow
+screens stack labels above content. Nested panels own the row rules, and normal
+content rows use equal horizontal and vertical padding from `PanelContent`.
+Keep `#after-guitar` as the native, focusable guitar skip destination.
+Research attribution belongs in the following research section; keep its
+existing student-researcher wording.
 
 ### 5.5 Selected systems work
 

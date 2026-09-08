@@ -28,12 +28,13 @@ const guitarLayout = {
         >
           Sincere,Compassionate,Tolerant
         </p>
-        <div data-name-hint class="relative w-fit">
+        <div data-text-hint class="relative w-fit">
           <h1 id="hero-heading" class="m-0 font-heading text-4xl md:text-5xl">
             <SiteWordmark>
               <span
                 slot="first-name"
                 data-name-hint-trigger
+                data-text-hint-trigger
                 tabindex="0"
                 aria-describedby="hero-name-hint"
                 title={`Legal Name: ${profile.legalName}`}
@@ -94,33 +95,7 @@ const guitarLayout = {
 </Panel>
 
 <script>
-  const hint = document.querySelector<HTMLElement>("[data-name-hint]");
-  const trigger = hint?.querySelector<HTMLElement>("[data-name-hint-trigger]");
-  const tooltip = hint?.querySelector<HTMLElement>('[role="tooltip"]');
+  import { initializeTextHints } from "@/lib/text-hints";
 
-  if (hint && trigger && tooltip) {
-    // Keep the native title as the no-JavaScript fallback only.
-    trigger.removeAttribute("title");
-    const show = () => {
-      tooltip.hidden = false;
-    };
-    const hide = () => {
-      tooltip.hidden = true;
-    };
-
-    trigger.addEventListener("pointerenter", show);
-    trigger.addEventListener("focus", show);
-    // The padded tooltip is part of the same hover region, so it can be read
-    // or selected without disappearing as the pointer leaves the word.
-    hint.addEventListener("pointerleave", () => {
-      if (document.activeElement !== trigger) hide();
-    });
-    trigger.addEventListener("blur", () => {
-      if (!hint.matches(":hover")) hide();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") hide();
-    });
-    window.addEventListener("pagehide", hide);
-  }
+  initializeTextHints();
 </script>

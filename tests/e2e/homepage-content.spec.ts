@@ -19,6 +19,29 @@ for (const colorScheme of ["light", "dark"] as const) {
         await page.goto("/");
         await page.evaluate(() => document.fonts.ready);
         const overview = page.getByRole("region", { name: "Explore more" });
+        await expect(
+          overview.getByRole("heading", { level: 2 }),
+        ).toHaveAccessibleName("This is [not] a résumé.");
+        await expect(overview.getByRole("heading", { level: 3 })).toHaveText([
+          "Drives",
+          "Communities",
+          "Enjoyments",
+          "Timeline",
+        ]);
+        for (const [name, href] of [
+          ["UWCCSC", "https://www.uwcchina.org/en"],
+          ["X Academy", "https://info.xacademy.cc/"],
+        ]) {
+          await expect(
+            overview.getByRole("link", { name, exact: true }),
+          ).toHaveAttribute("href", href);
+        }
+        await expect(
+          overview.locator('[aria-describedby="pool-hint"]'),
+        ).toHaveAttribute(
+          "title",
+          "The dry one. Tables, cues, that sort of thing.",
+        );
         for (const entry of education) {
           await expect(
             overview.getByText(entry.institution, { exact: true }),
@@ -51,7 +74,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         ).toBe(width);
         const edges = await inspectBlueprintRules(
           page,
-          '#after-guitar, #research, #selected-work, #selected-work [data-slot="panel"], #selected-work [data-slot="panel-header"]',
+          '#after-guitar, #after-guitar [data-slot="panel"], #after-guitar [data-slot="panel-header"], #research, #selected-work, #selected-work [data-slot="panel"], #selected-work [data-slot="panel-header"]',
         );
         for (const edge of edges) {
           expect(edge.owners, JSON.stringify(edge)).toHaveLength(1);
@@ -73,6 +96,52 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+for (const width of [320, 1440]) {
+  test(`overview links draw on hover and the pool hint stays readable at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/");
+    const overview = page.locator("#after-guitar");
+    for (const name of ["UWCCSC", "X Academy"]) {
+      const link = overview.getByRole("link", { name, exact: true });
+      const mark = link.locator("sketch-underline");
+      await expect(mark).toHaveAttribute("data-ready");
+      await expect(mark.locator("svg")).toHaveCSS("visibility", "hidden");
+      await link.hover();
+      await expect(mark.locator("svg")).toHaveCSS("visibility", "visible");
+      const path = mark.locator("path").first();
+      await expect(path).toHaveCSS("stroke-dashoffset", "0px");
+      const shape = await path.getAttribute("d");
+      await overview.getByRole("heading", { level: 2 }).hover();
+      await expect(mark.locator("svg")).toHaveCSS("visibility", "hidden");
+      await link.hover();
+      await expect(path).toHaveAttribute("d", shape ?? "");
+    }
+    const trigger = overview.locator('[aria-describedby="pool-hint"]');
+    const hint = overview.getByRole("tooltip", { includeHidden: true });
+    await expect(hint).toBeHidden();
+    await trigger.hover();
+    await expect(hint).toBeVisible();
+    await expect(trigger).toHaveAccessibleDescription(
+      "The dry one. Tables, cues, that sort of thing.",
+    );
+    const box = await hint.boundingBox();
+    if (!box) throw new Error("Missing visible pool hint");
+    expect(box.x).toBeGreaterThanOrEqual(12);
+    expect(box.x + box.width).toBeLessThanOrEqual(width - 12);
+    await hint.hover();
+    await expect(hint).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(hint).toBeHidden();
+    await page.mouse.move(0, 0);
+    await trigger.focus();
+    await expect(hint).toBeVisible();
+    await page.keyboard.press("Tab");
+    await expect(hint).toBeHidden();
+  });
+}
+
 test("homepage project previews agree with the index and link to real detail pages", async ({
   page,
   request,
@@ -88,15 +157,8 @@ test("homepage project previews agree with the index and link to real detail pag
     if (!href) throw new Error("Missing project destination");
     expect((await request.get(href)).status()).toBe(200);
   }
-  await page
-    .getByRole("link", { name: "Selected projects", exact: true })
-    .click();
-  await expect(page).toHaveURL(/#selected-work$/);
-  const top = await page
-    .locator("#selected-work")
-    .evaluate((element) => element.getBoundingClientRect().top);
-  expect(top).toBeGreaterThanOrEqual(52);
-  await page.goto("/projects");
+  await page.getByRole("link", { name: "All projects", exact: true }).click();
+  await expect(page).toHaveURL(/\/projects$/);
   const indexTitles = await page.locator("main h2 a").allTextContents();
   const normalize = (values: string[]) =>
     values.map((value) => value.replace(/\s+/g, " ").trim());

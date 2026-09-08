@@ -427,7 +427,7 @@ test.describe("touch", () => {
     expect(target.y).toBeGreaterThanOrEqual(header.y + header.height);
     await page.keyboard.press("Tab");
     await expect(
-      page.getByRole("link", { name: "Selected projects" }),
+      destination.getByRole("link", { name: "UWCCSC", exact: true }),
     ).toBeFocused();
   });
   test("a tap plucks only the selected string on release", async ({

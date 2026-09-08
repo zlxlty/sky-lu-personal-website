@@ -72,7 +72,7 @@ test("homepage satisfies the production smoke contract", async ({ page }) => {
     title: "Sky Lu",
     heading: "sky lu.",
     mainLandmarks: 1,
-    panels: 8,
+    panels: 12,
     ruleBands: 3,
     edgeOverrides: 0,
     islands: 1,
