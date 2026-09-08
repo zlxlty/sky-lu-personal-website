@@ -300,7 +300,7 @@ test("sticky header aligns to the blueprint rail and owns its boundary", async (
   ).toHaveCount(0);
   await expect(
     page.getByRole("navigation", { name: "Main navigation" }).getByRole("link"),
-  ).toHaveCount(3);
+  ).toHaveCount(2);
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect

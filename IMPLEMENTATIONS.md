@@ -983,7 +983,7 @@ The user superseded the diverging content branch on September 6, 2026 and
 requested an independent implementation on the current review branch. Do not
 merge or copy that branch. This candidate supplies the small collection boundary
 needed by the pages it renders, replacing the unexecuted route work below for
-this branch. Profile/CV, homepage composition, SEO, and feeds remain separate work.
+this branch. Profile data, homepage composition, SEO, and feeds remain separate work.
 
 Proposed message: `feat: add writing and project publishing pages`.
 
@@ -1031,7 +1031,7 @@ Proposed message: `fix: generate Astro content types before linting`.
 - Run the focused regression checks and `pnpm verify`, then inspect the complete
   diff and obtain approval for this separate corrective commit before pushing it.
 
-### Current profile/CV continuation - original PDF delivery
+### Historical profile continuation
 
 The UI/content branch was approved and rebase-merged through PR #3, preserving
 seven commits through `b322095`. Continue from that merged base on
@@ -1039,23 +1039,9 @@ seven commits through `b322095`. Continue from that merged base on
 feature branches do not each need a new worktree. Do not import the outdated
 content-model branch.
 
-On September 6, 2026, the user approved continuing but requested that the CV serve
-`Sky Lu Resume (14).pdf` verbatim. This replaces the planned HTML CV and its print
-layout. Deliver the independent PDF candidate first, then prepare shared profile
-and experience data for the homepage as a separate reviewed commit.
-
-Proposed message: `feat: serve the original resume PDF`.
-
-- Copy the approved PDF unchanged to `public/cv.pdf`; do not regenerate it.
-- Link to it from the shared navigation with an accessible PDF label.
-- Preserve `/cv` as a static redirect; add no PDF viewer library or hydration.
-- Record the approved publication decision and replacement workflow.
-- Compare the source, build output, and HTTP response bytes; verify PDF MIME type,
-  the static redirect, mobile/desktop navigation, and no-JavaScript keyboard use.
-- Run `pnpm verify:full`; inspect and update only the changed header baselines.
-- Review the original document and retain its exact checksum in the commit review.
-
-The PDF candidate was approved and committed as `22c3f06`.
+The original PDF delivery was approved and committed as `22c3f06`. The user
+retired this feature on September 7, 2026; commit 04.5c below removes the asset
+and its delivery paths. Shared profile and experience data remain independent.
 
 ### Current candidate - typed profile and experience data
 
@@ -1134,7 +1120,7 @@ Checks:
 - Draft filtering tests.
 - `astro check`, unit tests, and build.
 
-### Commit 03.3 - add writing, projects, and CV routes
+### Commit 03.3 - add writing and project routes
 
 Proposed message:
 
@@ -1147,14 +1133,11 @@ Scope:
 - `/writing` index.
 - `/projects` index.
 - `/projects/[slug]` static route.
-- `/cv` redirects to the approved original PDF at `/cv.pdf` (superseded by the
-  user's September 6 direction and the PDF delivery candidate above).
 - Shared empty and not-found states.
 
 Non-goals:
 
 - Rich article rendering arrives in Stage 05.
-- No generated HTML CV or PDF rewriting; publish only the explicitly approved original.
 - No dynamic filtering API.
 
 Checks:
@@ -1439,6 +1422,22 @@ Proposed message: `feat: add a horizontal personal timeline`
 - Verify mobile touch scrolling, laptop trackpad scrolling, wheel handoff,
   keyboard/link focus, endpoints, resizing, and no-JavaScript access. Include
   multiple instances and short timelines in the development lab.
+
+### Commit 04.5c - retire the hosted résumé
+
+Proposed message: `chore: remove the hosted resume and CV navigation`
+
+- Remove the résumé PDF, its static redirect, and the shared navigation link.
+- Remove the PDF publication workflow from the current documentation and mark
+  the previous delivery candidate as retired. Public biographical content stays
+  independent of the private source document.
+- Replace delivery tests with regressions for missing source/build assets,
+  404 responses at the retired URLs, no generated download links, and the
+  remaining responsive, keyboard-accessible navigation.
+- Refresh the existing lab screenshot baselines after reviewing the current
+  navigation in light and dark themes at mobile and desktop widths.
+- Run `pnpm verify:full` and review the smaller header in both themes. This
+  candidate does not rewrite Git history or change an external deployment.
 
 ### Commit 04.6 - add experience disclosures
 
@@ -2330,7 +2329,7 @@ Every branch must preserve these properties:
 - Static content works without JavaScript.
 - Client JavaScript is attached only to explicit islands or small scripts.
 - No raw contact emails or secrets enter Git history.
-- No résumé PDF is published without privacy review.
+- No résumé PDF or CV download route is published.
 - Draft posts do not enter indexes, feeds, sitemaps, metadata, or search.
 - Both themes remain functional.
 - Reduced-motion behavior remains functional.
