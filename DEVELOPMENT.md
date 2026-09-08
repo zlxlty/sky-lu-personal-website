@@ -457,8 +457,13 @@ Cloudflare commands are described in [DEPLOYMENT.md](./DEPLOYMENT.md):
 
 - `pnpm cf:preview` builds and serves locally through Wrangler on port 8787.
 - `pnpm cf:dry-run` builds and validates an upload without publishing.
+- `pnpm cf:dry-run:production` validates the production custom-domain target
+  without uploading or changing DNS.
 - `pnpm cf:deploy:preview` explicitly publishes the current tree to the
   `sky-lu-website-preview` Worker on `workers.dev`; it needs authorization.
+- `pnpm cf:deploy:production` publishes `skylu.me` only from a clean, current
+  remote `main` revision after verification; it needs launch authorization.
+  CI uses the same guard after its Quality and Browser jobs pass.
 - `pnpm cf:check [URL]` runs read-only delivery checks against the given host,
   defaulting to the local Wrangler server, plus small public audio range checks.
 
