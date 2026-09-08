@@ -5,6 +5,13 @@ The public routes are `/writing`, `/writing/[slug]`, `/projects`, and
 `/projects/[slug]`. Reading and navigation work without JavaScript. A small shared
 enhancement adds sketch underlines to designated link labels.
 
+## Writings ideas
+
+Edit `src/data/writings.ts` for the introduction and tentative topics shared by
+the homepage and `/writing`. Ideas are static text, separate from blog posts;
+they do not create article routes or publication dates. Publish finished work
+through the blog collection described below.
+
 ## Footer music
 
 Add an entry to `listeningTracks` in `src/data/listening.ts`. This is the one

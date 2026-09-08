@@ -50,7 +50,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     ).toBe(true);
     await page
       .getByRole("navigation", { name: "Main navigation" })
-      .getByRole("link", { name: "Writing", exact: true })
+      .getByRole("link", { name: "Writings", exact: true })
       .click();
     await expect(page).toHaveURL(/\/writing$/);
     await expect(background(page)).toHaveCSS("opacity", "1");

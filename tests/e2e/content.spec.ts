@@ -23,7 +23,7 @@ for (const colorScheme of ["light", "dark"] as const) {
           await expect(page.locator("h1")).toHaveCount(1);
           await expect(page.locator("h1")).toHaveText(
             path === "/writing"
-              ? "Writing"
+              ? "Writings"
               : path === "/projects"
                 ? "Projects"
                 : "Dynamic Pages",
@@ -105,7 +105,7 @@ test("draft writing is absent from production routes and the public index", asyn
 }) => {
   await page.goto("/writing");
   await expect(
-    page.getByRole("heading", { name: "Good notes take time." }),
+    page.getByRole("heading", { name: "Some tentative topics" }),
   ).toBeVisible();
   await expect(page.locator("[data-writing-list]")).toHaveCount(0);
   expect(

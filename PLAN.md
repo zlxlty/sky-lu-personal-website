@@ -254,8 +254,8 @@ let scrolling continue down or up the page. Preserve native horizontal trackpad
 and touch swipes, focused-region Left/Right/Home/End keys, reduced motion, and
 native horizontal scrolling without JavaScript. Keep the
 user's humor and their supplied Cave and Zacc links with sketch underlines.
-Research attribution belongs in the following research section; keep its
-existing student-researcher wording.
+The next section is Writings, separated by a StripeSeparator and PanelRuleBand.
+Research context remains in the Tundra project.
 
 ### 5.5 Selected systems work
 
@@ -302,7 +302,22 @@ Collapsed experience order:
 
 Each collapsed row contains company, role, dates, location, and a one-line contribution. Expanded content contains at most three bullets.
 
-### 5.7 Research section
+### 5.7 Writings section
+
+The September 7, 2026 decision replaces the homepage Research section with
+Writings. Match Selected Work's heading and stacked editorial rows, without
+numbering individual topics. Use 16px horizontal and vertical section padding,
+and omit an additional All writings link. Introduce the notebook in Sky's conversational
+voice, then show four tentative ideas: improvisational cooking, Sichuan hotpot,
+jazz guitar learning, and category theory with jazz improvisation. Link
+The Joy of Abstraction using the shared sketch underline.
+
+Keep the introduction and ideas in `src/data/writings.ts`, shared by the homepage
+and `/writing`. These are ideas, not published articles: no invented dates or
+article links. The navigation label is Writings; retain existing `/writing` URLs.
+The former homepage research figure is no longer planned for this section.
+
+The following research proposal is superseded, retained as historical context:
 
 Section heading: `Research / ATLAS Group`
 
@@ -337,9 +352,11 @@ The playable instrument remains in the hero; do not mount a second guitar island
 
 The actual mute/unmute control stays beside the hero instrument and always exposes a text label to assistive technology.
 
-### 5.9 Writing
+### 5.9 Writings
 
-Show the latest three published articles. Each card contains title, summary, publication date, reading time, and tags.
+The Writings index introduces the personal notebook and tentative topics from
+§5.7. Render published articles when available, using the existing draft-filtered
+blog collection. Do not show the old technical-only empty state beside the ideas.
 
 Initial topic taxonomy:
 

@@ -1,0 +1,25 @@
+---
+import { Panel, PanelHeader } from "@/components/blueprint/Panel";
+import WritingIdeas from "@/components/content/WritingIdeas.astro";
+import { writingsIntro } from "@/data/writings";
+---
+
+<Panel
+  id="writings"
+  aria-labelledby="writings-heading"
+  className="scroll-mt-16"
+>
+  <PanelHeader className="py-4">
+    <p class="m-0 mb-3 font-mono text-xs tracking-wide uppercase">
+      02 / Writings
+    </p>
+    <h2
+      id="writings-heading"
+      class="m-0 font-heading text-4xl font-medium tracking-tight"
+    >
+      Thoughts taking shape.
+    </h2>
+    <p class="mt-4 mb-0 max-w-prose text-sm leading-7">{writingsIntro}</p>
+  </PanelHeader>
+  <WritingIdeas />
+</Panel>

@@ -1,0 +1,47 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { writingIdeas } from "@/data/writings";
+---
+
+<Panel aria-labelledby="writing-ideas-heading">
+  <PanelContent>
+    <h2
+      id="writing-ideas-heading"
+      class="m-0 font-mono text-xs tracking-wide uppercase"
+    >
+      Some tentative topics
+    </h2>
+  </PanelContent>
+  {
+    writingIdeas.map((idea, index) => (
+      <Panel aria-labelledby={`writing-idea-${index}`}>
+        <PanelContent>
+          <div>
+            <h3
+              id={`writing-idea-${index}`}
+              class="m-0 font-heading text-xl font-medium tracking-tight"
+            >
+              {idea.title}
+            </h3>
+            <p class="mt-2 mb-0 max-w-prose text-sm leading-7">
+              {idea.description}
+              {"link" in idea && (
+                <>
+                  {" "}
+                  <a href={idea.link.href}>
+                    <SketchUnderline
+                      text={idea.link.label}
+                      seed="writings:joy-of-abstraction"
+                    />
+                  </a>
+                  {idea.afterLink}
+                </>
+              )}
+            </p>
+          </div>
+        </PanelContent>
+      </Panel>
+    ))
+  }
+</Panel>

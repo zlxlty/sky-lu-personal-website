@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { lifeTimeline } from "../../src/data/timeline";
-import { research } from "../../src/data/research";
+import { writingIdeas } from "../../src/data/writings";
 import { inspectBlueprintRules } from "../support/blueprint-rules";
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -53,20 +53,18 @@ for (const colorScheme of ["light", "dark"] as const) {
             timeline.locator(`time[datetime="${entry.date}"]`),
           ).toHaveCount(1);
         }
+        await expect(page.locator("#writings h3")).toHaveText(
+          writingIdeas.map((idea) => idea.title),
+        );
         await expect(
-          page
-            .locator("#research")
-            .getByRole("link", { name: research.group.label }),
-        ).toHaveAttribute("href", research.group.href);
-        await expect(
-          page
-            .locator("#research")
-            .getByRole("link", { name: research.collaborator.label }),
-        ).toHaveAttribute("href", research.collaborator.href);
+          page.locator(
+            '#after-guitar + [data-slot="stripe-separator"] + [data-slot="panel-rule-band"] + #writings',
+          ),
+        ).toHaveCount(1);
         await expect(page.locator("#selected-work h3 a")).toHaveCount(4);
         await expect(
           page.locator(
-            "#after-guitar astro-island, #research astro-island, #selected-work astro-island",
+            "#after-guitar astro-island, #writings astro-island, #selected-work astro-island",
           ),
         ).toHaveCount(0);
         await expect(
@@ -77,7 +75,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         ).toBe(width);
         const edges = await inspectBlueprintRules(
           page,
-          '#after-guitar, #after-guitar [data-slot="panel"], #after-guitar [data-slot="panel-header"], #research, #selected-work, #selected-work [data-slot="panel"], #selected-work [data-slot="panel-header"]',
+          '#after-guitar, #after-guitar [data-slot="panel"], #after-guitar [data-slot="panel-header"], #writings, #writings [data-slot="panel"], #selected-work, #selected-work [data-slot="panel"], #selected-work [data-slot="panel-header"]',
         );
         for (const edge of edges) {
           expect(edge.owners, JSON.stringify(edge)).toHaveLength(1);
@@ -92,7 +90,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     await page.goto("/");
     const accessibility = await new AxeBuilder({ page })
       .include("#after-guitar")
-      .include("#research")
+      .include("#writings")
       .include("#selected-work")
       .analyze();
     expect(accessibility.violations).toEqual([]);

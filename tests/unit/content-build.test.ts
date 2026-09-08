@@ -36,9 +36,8 @@ it("builds published article paths and navigation while excluding drafts", async
       `---
 import { getProjects } from "@/content/queries";
 import { experience } from "@/data/experience";
-import { research } from "@/data/research";
 const projects = await getProjects();
-const ids = [...experience.flatMap((entry) => entry.projectIds), ...research.projectIds];
+const ids = experience.flatMap((entry) => entry.projectIds);
 const related = ids.map((id) => {
   const project = projects.find((entry) => entry.id === id);
   if (!project) throw new Error(\`Profile references an unpublished or missing project: \${id}\`);
@@ -80,7 +79,7 @@ const related = ids.map((id) => {
     await build();
     const output = (path: string) => readFile(join(root, "dist", path), "utf8");
     expect(await output("profile-data-check/index.html")).toContain(
-      'href="/projects/tundra"',
+      'href="/projects/dynamic-pages"',
     );
     const page = await output("writing/new-note/index.html");
     expect(page).toContain("Published fixture &amp; safe text");
