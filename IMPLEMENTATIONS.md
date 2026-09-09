@@ -1634,6 +1634,19 @@ Proposed message: `feat: add supplied SL favicon`
   manifest name to Sky Lu and its colors to the site's default dark background.
 - Verify production output and icon delivery; add no dependency or client code.
 
+### Supplemental fix - turntable pointer focus
+
+Proposed message: `fix: remove native turntable focus boxes`
+
+- Chromium draws its native blue SVG outline for pointer-focused vinyl and
+  tonearm controls when they do not match `:focus-visible`. Suppress that outline
+  for all focus while preserving the existing keyboard rim/cartridge highlights.
+- Reproduce through mouse and touch on the production homepage after guitar
+  interaction, verify both controls, and retain visible keyboard focus. Keep
+  audio, gestures, tab order, and forced-color highlights unchanged.
+- Run the focused browser regression, full verification, and visual checks in
+  both themes before presenting the commit for approval.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

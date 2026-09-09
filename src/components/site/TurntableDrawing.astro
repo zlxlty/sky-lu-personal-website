@@ -121,7 +121,9 @@ const {
 </svg>
 
 <style>
-  [data-turntable-record]:focus-visible {
+  /* SVG controls keep keyboard focus on the rim/cartridge, not a native box. */
+  [data-turntable-record]:focus,
+  [data-turntable-arm]:focus {
     outline: none;
   }
   [data-turntable-record]:focus-visible [data-turntable-rim] {
@@ -130,7 +132,6 @@ const {
     stroke-opacity: 1;
   }
   [data-turntable-arm]:focus-visible {
-    outline: none;
     opacity: 1;
   }
   [data-turntable-arm]:focus-visible [data-turntable-cartridge] {
