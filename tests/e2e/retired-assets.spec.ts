@@ -29,7 +29,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`site navigation with ${colorScheme} OS preference without JavaScript`, () => {
     test.use({ colorScheme, javaScriptEnabled: false });
     for (const width of [320, 1440]) {
-      test(`only Writings and Projects appear in navigation at ${width}px`, async ({
+      test(`public navigation excludes the retired CV at ${width}px`, async ({
         page,
       }) => {
         await page.setViewportSize({ width, height: 900 });
@@ -40,12 +40,14 @@ for (const colorScheme of ["light", "dark"] as const) {
         await expect(navigation.getByRole("link")).toHaveText([
           "Writings",
           "Projects",
+          "People",
         ]);
         await page.keyboard.press("Tab"); // Skip link.
         await page.keyboard.press("Tab"); // Writings.
         await page.keyboard.press("Tab"); // Projects.
+        await page.keyboard.press("Tab"); // People.
         await expect(
-          navigation.getByRole("link", { name: "Projects" }),
+          navigation.getByRole("link", { name: "People" }),
         ).toBeFocused();
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth),
