@@ -8,6 +8,11 @@
     line-height: 1.6;
   }
 
+  /* Inline links should not make one paragraph line taller than its neighbors. */
+  p sketch-underline {
+    line-height: inherit;
+  }
+
   sketch-underline > [data-sketch-lines] {
     position: absolute;
     top: 0;

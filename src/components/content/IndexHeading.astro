@@ -20,7 +20,9 @@ const { title, eyebrow, description } = Astro.props;
       {eyebrow}
     </p>
     <h1 id="page-heading" class="font-heading">{title}</h1>
-    <p class="mt-5 mb-0 max-w-xl text-lg leading-relaxed text-muted-foreground">
+    <p
+      class="mt-5 mb-0 max-w-xl text-lg leading-(--leading-body) text-muted-foreground"
+    >
       {description}
     </p>
   </PanelHeader>

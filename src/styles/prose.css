@@ -6,7 +6,7 @@
 /* Content typography is scoped to authored Markdown/MDX, never the page shell. */
 @layer components {
   .content-prose {
-    @apply text-base leading-7;
+    @apply text-base leading-(--leading-body);
     overflow-wrap: anywhere;
   }
   .content-prose > :first-child {

@@ -49,7 +49,7 @@ const monthYear = new Intl.DateTimeFormat("en-US", {
               <Heading class="m-0 font-heading text-sm leading-6 font-medium [text-wrap:wrap]">
                 {entry.title}
               </Heading>
-              <p class="m-0 mt-2 text-sm leading-6 [text-wrap:wrap]">
+              <p class="m-0 mt-2 text-sm leading-(--leading-body) [text-wrap:wrap]">
                 {entry.description.map((part) =>
                   typeof part === "string" ? (
                     part
