@@ -8,6 +8,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const navigation = [
   { href: "/writing", label: "Writings" },
   { href: "/projects", label: "Projects" },
+  { href: "/people", label: "People" },
 ];
 ---
 
@@ -15,7 +16,9 @@ const navigation = [
   aria-label="Site header"
   data-home-header={currentPath === "/" ? "" : undefined}
 >
-  <div class="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
+  <div
+    class="flex min-w-0 flex-1 items-center justify-between gap-2 pr-2 sm:gap-3"
+  >
     {
       currentPath !== "/" && (
         <a
@@ -23,13 +26,13 @@ const navigation = [
           aria-label={`${profile.name} — Home`}
           class="inline-flex min-h-10 shrink-0 items-center"
         >
-          <SiteWordmark aria-hidden="true" class="text-2xl" />
+          <SiteWordmark aria-hidden="true" class="text-xl sm:text-2xl" />
         </a>
       )
     }
     <nav
       aria-label="Main navigation"
-      class="ml-auto flex items-center gap-3 sm:gap-5"
+      class="ml-auto flex items-center gap-2 sm:gap-5"
     >
       {
         navigation.map(({ href, label }) => (
@@ -42,7 +45,7 @@ const navigation = [
                   ? "location"
                   : undefined
             }
-            class="inline-flex min-h-10 items-center text-sm"
+            class="inline-flex min-h-10 items-center text-xs sm:text-sm"
           >
             <SketchUnderline text={label} seed={`navigation:${href}`} />
           </a>

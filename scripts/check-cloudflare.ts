@@ -26,6 +26,7 @@ for (const path of [
   "/",
   "/writing",
   "/projects",
+  "/people",
   "/projects/tundra",
   "/privacy",
 ]) {

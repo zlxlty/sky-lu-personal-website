@@ -1,0 +1,106 @@
+---
+import { Panel, PanelContent } from "@/components/blueprint/Panel";
+import { PanelGrid, PanelGridItem } from "@/components/blueprint/PanelGrid";
+import { RailAnnotation } from "@/components/blueprint/RailAnnotation";
+import { SketchUnderline } from "@/components/blueprint/SketchUnderline";
+import { ArrowUpRight } from "@/components/blueprint/ArrowUpRight";
+import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import IndexHeading from "@/components/content/IndexHeading.astro";
+import { friends } from "@/data/people";
+import { profile } from "@/data/profile";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title={`People — ${profile.name}`}
+  description="Friends who support and inspire me, and the things I love about them."
+>
+  <IndexHeading
+    title="People"
+    eyebrow="Friends & inspirations"
+    description="Some of the people who support me, inspire me, and make life more interesting."
+  />
+  <Panel aria-labelledby="friends-heading">
+    <PanelContent className="xl:sr-only">
+      <h2 id="friends-heading" class="sr-only">
+        Friends who support and inspire me
+      </h2>
+      <p
+        data-people-order="inline"
+        hidden
+        class="m-0 font-mono text-xs text-muted-foreground"
+      >
+        Randomized on each visit.
+      </p>
+    </PanelContent>
+    <RailAnnotation
+      side="left"
+      align="start"
+      className="top-10"
+      data-people-order="rail"
+      hidden
+    >
+      Randomized on<br />each visit.
+    </RailAnnotation>
+    <PanelGrid data-people-list="">
+      {
+        friends.map((friend, index) => (
+          <PanelGridItem aria-labelledby={`friend-${index}`} data-person="">
+            <PanelContent>
+              <h3
+                id={`friend-${index}`}
+                class="m-0 font-heading text-lg leading-6 font-medium tracking-tight"
+              >
+                <a
+                  href={friend.href}
+                  class="inline-flex max-w-full items-baseline gap-2"
+                >
+                  <SketchUnderline
+                    text={friend.name}
+                    seed={`people:${friend.name}`}
+                  />
+                  <ArrowUpRight className="text-sm text-muted-foreground" />
+                </a>
+              </h3>
+              <p class="mt-2 mb-0 max-w-prose text-sm leading-6">
+                {friend.note.map((part) =>
+                  typeof part === "string" ? (
+                    part
+                  ) : (
+                    <a href={part.href}>
+                      <SketchUnderline
+                        text={part.label}
+                        seed={`people:${friend.name}:${part.label}`}
+                      />
+                    </a>
+                  ),
+                )}
+              </p>
+            </PanelContent>
+          </PanelGridItem>
+        ))
+      }
+    </PanelGrid>
+  </Panel>
+  <script is:inline>
+    (() => {
+      const list = document.querySelector("[data-people-list]");
+      if (!list) return;
+      const people = Array.from(
+        list.querySelectorAll(":scope > [data-person]"),
+      );
+      // Fisher–Yates: shuffle existing rows without separating names and notes.
+      for (let index = people.length - 1; index > 0; index--) {
+        const swap = Math.floor(Math.random() * (index + 1));
+        [people[index], people[swap]] = [people[swap], people[index]];
+      }
+      const fragment = document.createDocumentFragment();
+      for (const person of people) fragment.append(person);
+      list.append(fragment);
+      for (const note of document.querySelectorAll("[data-people-order]")) {
+        note.removeAttribute("hidden");
+      }
+    })();
+  </script>
+  <StripeSeparator />
+</BaseLayout>

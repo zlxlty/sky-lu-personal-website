@@ -99,6 +99,7 @@ If substantial source code is ported from the reference repository, preserve the
 | `/writing/[slug]` | MDX article | Static |
 | `/projects` | All systems and software projects | Static |
 | `/projects/[slug]` | Project case study where available | Static |
+| `/people` | Personal notes about friends and inspirations, with their links | Static |
 | `/rss.xml` | Blog feed | Build output |
 | `/sitemap-index.xml` | Search sitemap | Build output |
 | `/robots.txt` | Crawler policy | Static |

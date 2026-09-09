@@ -1606,6 +1606,24 @@ Proposed message: `ci: parallelize quality and browser verification`
 - Preserve behavioral coverage. Compare suite timings with the serial baseline
   and rerun checks before the user commits and pushes this separate candidate.
 
+### Supplemental feature - People page
+
+Proposed message: `feat: add a personal People page`
+
+- Add a static `/people` directory with the owner's fourteen friends. Shuffle
+  the existing rows on each page load with a small inline script and show a
+  random-order note; retain source order without JavaScript. Polish the notes without importing biographies or inventing
+  additional inspirations. Keep all names, links, and notes in `src/data/people.ts`.
+- Reuse the blueprint heading, sketch underlines, and vector arrows. Show two
+  friends per row using the shared ruled PanelGrid, stacking into one column on
+  small screens. Put each name above its note and keep dividers in grid order
+  after shuffling. Show the random-order note in a left RailAnnotation when the
+  gutter fits; retain the inline note on smaller screens and for screen readers.
+- Add People to the main navigation and link from the homepage's people note.
+  Keep the expanded navigation within the rails at 320px.
+- Verify the static route, supplied links, keyboard access, both palettes,
+  mobile layout, and full existing suite. No new runtime dependency or island.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

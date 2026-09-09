@@ -427,6 +427,13 @@ test.describe("touch", () => {
     expect(target.y).toBeGreaterThanOrEqual(header.y + header.height);
     await page.keyboard.press("Tab");
     await expect(
+      destination.getByRole("link", {
+        name: "The people around me",
+        exact: true,
+      }),
+    ).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(
       destination.getByRole("link", { name: "UWCCSC", exact: true }),
     ).toBeFocused();
   });
