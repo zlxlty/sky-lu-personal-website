@@ -1647,6 +1647,19 @@ Proposed message: `fix: remove native turntable focus boxes`
 - Run the focused browser regression, full verification, and visual checks in
   both themes before presenting the commit for approval.
 
+### Supplemental refinement - paragraph and hero spacing
+
+Proposed message: `style: refine paragraph and hero spacing`
+
+- Use a shared body line-height ratio of 24/14 (24px at the standard 14px size)
+  across the homepage, content lists, People page, footer, and Markdown/MDX reader.
+- Let inline sketch links inherit paragraph line-height and align the homepage
+  overview labels with the tighter first line. Preserve paragraph margins.
+- Give the hero copy 32px of bottom padding, twice its 16px left inset, on
+  desktop and mobile. Keep other section padding unchanged.
+- Inspect desktop/mobile, both themes, link hovers, and long-form content; run
+  the existing verification and browser suites. No new runtime or dependency.
+
 ### Commit 04.6 - add experience disclosures
 
 Proposed message:

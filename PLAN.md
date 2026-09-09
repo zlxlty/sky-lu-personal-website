@@ -206,6 +206,8 @@ Initial copy:
 Render the hero title with the same editorial wordmark as the navbar, scaled to
 the hero's responsive heading size. Share its typography and optical spacing in
 one static component.
+Give the hero copy 32px of bottom padding, twice its 16px left inset, on both
+desktop and mobile.
 Hovering or focusing `sky` in the hero reveals `Legal Name: Tianyi Lu`. Keep
 the tooltip outside the heading's accessible name, dismissible with Escape,
 and available as a native title without JavaScript.
@@ -453,6 +455,10 @@ falls back to dark. Static HTML also renders dark without JavaScript.
 - Mobile side padding: 20 px.
 - Desktop section spacing: 72-96 px depending on content density.
 - Text line length in prose: approximately 68 characters.
+- Paragraphs use a shared 24/14 line-height ratio: 24px for the standard 14px
+  paragraph text, scaling proportionally in larger Markdown/MDX readers. Inline
+  sketch links inherit the surrounding paragraph's line-height so linked lines
+  keep the same spacing.
 
 ### 6.2 Light-theme tokens
 
