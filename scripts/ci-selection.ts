@@ -1,4 +1,22 @@
 export type BrowserGroup = "full" | "content" | "people" | "guitar";
+export type BrowserSuite = "e2e" | "lab";
+
+export function parseBrowserSuite(
+  value: string | undefined,
+): BrowserSuite | undefined {
+  if (value === undefined || value === "e2e" || value === "lab") return value;
+  throw new Error("CI_BROWSER_SUITE must be e2e or lab.");
+}
+
+/** Split the existing command map without narrowing its test coverage. */
+export function browserJobs(groups: readonly BrowserGroup[]) {
+  return browserCommands(groups).map((command) => ({
+    suite: command[0] === "test:e2e" ? "e2e" : "lab",
+    webkit:
+      command[0] === "test:e2e" &&
+      (groups.includes("full") || groups.includes("guitar")),
+  }));
+}
 
 export interface CiSelection {
   quality: "full" | "docs";
@@ -129,7 +147,20 @@ const e2eGroups = {
 };
 
 /** Arguments come only from this map, never directly from changed filenames. */
-export function browserCommands(groups: readonly BrowserGroup[]): string[][] {
+export function browserCommands(
+  groups: readonly BrowserGroup[],
+  suite?: BrowserSuite,
+): string[][] {
+  const commands = selectedBrowserCommands(groups);
+  return suite === undefined
+    ? commands
+    : commands.filter(
+        (command) =>
+          command[0] === (suite === "e2e" ? "test:e2e" : "test:lab:ci"),
+      );
+}
+
+function selectedBrowserCommands(groups: readonly BrowserGroup[]): string[][] {
   if (!groups.length) return [];
   if (groups.includes("full")) return [["test:e2e"], ["test:lab:ci"]];
   const e2e = new Set(smoke);

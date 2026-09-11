@@ -94,12 +94,13 @@ test("waiting reports buffering without pausing or reloading the media", async (
 });
 
 async function networkError(page: Page) {
-  await audio(page).evaluate((node) => {
+  return audio(page).evaluate((node: HTMLAudioElement) => {
     Object.defineProperty(node, "error", {
       configurable: true,
       value: { code: MediaError.MEDIA_ERR_NETWORK },
     });
     node.dispatchEvent(new Event("error"));
+    return node.currentTime;
   });
 }
 
@@ -111,8 +112,13 @@ test("network recovery reloads at the same position, then stops after two retrie
   await expect(player(page)).toHaveAttribute("data-audio-state", "playing");
   await audio(page).evaluate((node: HTMLAudioElement) => {
     node.currentTime = 1;
+    // The player's metadata handler restores currentTime before this listener.
+    node.addEventListener("loadedmetadata", () => {
+      node.dataset.restoredTime = String(node.currentTime);
+    });
     const load = node.load.bind(node);
     node.load = () => {
+      delete node.dataset.restoredTime;
       node.dataset.loads = String(Number(node.dataset.loads ?? 0) + 1);
       load();
     };
@@ -122,14 +128,23 @@ test("network recovery reloads at the same position, then stops after two retrie
     [1, 1100],
     [2, 3100],
   ] as const) {
-    await networkError(page);
+    const resumeAt = await networkError(page);
     await expect(player(page)).toHaveAttribute("data-audio-state", "buffering");
     await page.clock.runFor(delay);
     await expect(audio(page)).toHaveAttribute("data-loads", String(attempt));
-    await expect(player(page)).toHaveAttribute("data-audio-state", "playing");
+    await expect(audio(page)).toHaveAttribute("data-restored-time");
     expect(
-      await audio(page).evaluate((node: HTMLAudioElement) => node.currentTime),
-    ).toBeGreaterThanOrEqual(1);
+      Number(await audio(page).getAttribute("data-restored-time")),
+    ).toBeCloseTo(resumeAt, 1);
+    // Linux WebKit can emit waiting after a seek while playback advances.
+    // Verify restored position and real playback, rather than event ordering.
+    await expect
+      .poll(() =>
+        audio(page).evaluate((node: HTMLAudioElement) =>
+          node.paused || node.seeking ? 0 : node.currentTime,
+        ),
+      )
+      .toBeGreaterThan(resumeAt + 0.1);
   }
   await networkError(page);
   await expect(player(page)).toHaveAttribute("data-audio-state", "error");

@@ -1,6 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { browserCommands, parseBrowserGroups } from "./ci-selection.ts";
+import {
+  browserCommands,
+  parseBrowserGroups,
+  parseBrowserSuite,
+} from "./ci-selection.ts";
 
 const args = process.argv.slice(2);
 if (args.length && (args.length !== 1 || args[0] !== "--list")) {
@@ -10,9 +14,9 @@ if (args.length && (args.length !== 1 || args[0] !== "--list")) {
 }
 const commands = browserCommands(
   parseBrowserGroups(process.env.CI_BROWSER_GROUPS),
+  parseBrowserSuite(process.env.CI_BROWSER_SUITE),
 );
-if (!commands.length)
-  console.log("No browser checks needed for repository documentation.");
+if (!commands.length) console.log("No browser checks selected for this suite.");
 for (const command of commands) {
   console.log(
     `Running pnpm ${command.join(" ")}${args.length ? " --list" : ""}`,

@@ -788,15 +788,18 @@ history. This includes all commits in the PR, deleted files, and both sides of a
 rename. Missing history or an invalid event falls back to full checks. The job
 summary records the selection and reason.
 
-The two stable required jobs run in parallel after selection:
+Quality and the selected browser suites run in parallel after selection:
 
 - **Quality** installs the frozen lockfile and runs `pnpm verify:ci`: formatting,
   lint, type/content checks, one coverage-enabled unit run, and the build. Only
   the explicit root-documentation allowlist uses formatting alone.
-- **Browser** runs the selected production and portable lab tests. Content and
-  People selections install only Chromium; guitar and full runs also install
-  WebKit. Documentation-only changes report an intentional pass without browser
-  installation. Failure artifacts are retained for seven days.
+- **Browser suite (e2e)** and **Browser suite (lab)** run on separate runners.
+  The lab runner installs only Chromium. Production content/People selections
+  also use only Chromium; guitar and full production runs include WebKit.
+- **Browser** is the stable required aggregate check. It passes only when every
+  selected suite succeeds, or when documentation-only changes intentionally skip
+  all browser work. Failures, cancellations, and unexpected skips block deployment.
+  Failure artifacts are retained separately for each suite for seven days.
 
 | PR changes                                                                                            | Browser coverage                                                                                              |
 | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -819,12 +822,15 @@ still waits for both Quality and Browser to pass before it can deploy.
 
 For the full CI equivalent, run `pnpm verify:ci` followed by
 `pnpm test:ci:browser`. The latter defaults to both complete browser suites.
+It runs them sequentially locally; CI uses `CI_BROWSER_SUITE=e2e` and
+`CI_BROWSER_SUITE=lab` on independent runners to overlap their execution.
 Existing `pnpm verify` and `pnpm verify:full` keep their original meanings.
 To reproduce a selection, or inspect its test list without starting a server:
 
 ```bash
 CI_BROWSER_GROUPS='["content"]' pnpm test:ci:browser
 CI_BROWSER_GROUPS='["content","people"]' pnpm test:ci:browser --list
+CI_BROWSER_SUITE=lab pnpm test:ci:browser --list
 ```
 
 Allowed groups are `content`, `people`, `guitar`, and `full`. Invalid selections
@@ -833,6 +839,12 @@ no scheduled regression workflow or result-cache reuse yet. Local visual snapsho
 remain a separate `pnpm test:lab` check because they are platform-specific. CI has
 read-only repository contents permission. Quality and Browser receive no deployment
 credentials; only the separately approved production job receives them.
+
+The recording recovery test verifies the position restored on `loadedmetadata`
+and subsequent native playhead movement. Linux WebKit may emit `waiting` after a
+seek even while playback advances, so the UI's last media event is not a reliable
+proxy for successful recovery. Separate tests cover buffering-state presentation;
+retry timers still use virtual time while playhead assertions observe real media.
 
 ## Git and review workflow
 
@@ -871,7 +883,7 @@ The repository configures this behavior in `playwright.config.ts`:
 - CI retries a failing test twice. If all attempts fail, each failed attempt can
   have its own result directory and `trace.zip`.
 
-The `Browser` GitHub Actions job uploads `test-results/` only when that job ends in
+Each `Browser suite` GitHub Actions job uploads `test-results/` only when it ends in
 failure. A test that fails once and then passes on retry is reported as flaky, but
 the job succeeds and does not upload an artifact under this failure-only policy.
 
@@ -879,12 +891,13 @@ the job succeeds and does not upload an artifact under this failure-only policy.
 
 In the GitHub web interface:
 
-1. Open **Actions**, select the failed **CI** workflow run, and open the **Browser**
-   job.
-2. Read **Run browser verification** first. It identifies the failing test and
+1. Open **Actions**, select the failed **CI** workflow run, and open the failed
+   **Browser suite (e2e)** or **Browser suite (lab)** job.
+2. Read **Run selected suite** first. It identifies the failing test and
    assertion.
 3. Return to the workflow-run summary and find **Artifacts**.
-4. Download `playwright-failure-N`, where `N` is the workflow run-attempt number.
+4. Download `playwright-failure-e2e-N` or `playwright-failure-lab-N`, where `N` is
+   the workflow run-attempt number.
 5. Extract the archive. Find the `trace.zip` inside the directory for the failed
    test attempt.
 
