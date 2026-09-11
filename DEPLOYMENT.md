@@ -194,6 +194,9 @@ upload. PR updates replace earlier runs for the same PR. Feature-branch pushes
 do not also run CI; open a PR or dispatch the workflow manually for checks.
 PRs use conservative affected-browser selection, while main and manual runs
 retain full quality, coverage, production-browser, and portable lab checks.
+Production and lab browser suites run on independent runners. The required
+Browser aggregate check waits for every selected suite and rejects failures,
+cancellations, and unexpected skips; required branch-protection names stay the same.
 The required Quality and Browser jobs report intentional documentation skips
 and fail if check selection fails. The protected production approval gate is
 unchanged. Superseded main runs can fail the revision guard; let the newer run

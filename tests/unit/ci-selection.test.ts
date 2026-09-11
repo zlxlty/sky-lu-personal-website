@@ -2,12 +2,49 @@ import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   browserCommands,
+  browserJobs,
   parseBrowserGroups,
+  parseBrowserSuite,
   pullRequestRange,
   selectCiChecks,
 } from "../../scripts/ci-selection";
 
 describe("CI change selection", () => {
+  it.each(
+    [
+      [],
+      ["full"],
+      ["content"],
+      ["people"],
+      ["guitar"],
+      ["content", "people", "guitar"],
+    ].map((groups) => ({ groups })),
+  )(
+    "parallel jobs preserve the entire selection %j without duplication",
+    ({ groups: entries }) => {
+      const groups = parseBrowserGroups(JSON.stringify(entries));
+      const jobs = browserJobs(groups);
+      expect(
+        jobs.flatMap((job) =>
+          browserCommands(groups, parseBrowserSuite(job.suite)),
+        ),
+      ).toEqual(browserCommands(groups));
+      expect(new Set(jobs.map((job) => job.suite)).size).toBe(jobs.length);
+      expect(
+        jobs.filter((job) => job.webkit).every((job) => job.suite === "e2e"),
+      ).toBe(true);
+    },
+  );
+
+  it("only installs WebKit for production suites that exercise it", () => {
+    expect(browserJobs(["full"])).toEqual([
+      { suite: "e2e", webkit: true },
+      { suite: "lab", webkit: false },
+    ]);
+    expect(browserJobs(["content"])).toEqual([{ suite: "e2e", webkit: false }]);
+    expect(() => parseBrowserSuite("typo")).toThrow();
+  });
+
   it.each(["push", "workflow_dispatch", "schedule", "unknown"])(
     "runs everything on %s even for documentation",
     (event) => {

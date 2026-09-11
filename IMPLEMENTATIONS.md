@@ -1674,6 +1674,26 @@ Proposed message: `ci: select affected browser suites and remove duplicate runs`
 - Update the CI and deployment guides. GitHub trigger/protection behavior must
   be confirmed after an approved push; no dependency or website runtime change.
 
+### Supplemental improvement - parallel browser suites
+
+Branch: `codex/ci/parallel-browser-checks`, from reviewed `main`.
+
+Single candidate: `ci: parallelize browser suites and stabilize audio recovery checks`.
+
+- Run production and portable lab tests on independent matrix runners, deriving
+  both from the existing selection map. Preserve all selected tests and full
+  main/manual coverage; install WebKit only in the production runner when needed.
+- Retain the required Browser check as an aggregate gate. Selection failures,
+  failed/cancelled suites, and unexpected skips must block publication. Keep
+  failure artifacts separate for each suite.
+- Replace the recovery test's UI-state proxy with native playhead progress and
+  a captured post-reload position. Linux WebKit can emit waiting after seeking
+  while playback continues; retain retry-limit, cancellation, and separate
+  buffering-event checks. Verify repeated recovery with retries disabled.
+- Exercise job partitioning, gate failure/skip cases, repeated native recovery,
+  full quality/coverage, and both browser suites. Confirm hosted timings only after
+  an approved push. No application behavior, dependencies, or deployment policy changes.
+
 ### Supplemental feature - People page
 
 Proposed message: `feat: add a personal People page`

@@ -27,7 +27,7 @@ jobs:
     outputs:
       quality: ${{ steps.select.outputs.quality }}
       groups: ${{ steps.select.outputs.groups }}
-      webkit: ${{ steps.select.outputs.webkit }}
+      suites: ${{ steps.select.outputs.suites }}
     steps:
       - name: Check out repository and PR history
         uses: actions/checkout@v7
@@ -82,31 +82,21 @@ jobs:
         if: ${{ needs.selection.outputs.quality == 'docs' }}
         run: pnpm format:check
 
-  browser:
-    name: Browser
+  browser-tests:
+    name: Browser suite (${{ matrix.suite }})
     needs: selection
-    if: ${{ always() }}
+    if: ${{ needs.selection.outputs.groups != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.selection.outputs.suites) }}
     steps:
-      - name: Require a valid selection
-        env:
-          SELECTION_RESULT: ${{ needs.selection.result }}
-          CI_BROWSER_GROUPS: ${{ needs.selection.outputs.groups }}
-        run: |
-          test "$SELECTION_RESULT" = success
-          test -n "$CI_BROWSER_GROUPS"
-
-      - name: Report intentional browser skip
-        if: ${{ needs.selection.outputs.groups == '[]' }}
-        run: echo "Only repository documentation changed; no browser tests needed."
-
       - name: Check out repository
-        if: ${{ needs.selection.outputs.groups != '[]' }}
         uses: actions/checkout@v7
 
       - name: Set up pnpm and Node.js
-        if: ${{ needs.selection.outputs.groups != '[]' }}
         uses: pnpm/setup@v2
         with:
           runtime: node@24.19.0
@@ -115,31 +105,52 @@ jobs:
           install: false
 
       - name: Install dependencies
-        if: ${{ needs.selection.outputs.groups != '[]' }}
         run: pnpm install --frozen-lockfile
 
       - name: Install Chromium
-        if: ${{ needs.selection.outputs.groups != '[]' && needs.selection.outputs.webkit == 'false' }}
+        if: ${{ !matrix.webkit }}
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Install Chromium and WebKit
-        if: ${{ needs.selection.outputs.webkit == 'true' }}
+        if: ${{ matrix.webkit }}
         run: pnpm exec playwright install --with-deps chromium webkit
 
-      - name: Run selected browser and lab verification
-        if: ${{ needs.selection.outputs.groups != '[]' }}
+      - name: Run selected suite
         env:
           CI_BROWSER_GROUPS: ${{ needs.selection.outputs.groups }}
+          CI_BROWSER_SUITE: ${{ matrix.suite }}
         run: pnpm test:ci:browser
 
       - name: Upload browser failure artifacts
         if: ${{ failure() }}
         uses: actions/upload-artifact@v5
         with:
-          name: playwright-failure-${{ github.run_attempt }}
+          name: playwright-failure-${{ matrix.suite }}-${{ github.run_attempt }}
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  browser:
+    name: Browser
+    needs: [selection, browser-tests]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every selected browser suite to pass
+        env:
+          SELECTION_RESULT: ${{ needs.selection.result }}
+          CI_BROWSER_GROUPS: ${{ needs.selection.outputs.groups }}
+          SUITES_RESULT: ${{ needs.browser-tests.result }}
+        run: |
+          test "$SELECTION_RESULT" = success
+          test -n "$CI_BROWSER_GROUPS"
+          if [ "$CI_BROWSER_GROUPS" = '[]' ]; then
+            test "$SUITES_RESULT" = skipped
+            echo "Only repository documentation changed; no browser tests needed."
+          else
+            test "$SUITES_RESULT" = success
+          fi
 
   production:
     name: Deploy production

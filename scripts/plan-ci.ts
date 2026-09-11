@@ -1,7 +1,11 @@
 import { execFileSync } from "node:child_process";
 import { appendFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { pullRequestRange, selectCiChecks } from "./ci-selection.ts";
+import {
+  browserJobs,
+  pullRequestRange,
+  selectCiChecks,
+} from "./ci-selection.ts";
 
 const cwd = fileURLToPath(new URL("../", import.meta.url));
 const eventName = process.env.GITHUB_EVENT_NAME ?? "workflow_dispatch";
@@ -39,7 +43,7 @@ const selection = selectCiChecks(eventName, paths);
 if (process.env.GITHUB_OUTPUT) {
   appendFileSync(
     process.env.GITHUB_OUTPUT,
-    `quality=${selection.quality}\ngroups=${JSON.stringify(selection.groups)}\nwebkit=${selection.webkit}\n`,
+    `quality=${selection.quality}\ngroups=${JSON.stringify(selection.groups)}\nsuites=${JSON.stringify(browserJobs(selection.groups))}\n`,
   );
 }
 console.log(JSON.stringify(selection, null, 2));

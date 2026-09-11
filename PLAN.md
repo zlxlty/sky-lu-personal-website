@@ -1166,6 +1166,8 @@ On every pull request (one workflow per update, without a duplicate feature-bran
 
 The required `Quality` and `Browser` jobs always report a result. They fail if
 selection fails, and explicitly report intentional documentation-only skips.
+Production and portable lab browser suites run on separate runners; `Browser`
+aggregates their results and rejects failures, cancellations, and unexpected skips.
 No test is deleted by selection. Main and manual runs retain the full suite
 while these selection rules are being validated. Standalone feature-branch
 pushes do not start CI; open a PR or run the workflow manually for checks.
