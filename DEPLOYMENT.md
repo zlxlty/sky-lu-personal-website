@@ -134,10 +134,14 @@ unset until the following settings are configured and launch is approved:
 CI checks out the exact tested revision, permits its detached checkout only when
 the CI ref and commit identify `main`, and refuses an outdated commit if remote
 `main` has advanced. Main runs are serialized so a new push cannot interrupt an
-upload. Branch pushes and PR runs have separate concurrency groups so they do
-not cancel each other's required checks. Superseded main runs can fail the
-revision guard; let the newer run publish. Credentials are passed only to the
-publish step.
+upload. PR updates replace earlier runs for the same PR. Feature-branch pushes
+do not also run CI; open a PR or dispatch the workflow manually for checks.
+PRs use conservative affected-browser selection, while main and manual runs
+retain full quality, coverage, production-browser, and portable lab checks.
+The required Quality and Browser jobs report intentional documentation skips
+and fail if check selection fails. The protected production approval gate is
+unchanged. Superseded main runs can fail the revision guard; let the newer run
+publish. Credentials are passed only to the publish step.
 
 The first release configured required PRs, **Quality** and **Browser** checks,
 linear history, and rebase-only merging on `main`. The `production` environment
