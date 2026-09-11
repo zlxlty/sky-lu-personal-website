@@ -24,13 +24,15 @@ needed. The page renders statically; it does not fetch profiles or photographs.
 
 ## Footer music
 
-Add an entry to `listeningTracks` in `src/data/listening.ts`. This is the one
-place for the ordered playlist and its metadata:
+Prepare and upload a recording using the commands in
+[Managing recordings in R2](DEPLOYMENT.md#managing-recordings-in-r2), then add
+its printed key to `src/data/recordings.json`. Add an entry to `listeningTracks`
+in `src/data/listening.ts` for the ordered playlist and its metadata:
 
 ```ts
 {
   id: "my-next-cover", // Unique, stable identifier.
-  audioSrc: "https://audio.skylu.me/my-next-cover.m4a",
+  audioSrc: `${recordings.origin}/${recordings.files["my-next-cover"]}`,
   title: "Song title",
   author: "Original artist / composer",
   record: "Album title", // Or "Single".
@@ -56,9 +58,13 @@ avoid shifting the footer during a swap.
 Five asymmetric vinyl labels cycle by playlist position; their drawings live in
 `src/components/site/VinylLabel.astro`. Each track keeps the same print when revisited.
 
-The browser fetches audio only after a listening action. Keep a web-sized MP3
-and publish only recordings you have permission to stream. The host should
-serve the correct audio content type and support byte ranges for seeking.
+Near the footer, the browser warms the audio connection without fetching a file.
+Touching or focusing the player prepares only the selected recording; placing
+the arm starts playback. Preloading is a browser hint, so mobile/data-saving
+browsers may defer it. Changing tracks does not autoplay or preload the next
+track. Loading and buffering announcements are screen-reader-only. Buffering preserves the listening intent, and terminal network failures
+get at most two retries at the saved position. Pausing or changing tracks cancels
+recovery. Publish only recordings you have permission to stream.
 
 The footer uses the real playlist in development and production. `/lab/turntable`
 uses two explicitly labeled specimens of the same CC0 fixture to exercise record

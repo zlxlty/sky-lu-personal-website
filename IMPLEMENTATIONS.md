@@ -1519,6 +1519,28 @@ Proposed message: `feat: prepare Cloudflare static preview hosting`
 - Step 3 authorizes publishing this preview; committing, pushing, merging, and
   production deployment still require their own approval.
 
+### Recording delivery follow-up
+
+Branch: `codex/fix/recording-delivery`, from reviewed `main`.
+
+Single coherent candidate: `fix: improve recording startup and buffering recovery`.
+
+- Remux the three existing recordings without changing encoded audio, upload
+  content-hashed files with immutable cache headers, and use their keys through
+  a shared recording manifest. Keep the existing objects for rollout/rollback.
+- Add a Wrangler-based preparation/upload/check/removal command. Removal is a
+  dry run unless requested explicitly and rejects referenced objects.
+- Preconnect near the player, prepare only the selected recording on listening
+  interest, preserve explicit playback activation, and distinguish loading,
+  buffering, playing, paused, and failure. Keep loading/buffering announcements
+  screen-reader-only. Bound network recovery to two retries
+  per gesture and preserve the playback position.
+- Verify fast-start and removal guards, delayed loads, buffering, recovery,
+  cancellation, existing gestures, full quality/browser suites, and live R2
+  range/cache responses. Update authoring, privacy, and deployment guidance.
+- R2 uploads and the user-configured audio Cache Rule can precede release;
+  committing and publishing the website remain separate approval steps.
+
 ### Commit 04.5h - prepare production release controls
 
 Proposed message: `ci: prepare protected Cloudflare production releases`
