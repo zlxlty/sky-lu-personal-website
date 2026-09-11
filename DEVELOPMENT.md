@@ -779,20 +779,57 @@ its `PATH`.
 
 ## CI parity
 
-GitHub Actions uses two stable required jobs:
+CI runs once per PR update, on pushes to main, and on manual dispatch. A feature
+branch push without a PR does not start CI. Open a draft PR for early checks, or
+use **Actions → CI → Run workflow**. Main and manual runs always run the full suite.
 
-- **Quality** installs the frozen lockfile, runs `pnpm verify`, and reports unit
-  coverage.
-- **Browser** runs alongside Quality, installs Chromium and WebKit, runs the production suite and the
-  non-visual `/lab` checks, and uploads seven-day failure artifacts.
+**Select checks** compares the PR head with its merge base using the full Git
+history. This includes all commits in the PR, deleted files, and both sides of a
+rename. Missing history or an invalid event falls back to full checks. The job
+summary records the selection and reason.
+
+The two stable required jobs run in parallel after selection:
+
+- **Quality** installs the frozen lockfile and runs `pnpm verify:ci`: formatting,
+  lint, type/content checks, one coverage-enabled unit run, and the build. Only
+  the explicit root-documentation allowlist uses formatting alone.
+- **Browser** runs the selected production and portable lab tests. Content and
+  People selections install only Chromium; guitar and full runs also install
+  WebKit. Documentation-only changes report an intentional pass without browser
+  installation. Failure artifacts are retained for seven days.
+
+| PR changes                                                                                            | Browser coverage                                                                                              |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Only `README.md`, `DEVELOPMENT.md`, `CONTENT.md`, `DEPLOYMENT.md`, `PLAN.md`, or `IMPLEMENTATIONS.md` | None; formatting still runs                                                                                   |
+| `src/content/projects/*.md`                                                                           | Content rendering/accessibility, project navigation, homepage consumers, prose, links, and shared smoke tests |
+| `src/data/people.ts` or `src/pages/people.astro`                                                      | People rendering, randomization/accessibility, annotations, and shared smoke tests                            |
+| `src/components/guitar/**/*.{ts,tsx,css}`                                                             | Desktop/touch guitar, audio, focus, hero/theme, shared smoke, and guitar/lab tests                            |
+| Mixed recognized areas                                                                                | Union of affected suites, without duplicate test files                                                        |
+| Shared code/styles, MDX, tests, dependencies, CI, or any other path                                   | Full production and portable lab suites                                                                       |
+
+The map lives in `scripts/ci-selection.ts`. When adding shared dependencies or
+new consumers to a narrowly selected area, update the map; unrecognized files
+already default to full. Selection errors make the required jobs fail rather
+than disappear or silently pass. Workflow-level path filters are not used.
 
 Both browser suites use two workers in CI. Production tests run independently;
 lab files run in parallel while tests within each lab file remain sequential.
 Local lab runs keep one worker for visual review. The protected production job
 still waits for both Quality and Browser to pass before it can deploy.
 
-Run `pnpm verify:full` for the same required quality, production-browser, and portable
-lab checks. CI also runs `pnpm test:coverage` for reporting. Local visual snapshots
+For the full CI equivalent, run `pnpm verify:ci` followed by
+`pnpm test:ci:browser`. The latter defaults to both complete browser suites.
+Existing `pnpm verify` and `pnpm verify:full` keep their original meanings.
+To reproduce a selection, or inspect its test list without starting a server:
+
+```bash
+CI_BROWSER_GROUPS='["content"]' pnpm test:ci:browser
+CI_BROWSER_GROUPS='["content","people"]' pnpm test:ci:browser --list
+```
+
+Allowed groups are `content`, `people`, `guitar`, and `full`. Invalid selections
+fail. Main keeps full coverage while these rules are being validated; there is
+no scheduled regression workflow or result-cache reuse yet. Local visual snapshots
 remain a separate `pnpm test:lab` check because they are platform-specific. CI has
 read-only repository contents permission. Quality and Browser receive no deployment
 credentials; only the separately approved production job receives them.

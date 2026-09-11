@@ -35,6 +35,8 @@
     "test:lab:update": "playwright test --config=playwright.lab.config.ts --update-snapshots",
     "samples:prepare": "node scripts/prepare-guitar-samples.ts",
     "verify": "pnpm format:check && pnpm lint && pnpm check && pnpm test && pnpm build",
+    "verify:ci": "pnpm format:check && pnpm lint && pnpm check && pnpm test:coverage && pnpm build",
+    "test:ci:browser": "node scripts/run-ci-browser.ts",
     "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:lab:ci",
     "prepare": "simple-git-hooks"
   },

@@ -1631,6 +1631,27 @@ Proposed message: `ci: parallelize quality and browser verification`
 - Preserve behavioral coverage. Compare suite timings with the serial baseline
   and rerun checks before the user commits and pushes this separate candidate.
 
+### Supplemental improvement - affected CI checks
+
+Branch: `codex/ci/affected-tests`
+
+Proposed message: `ci: select affected browser suites and remove duplicate runs`
+
+- Run CI on PR updates, main pushes, and manual dispatch; remove duplicate
+  feature-branch push runs. Keep full checks and protected publication on main.
+- Add `verify:ci` with a single coverage-enabled unit run. Preserve the local
+  `verify`, `verify:full`, and individual test commands.
+- Select content, People, and guitar browser groups from the complete PR diff.
+  Include indirect homepage/index consumers and touch/audio tests. Union mixed
+  groups; fall back to full checks for shared/unknown paths, MDX, changed tests,
+  or unavailable history. Disable rename detection to account for both paths.
+- Keep required Quality and Browser results present, including documentation
+  skips and selection failures. Do not skip the entire workflow with path filters.
+- Verify selection, invalid-input handling, and actual Playwright discovery;
+  run the full quality/coverage and browser suites before commit review.
+- Update the CI and deployment guides. GitHub trigger/protection behavior must
+  be confirmed after an approved push; no dependency or website runtime change.
+
 ### Supplemental feature - People page
 
 Proposed message: `feat: add a personal People page`

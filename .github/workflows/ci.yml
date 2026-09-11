@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - "codex/**"
   pull_request:
     branches:
       - main
@@ -15,17 +14,52 @@ permissions:
   contents: read
 
 concurrency:
-  # Branch and PR checks must not cancel each other; main push/manual runs share a group.
+  # PR updates replace earlier runs; main push/manual runs share a group.
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   # A new main push must not interrupt a production upload already in progress.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  selection:
+    name: Select checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      quality: ${{ steps.select.outputs.quality }}
+      groups: ${{ steps.select.outputs.groups }}
+      webkit: ${{ steps.select.outputs.webkit }}
+    steps:
+      - name: Check out repository and PR history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.19.0
+          cache: false
+          install: false
+
+      - name: Select checks from the complete PR diff
+        id: select
+        run: node scripts/plan-ci.ts
+
   quality:
     name: Quality
+    needs: selection
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Require a valid selection
+        env:
+          SELECTION_RESULT: ${{ needs.selection.result }}
+          QUALITY_MODE: ${{ needs.selection.outputs.quality }}
+        run: |
+          test "$SELECTION_RESULT" = success
+          case "$QUALITY_MODE" in full|docs) ;; *) exit 1 ;; esac
+
       - name: Check out repository
         uses: actions/checkout@v7
 
@@ -41,20 +75,38 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run required verification
-        run: pnpm verify
+        if: ${{ needs.selection.outputs.quality == 'full' }}
+        run: pnpm verify:ci
 
-      - name: Report unit coverage
-        run: pnpm test:coverage
+      - name: Check repository documentation formatting
+        if: ${{ needs.selection.outputs.quality == 'docs' }}
+        run: pnpm format:check
 
   browser:
     name: Browser
+    needs: selection
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Require a valid selection
+        env:
+          SELECTION_RESULT: ${{ needs.selection.result }}
+          CI_BROWSER_GROUPS: ${{ needs.selection.outputs.groups }}
+        run: |
+          test "$SELECTION_RESULT" = success
+          test -n "$CI_BROWSER_GROUPS"
+
+      - name: Report intentional browser skip
+        if: ${{ needs.selection.outputs.groups == '[]' }}
+        run: echo "Only repository documentation changed; no browser tests needed."
+
       - name: Check out repository
+        if: ${{ needs.selection.outputs.groups != '[]' }}
         uses: actions/checkout@v7
 
       - name: Set up pnpm and Node.js
+        if: ${{ needs.selection.outputs.groups != '[]' }}
         uses: pnpm/setup@v2
         with:
           runtime: node@24.19.0
@@ -63,16 +115,22 @@ jobs:
           install: false
 
       - name: Install dependencies
+        if: ${{ needs.selection.outputs.groups != '[]' }}
         run: pnpm install --frozen-lockfile
 
+      - name: Install Chromium
+        if: ${{ needs.selection.outputs.groups != '[]' && needs.selection.outputs.webkit == 'false' }}
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Install Chromium and WebKit
+        if: ${{ needs.selection.outputs.webkit == 'true' }}
         run: pnpm exec playwright install --with-deps chromium webkit
 
-      - name: Run browser verification
-        run: pnpm test:e2e
-
-      - name: Run component lab verification
-        run: pnpm test:lab:ci
+      - name: Run selected browser and lab verification
+        if: ${{ needs.selection.outputs.groups != '[]' }}
+        env:
+          CI_BROWSER_GROUPS: ${{ needs.selection.outputs.groups }}
+        run: pnpm test:ci:browser
 
       - name: Upload browser failure artifacts
         if: ${{ failure() }}

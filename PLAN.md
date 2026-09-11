@@ -1147,13 +1147,19 @@ Audio assertions should test calls and scheduling rather than microphone output.
 
 ## 16. CI pipeline
 
-On every pull request:
+On every pull request (one workflow per update, without a duplicate feature-branch push run):
 
 1. Install with frozen pnpm lockfile.
-2. Run `pnpm verify` for formatting, lint, Astro/TypeScript validation, unit tests, and the production build.
-3. Run the Playwright smoke and accessibility suite against the production build.
+2. Run `pnpm verify:ci` for formatting, lint, Astro/TypeScript validation, one coverage-enabled unit-test run, and the production build. Explicitly allowlisted repository documentation changes need only formatting.
+3. Select browser suites from the complete PR diff against its merge base. Plain project Markdown includes project details, the project index, homepage consumers, links, and accessibility. People and guitar changes select their relevant suites; guitar retains WebKit touch and audio/lab coverage. Shared files, MDX, tests, dependencies, CI configuration, and unknown paths run everything. Missing diff information also runs everything.
 4. Upload failure-only browser artifacts that help reproduce a failed run.
 5. Add a Lighthouse budget check after the UI stabilizes.
+
+The required `Quality` and `Browser` jobs always report a result. They fail if
+selection fails, and explicitly report intentional documentation-only skips.
+No test is deleted by selection. Main and manual runs retain the full suite
+while these selection rules are being validated. Standalone feature-branch
+pushes do not start CI; open a PR or run the workflow manually for checks.
 
 On main:
 
