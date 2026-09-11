@@ -33,7 +33,7 @@ for (const theme of ["light", "dark"] as const) {
 test("project Markdown lists retain their bullets and indentation", async ({
   page,
 }) => {
-  await page.goto("/projects/dynamic-pages");
+  await page.goto("/projects/kvonset");
   const list = page.locator(".content-prose ul");
   await expect(list).toHaveCSS("list-style-type", "disc");
   await expect(list).toHaveCSS("padding-left", "24px");

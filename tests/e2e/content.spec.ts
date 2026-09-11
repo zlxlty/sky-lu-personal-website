@@ -123,10 +123,12 @@ test("section links keep their target below the sticky header", async ({
   await page.goto("/projects/dynamic-pages");
   const link = page
     .getByRole("navigation", { name: "On this page" })
-    .getByRole("link", { name: "The publishing pipeline" });
+    .getByRole("link", { name: "From authoring to the edge" });
   await link.focus();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/#the-publishing-pipeline$/);
-  const target = await page.locator("#the-publishing-pipeline").boundingBox();
+  await expect(page).toHaveURL(/#from-authoring-to-the-edge$/);
+  const target = await page
+    .locator("#from-authoring-to-the-edge")
+    .boundingBox();
   expect(target?.y).toBeGreaterThanOrEqual(52);
 });

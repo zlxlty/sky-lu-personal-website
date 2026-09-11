@@ -33,7 +33,7 @@ export const projectSchema = z
     draft: z.boolean(),
     results: z
       .array(z.object({ value: text, label: text }).strict())
-      .min(1)
-      .max(3),
+      .max(3)
+      .default([]),
   })
   .strict();

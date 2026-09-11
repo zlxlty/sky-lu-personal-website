@@ -264,7 +264,8 @@ Research context remains in the Tundra project.
 
 ### 5.5 Selected systems work
 
-Show four editorial project records. Each record has a short summary, measurable outcome, technology tags, and optional details disclosure.
+Show four editorial project records. Each record has a short summary, topic or
+technology tags, and optional measured outcomes suitable for public disclosure.
 
 Match the Writings section header: a `text-4xl` title, 16px padding on every side,
 and a StripeSeparator followed by PanelRuleBand before the section.
@@ -278,6 +279,12 @@ continues to own its outer rails. Metrics sit below the project text.
 
 #### Dynamic Pages at Cloudflare
 
+- Cover both the custom-page authoring experience and the global delivery path.
+- Connect the two explicitly: newly authored templates become PostgreSQL change
+  records, which the publishing pipeline distributes to Cloudflare's global edge KV.
+- Explain the customization/safety boundary: enterprise customers control the
+  presentation through sandboxed templates; Access supplies request context and
+  retains control of authentication and access-policy enforcement.
 - Drove delivery across six Kubernetes services.
 - Enabled more than 3,000 enterprise accounts to customize Access login and block pages.
 - Propagated durable PostgreSQL records to edge KV within 500 ms.
@@ -285,18 +292,35 @@ continues to own its outer rails. Metrics sit below the project text.
 
 #### Efficient LLM serving
 
-- Built a cost-aware LLM router with a ModernBERT-based quality predictor.
-- Deployed inference as a serverless GPU service with sub-200 ms latency.
-- Benchmarked Kimi K3, DSpark, SGLang, and Mooncake on B300 Kubernetes clusters.
-- Improved tokens per second by 108% using speculative decoding and prefill/decode disaggregation.
+- Credit Sky's close collaboration with Andreas Jansson on model routing and
+  link his name to the owner-provided LinkedIn profile.
+- Keep this internship project at a high level: cost-aware model routing,
+  quality estimation, inference deployment, and performance evaluation.
+- Mention Kimi K3 and DSpark speculative decoding at a general level: a draft
+  model proposes tokens for the larger model to verify together.
+- Omit other model names, deployment architecture, hardware, internal
+  configuration, and other benchmark figures from the page, metadata, tags, cards,
+  and experience summary. Do not replace removed metrics with invented ones.
+- Discuss the general tradeoffs between response quality, cost, and serving
+  performance. Preserve the short format and the existing `/projects/llm-serving` URL.
+- Use the owner's selected public figure, <200 ms quality-prediction inference,
+  in the existing numeric result treatment. It measures the prediction step,
+  not end-to-end routing or LLM response time. Keep the title "Efficient LLM serving".
 
 #### Tundra
 
 - Affiliation: Brown ATLAS Group.
-- Collaboration: Nikos Vasilakis.
+- Worked closely with PhD student Ethan Lavi, who created most of the framework.
 - Rust communication library composed from message-stream transformations.
 - Gives developers explicit control over networking guarantees.
-- Demonstrated 30% higher Memcached throughput, 20% lower latency, and a 5x reduction in networking code.
+- Sky's contributions: Memcached C/Rust integration and memory/state handling,
+  collaborative scatter/gather development, and benchmark clients including a
+  TCP multi-get baseline.
+- The unpublished manuscript reports 151% higher throughput under a 10 ms p99
+  latency SLO and 71% lower median latency at low load. Communication code fell
+  by 61%, excluding the separately counted C/Rust bridge. Credit these to the
+  combined system and evaluated workload, not an individual contribution.
+- Keep the main project page short; the extended walkthrough is separate work.
 - Add a repository, paper, poster, or lab-project URL when a canonical public URL is provided. Do not invent one.
 
 #### KVonset

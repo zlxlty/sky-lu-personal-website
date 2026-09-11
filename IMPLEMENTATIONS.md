@@ -64,6 +64,31 @@ Before each commit, provide:
 
 No staging or commit occurs until approval.
 
+### 2.4 September 2026 project accuracy correction
+
+Branch: `codex/fix/project-accuracy`, based directly on reviewed `main`.
+
+One candidate, `fix: correct project attribution and benchmark claims`:
+
+- Preserve the short static project pages and current layout.
+- Credit Ethan Lavi's framework work and describe Sky's Memcached integration,
+  shared scatter/gather work, and benchmarking contributions.
+- Replace outdated Tundra metrics with scoped, unpublished manuscript results.
+- Keep the LLM serving and model routing summary high level, removing internal
+  infrastructure and benchmark details from content and experience data. Include
+  the owner's requested general explanation of Kimi K3 with DSpark speculative decoding.
+- Allow project results to be omitted and render the detail metadata without an
+  empty metrics block. Keep the content schema and authoring guide in agreement.
+- Show the owner's selected <200 ms quality-prediction inference figure in the
+  existing result layout, keeping other internal benchmarks and details private.
+- Clarify that Dynamic Pages and KVonset latency/throughput figures are measured
+  results; retain the owner's existing implementation details.
+- Describe Dynamic Pages authoring as well as publishing, explaining customer
+  control of presentation and Access ownership of the underlying access flow.
+- Check content types, formatting, production build, and project rendering tests.
+
+The longer research articles remain on their existing branch.
+
 ## 3. Dependency graph
 
 ```text

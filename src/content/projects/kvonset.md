@@ -8,7 +8,7 @@ draft: false
 tags: [Rust, epoll, Lock-free concurrency]
 results:
   - value: 335K
-    label: Keys per second
+    label: Keys per second in benchmarks
   - value: <170 μs
     label: p95 latency
 ---
@@ -37,6 +37,5 @@ The main implementation areas were:
 
 ## Performance
 
-KVonset achieved throughput of 335,000 keys per second, with p95 latency below
-170 microseconds. These measurements describe the implementation's benchmark
-results and provide a concrete view of its throughput and tail latency.
+In the benchmark workload, KVonset achieved throughput of 335,000 keys per
+second and p95 latency below 170 microseconds.

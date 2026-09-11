@@ -1,42 +1,43 @@
 ---
 title: Tundra
-description: A Rust communication library that makes networking behavior explicit and composable.
+description: Memcached integration, scatter/gather, and benchmarking for a composable communication framework.
 category: Research
 context: Brown ATLAS Group
 order: 3
 draft: false
-tags: [Rust, Memcached, Network systems]
+tags: [Rust, C, Memcached, Network systems]
 results:
-  - value: +30%
-    label: Memcached throughput
-  - value: −20%
-    label: Memcached latency
-  - value: 5×
-    label: Reduction in networking code
+  - value: +151%
+    label: Throughput at a 10 ms p99 SLO
+  - value: −71%
+    label: Median latency
+  - value: −61%
+    label: Communication code
 ---
 
 ## Communication as composition
 
-Tundra is a multithreaded communication library built from composable
-message-stream transformations. It gives developers precise control over
-networking guarantees while letting them optimize communication behavior.
+Tundra makes communication behavior programmable: an application can compose
+operations such as sharding, request delivery, and retries instead of managing
+them separately around a pool of TCP connections.
 
-My work with Nikos Vasilakis in Brown's ATLAS Group focused on implementing
-this approach in Rust.
+I worked closely with [Ethan Lavi](https://ethanlavi.github.io/), a PhD student
+in Brown's ATLAS Group who created most of Tundra's framework.
 
-## The implementation
+## My part in the project
 
-The library expresses communication as transformations of a message stream.
-Those transformations form the building blocks for a networking pipeline,
-keeping its behavior explicit as the pieces are composed.
+My main contribution was integrating Tundra into Memcached through a C/Rust
+adapter. Much of that work was understanding Memcached's parser, connection
+state, and memory lifetimes so we could reuse its command handlers safely.
 
-The project brings together Rust, multithreaded network programming, and
-distributed systems, with Memcached used for evaluation.
+I also helped develop scatter/gather for multi-key requests across shards and
+built and refined the benchmark clients, including a TCP multi-get baseline.
 
 ## Evaluation with Memcached
 
-The Memcached evaluation increased throughput by 30%, reduced latency by 20%,
-and reduced the networking codebase by a factor of five.
+Our benchmarks show 151% higher throughput than vanilla Memcached
+under a 10 ms p99 latency limit, and 71% lower median latency at low load.
+Communication code shrank by 61%, excluding the separately counted C/Rust bridge.
 
-These results capture both performance and implementation size: the work made
-the communication path faster while requiring less networking code.
+These are results for the combined system under the evaluated workload, rather
+than gains attributable to my integration or scatter/gather alone.

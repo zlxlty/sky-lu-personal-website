@@ -118,9 +118,10 @@ results:
 ```
 
 Category is `Engineering`, `Research`, or `Independent`. `order` is a nonnegative
-integer; lower numbers appear first. Each project has one to three labeled
-results. The first result appears in the index; all results appear on the detail
-page. Keep metric labels specific about what was measured.
+integer; lower numbers appear first. Projects may include up to three labeled
+results. Omit `results` when figures should stay private or no public measurements
+are available. When provided, the first result appears in the index and all
+results appear on the detail page. Keep labels specific about what was measured.
 
 The four initial projects use facts from the supplied résumé and the confirmed
 ATLAS description in `PLAN.md`. Their prose is an editable summary, not a claim
