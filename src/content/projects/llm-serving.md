@@ -1,39 +1,40 @@
 ---
 title: Efficient LLM serving
-description: Cost-aware model routing and inference benchmarks across a distributed GPU serving stack.
+description: Balancing response quality, cost, and serving performance during my Cloudflare internship.
 category: Engineering
 context: Cloudflare
 order: 2
 draft: false
-tags: [ModernBERT, SGLang, Mooncake, Kubernetes]
+tags: [Model routing, Speculative decoding, Performance evaluation]
 results:
-  - value: +108%
-    label: Tokens per second in benchmarks
   - value: <200 ms
-    label: Quality-predictor inference
+    label: Quality-prediction inference
 ---
 
-## Routing with a quality estimate
+## Choosing a model
 
-I built and deployed a cost-aware LLM router during my Cloudflare internship.
-The router used a ModernBERT-based model quality predictor, which I trained and
-containerized for a serverless GPU service.
+During my Cloudflare internship, I worked closely with
+[Andreas Jansson](https://www.linkedin.com/in/janssonandreas/) on building and
+deploying a cost-aware LLM router.
+The goal was to choose a suitable model for a request while balancing expected
+response quality and cost. My work included training and deploying a model to
+help make that choice.
 
-The predictor achieved inference latency below 200 milliseconds. This result
-describes the quality-prediction service, rather than the time required for a
-language model to generate a complete response.
+The quality predictor ran in under 200 milliseconds. This measures the
+prediction step, rather than the time to generate a complete LLM response.
 
-## Exploring the serving stack
+## Serving it efficiently
 
-Alongside the router, I deployed and benchmarked Kimi K3 with DSpark speculative
-decoding on B300 Kubernetes clusters. The serving configuration used SGLang and
-Mooncake for prefill/decode disaggregation.
+Alongside routing, I deployed and benchmarked Kimi K3 with DSpark speculative
+decoding. DSpark drafts several tokens ahead, and K3 checks them together.
+When enough proposals are accepted, this reduces the number of sequential
+generation steps the larger model needs to take.
 
-The work connected model-level decoding choices with how inference was deployed
-across the GPU infrastructure.
+I evaluated how this approach affected serving performance under different
+request loads, looking at the tradeoffs in throughput and latency.
 
-## Benchmark result
+## Quality, cost, and latency
 
-Speculative decoding and prefill/decode disaggregation improved tokens per second
-by 108% in the benchmarks. The quality predictor and serving benchmarks were
-distinct parts of this work, with latency and throughput measured separately.
+Both parts of the work came back to the same question: what does it cost to
+deliver a useful response? Answer quality, response time, and resource use all
+matter, and the tradeoffs depend on the requests the system is handling.

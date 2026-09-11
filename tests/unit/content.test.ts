@@ -51,9 +51,12 @@ describe("publishing boundaries", () => {
       results: [{ value: "30%", label: "Throughput improvement" }],
     };
     expect(projectSchema.safeParse(project).success).toBe(true);
-    expect(projectSchema.safeParse({ ...project, results: [] }).success).toBe(
-      false,
+    expect(projectSchema.parse({ ...project, results: [] }).results).toEqual(
+      [],
     );
+    expect(
+      projectSchema.parse({ ...project, results: undefined }).results,
+    ).toEqual([]);
     expect(projectSchema.safeParse({ ...project, order: -1 }).success).toBe(
       false,
     );

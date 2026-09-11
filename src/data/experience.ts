@@ -13,7 +13,7 @@ export interface Experience {
   readonly projectIds: readonly string[];
 }
 
-/** Newest first. All contributions come from the approved résumé. */
+/** Newest first. Contributions come from the résumé and owner clarifications. */
 export const experience: readonly Experience[] = [
   {
     id: "cloudflare",
@@ -23,11 +23,11 @@ export const experience: readonly Experience[] = [
     start: "2026-05",
     end: "2026-08",
     summary:
-      "Built edge publishing infrastructure and efficient LLM serving systems.",
+      "Built custom-page authoring and delivery for Access, alongside efficient LLM serving systems.",
     highlights: [
-      "Drove end-to-end delivery of custom Access login and block pages across a Kubernetes service stack.",
+      "Worked on custom Access page authoring and delivery, with flexible presentation and authentication and policy enforcement managed by Access.",
       "Designed a global publishing pipeline from durable PostgreSQL change records to edge KV.",
-      "Built a cost-aware LLM router and benchmarked speculative decoding with prefill/decode disaggregation on B300 Kubernetes clusters.",
+      "Built a cost-aware model router and evaluated LLM serving performance across different request loads.",
     ],
     projectIds: ["dynamic-pages", "llm-serving"],
   },

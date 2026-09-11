@@ -147,11 +147,11 @@ test("touch navigation does not leave a sticky sketch", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/projects/dynamic-pages");
   const link = page.getByRole("link", {
-    name: "The publishing pipeline",
+    name: "From authoring to the edge",
     exact: true,
   });
   await link.tap();
-  await expect(page).toHaveURL(/#the-publishing-pipeline$/);
+  await expect(page).toHaveURL(/#from-authoring-to-the-edge$/);
   await expect(link.locator("svg")).toHaveCSS("visibility", "hidden");
   await context.close();
 });

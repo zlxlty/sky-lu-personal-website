@@ -1,6 +1,6 @@
 ---
 title: Dynamic Pages
-description: A global publishing pipeline for custom Cloudflare Access login and block pages.
+description: Custom page authoring and delivery, letting customers shape the presentation while Cloudflare Access manages the access flow.
 category: Engineering
 context: Cloudflare
 order: 1
@@ -10,37 +10,34 @@ results:
   - value: 3,000+
     label: Enterprise accounts enabled
   - value: <500 ms
-    label: Change propagation to edge KV
+    label: Measured propagation to edge KV
   - value: <200 ms
     label: Page-serving p95 latency
 ---
 
-## From a change record to the edge
+## Custom pages, with Access in control
 
-Dynamic Pages lets enterprise accounts customize their Access login and block
-pages. The work spans two parts of the system: publishing a durable change and
-serving the resulting page close to the request.
+Dynamic Pages lets enterprise customers create their own Access login and block
+pages. Customers control the presentation, while Cloudflare Access continues to
+handle authentication and enforce access policies.
 
-During my software engineering internship at Cloudflare, I drove delivery across
-six Kubernetes services. The feature enabled more than 3,000 enterprise accounts
-to use sandboxed templates with request-time context.
+During my Cloudflare internship, I worked on both the custom-page authoring
+experience and the path from an authored page to delivery at the edge. The
+feature enabled more than 3,000 enterprise accounts to customize their pages.
 
-## The publishing pipeline
+## Balancing customization and safety
 
-I designed a global publishing pipeline that propagates durable PostgreSQL
-change records to edge KV within 500 milliseconds. This connects the stored
-configuration to the edge-serving path.
+The authoring experience used sandboxed templates populated with request-time
+context from Access. My work involved balancing how much customers could
+customize with the constraints needed to keep those templates safe.
 
-The implementation brought together:
+## From authoring to the edge
 
-- PostgreSQL records as the durable publishing input.
-- Coordination across six Kubernetes services.
-- Edge KV propagation for the custom-page serving path.
-- Sandboxed templates populated with request-time context.
+Newly authored page templates become durable change records in PostgreSQL.
+I designed the pipeline that publishes those changes to Cloudflare's global
+edge KV, making the templates available to serve visitors around the world.
+This involved coordinating delivery across six Kubernetes services.
 
-## Delivery and latency
-
-Custom pages were served at less than 200 milliseconds p95 latency. Propagation
-time and serving latency describe different parts of the system: the first
-measures how quickly an update reaches edge KV, and the second measures how
-quickly a custom page is served.
+In project measurements, updates reached edge KV within 500 milliseconds, and
+page-serving p95 latency was below 200 milliseconds. These measure two separate
+steps: publishing a change and serving a page to a visitor.
