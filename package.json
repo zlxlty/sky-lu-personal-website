@@ -34,6 +34,7 @@
     "test:lab:ui": "playwright test --config=playwright.lab.config.ts --ui",
     "test:lab:update": "playwright test --config=playwright.lab.config.ts --update-snapshots",
     "samples:prepare": "node scripts/prepare-guitar-samples.ts",
+    "recordings": "node scripts/recordings.ts",
     "verify": "pnpm format:check && pnpm lint && pnpm check && pnpm test && pnpm build",
     "verify:ci": "pnpm format:check && pnpm lint && pnpm check && pnpm test:coverage && pnpm build",
     "test:ci:browser": "node scripts/run-ci-browser.ts",

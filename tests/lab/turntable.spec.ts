@@ -358,9 +358,17 @@ test("an interrupted load never reports playing or a spurious error", async ({
   );
   await arm(page).press("Enter");
   expect(await spinning(page)).toBe(false);
+  await expect(player(page)).toHaveAttribute("data-audio-state", "loading");
+  await expect(player(page).locator("[data-audio-status]")).toHaveText(
+    "Loading recording…",
+  );
+  await expect(player(page).locator("[data-audio-status]")).toHaveClass(
+    "sr-only",
+  );
   await arm(page).press("Home");
   release();
   await expect.poll(() => paused(page)).toBe(true);
+  await expect(player(page)).toHaveAttribute("data-audio-state", "paused");
   await expect(player(page).locator("[data-audio-error]")).toBeHidden();
   expect(await spinning(page)).toBe(false);
 });

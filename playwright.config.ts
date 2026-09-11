@@ -29,7 +29,7 @@ export default defineConfig({
     },
     {
       name: "webkit-mobile",
-      testMatch: "guitar-mobile.spec.ts",
+      testMatch: ["guitar-mobile.spec.ts", "recording-delivery.spec.ts"],
       use: { ...devices["iPhone 13"] },
     },
   ],

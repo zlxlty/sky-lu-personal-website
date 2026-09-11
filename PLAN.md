@@ -431,9 +431,18 @@ Include:
   Keep URLs, titles, authors, and record/album names in
   one typed playlist. No publication date is shown. A single-track playlist hides
   switching controls; empty playlists show a static drawing.
-- Use a small CC0 jazz demo only in the development lab. No audio is fetched
-  before a listening action. Motion respects reduced motion and pauses while
-  offscreen; navigation releases playback.
+- Use a small CC0 jazz demo only in the development lab. Preconnect to the audio
+  host near the footer; fetch only the selected recording after pointer contact
+  or keyboard focus on the player. Playback still requires placing the arm.
+  Announce loading/buffering to screen readers without visible status text or labeling it paused. Let native media
+  buffering recover naturally; retry terminal network errors at most twice,
+  preserving position and cancelling on pause, track change, or navigation.
+  Motion respects reduced motion and pauses while offscreen; navigation releases playback.
+- Prepare AAC/M4A recordings with metadata before media, without re-encoding.
+  A local command uploads versioned files to R2 with immutable cache headers;
+  an audio-host Cache Rule enables edge delivery. No R2 binding is added to the
+  website. Removal is explicit and refuses files referenced by local, preview,
+  or production playlists; retain old files while old pages and rollbacks need them.
 - A bottom-row Privacy link to a dedicated static statement about browser
   preferences, connection information, and external services.
 - Git commit/build identifier when available.

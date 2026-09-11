@@ -85,8 +85,8 @@ record switching. `/lab` is deliberately absent from deployed builds.
 
 - Public page URLs have no trailing slash, except `/`. Astro and Wrangler use
   the same policy; missing paths serve `404.html` with status 404.
-- Edit `src/data/listening.ts` to add recordings and their metadata. Use
-  `https://audio.skylu.me/<file>`; the three previous root-domain audio paths
+- Edit `src/data/listening.ts` for playlist metadata and `src/data/recordings.json`
+  for uploaded object keys. Use `https://audio.skylu.me/<key>`; the previous root-domain audio paths
   intentionally return 404. There are no legacy redirects.
 - `public/_headers` sets content-type, referrer, frame, opener, and unused-device
   policies. Fingerprinted `/_astro/` assets use immutable browser caching;
@@ -94,6 +94,62 @@ record switching. `/lab` is deliberately absent from deployed builds.
   rule matches only `workers.dev` hosts.
 - Full CSP and the final robots, sitemap, feed, and bot policy remain launch
   follow-ups. This preview does not render email contact links or add analytics.
+
+## Managing recordings in R2
+
+The bucket is `sky-lu-cover`. The local command uses the existing Wrangler login
+to operate on **remote R2**; it adds no credentials or R2 binding to the website.
+Run `pnpm exec wrangler login` if needed. Preparation also needs `ffmpeg` on PATH.
+
+```bash
+pnpm recordings --help
+pnpm recordings prepare /path/to/cover.m4a my-cover
+# Use the exact output filename printed by prepare:
+pnpm recordings upload ".recordings/my-cover.<hash>.m4a"
+pnpm recordings check
+```
+
+`prepare` moves M4A metadata to the beginning without re-encoding, checks that
+encoded audio packets are unchanged, and includes a content hash in the filename.
+It extracts the first audio stream and drops other streams and file metadata.
+Input must contain audio supported by the M4A container; the command does not
+silently transcode unsupported formats. Originals and prepared files stay in
+ignored `.recordings/`, outside Git and the site build.
+
+`upload` verifies the filename hash and fast-start layout, writes `audio/mp4`
+and `Cache-Control: public, max-age=31536000, immutable`, then compares the public
+download with the uploaded bytes. Add the printed object key to
+`src/data/recordings.json` and reference it from the playlist before releasing
+the website. Upload first, deploy second. Build and deployment never upload or
+delete recordings as a side effect.
+
+In Cloudflare **Caching → Cache Rules**, the `Cache audio recordings` rule is:
+
+- Match custom expression `(http.host eq "audio.skylu.me")`.
+- Cache eligibility: **Eligible for cache**.
+- Edge TTL: **Use cache-control header if present, use default Cloudflare caching behavior if not**.
+- Browser TTL: leave unchanged (or **Respect origin** if explicitly configured).
+
+This makes M4A eligible for edge caching. `pnpm recordings check` verifies each
+playlist object's fast-start metadata, content type, cache headers, range
+responses, and a warmed edge cache hit. A cold location can need another check;
+this is an operational check, not an internet-dependent CI test. Smart Tiered
+Cache is an optional later setting under Tiered Cache; it is not enabled by this rule.
+
+To remove an obsolete object:
+
+```bash
+pnpm recordings remove "recordings/my-cover.<hash>.m4a"
+# After reviewing the dry run and rollback needs:
+pnpm recordings remove "recordings/my-cover.<hash>.m4a" --execute
+```
+
+Removal checks the local manifest plus the live production and preview
+homepages. A referenced recording or an unavailable/unrecognizable page blocks
+deletion. It does not inspect old deployments, cached HTML, or open browser tabs.
+Retain objects needed by those pages or rollback versions; do not delete the
+original three recordings as part of this rollout. Cached copies may remain
+after an R2 deletion, so this is not a cache purge or an immediate takedown tool.
 
 ## Production release
 

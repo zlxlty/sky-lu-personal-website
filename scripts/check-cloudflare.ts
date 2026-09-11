@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import recordings from "../src/data/recordings.json" with { type: "json" };
 
 // Read-only checks against Wrangler locally or the deployed static asset host.
 const origin = new URL(process.argv[2] ?? "http://127.0.0.1:8787");
@@ -11,7 +12,7 @@ assert(
   "Do not pass credentials in the URL.",
 );
 const isPreview = origin.hostname.endsWith(".workers.dev");
-const audioFiles = ["seaway.m4a", "likeastar.m4a", "starrysky.m4a"];
+const audioFiles = Object.values(recordings.files);
 const rawEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
 async function request(path: string) {
@@ -84,7 +85,9 @@ for (const path of [
   "/lab",
   "/lab/guitar",
   "/_headers",
-  ...audioFiles.map((file) => `/${file}`),
+  ...[...audioFiles, "seaway.m4a", "likeastar.m4a", "starrysky.m4a"].map(
+    (file) => `/${file}`,
+  ),
 ]) {
   const response = await request(path);
   assert.equal(
