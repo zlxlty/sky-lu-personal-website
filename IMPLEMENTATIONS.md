@@ -12,6 +12,19 @@ It is an execution plan, not blanket authorization to commit. Every commit candi
 
 ## 2. Delivery model
 
+### Console pixel art — `codex/feat/console-pixel-art`
+
+One candidate: `feat: add pixel art console greeting`.
+
+- Print the approved "YOU FOUND ME!" pixel lettering and greeting from the
+  existing shared layout script, once per document load.
+- Keep page content, interactions, dependencies, and deployment unchanged.
+- Verify with `pnpm verify` and the production browser suite. Inspect captured
+  console output on the homepage and a nested route, including a reload, to
+  confirm the banner survives the production build and is not duplicated.
+- No dedicated test is needed for this static decorative message; existing
+  browser checks continue to cover page behavior and console errors.
+
 ### 2.1 Repository lifecycle
 
 Repository bootstrapping uses one minimal reviewed root commit before normal feature work:
