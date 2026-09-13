@@ -729,6 +729,11 @@ release audio resources. Activation does not play a demonstration note.
 
 ## 8. MDX authoring system
 
+The shared page layout prints a small console Easter egg once per document load:
+pixel lettering reading "YOU FOUND ME!", followed by "oh hey. you look under the
+hood too?". Use plain monospace console output so it inherits DevTools colors,
+with no detection, tracking, storage, or extra dependencies.
+
 ### 8.1 Content collections
 
 The independent writing/project implementation on `codex/fix/ui-maintainability`
