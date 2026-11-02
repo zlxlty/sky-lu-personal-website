@@ -139,6 +139,19 @@ test("blur and leaving the hero stop notes; pagehide disposes the audio", async 
   await expectClosed(page);
 });
 
+test("following a link off the homepage disposes the audio", async ({
+  page,
+}) => {
+  await open(page);
+  await enable(page);
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "Writings", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/writing$/);
+  await expectClosed(page);
+});
+
 test.describe("touch audio", () => {
   test.use({ hasTouch: true, viewport: { width: 360, height: 900 } });
   test("explicit touch activation unlocks a release pluck", async ({
