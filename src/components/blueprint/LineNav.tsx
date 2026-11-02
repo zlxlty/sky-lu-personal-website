@@ -23,7 +23,7 @@ export function LineNav({ label, items, activeHref, className }: LineNavProps) {
             <a
               href={item.href}
               aria-current={item.href === activeHref ? "page" : undefined}
-              className="group flex min-h-10 items-center gap-3 py-2 text-sm no-underline"
+              className="group flex min-h-10 items-center gap-3 py-2 text-base no-underline"
             >
               <span aria-hidden="true" className="w-8 shrink-0">
                 <span className="block h-px origin-left scale-x-60 bg-current transition-transform duration-(--duration-feedback) group-hover:scale-x-100 group-focus-visible:scale-x-100 group-aria-[current=page]:scale-x-100 motion-reduce:transition-none" />

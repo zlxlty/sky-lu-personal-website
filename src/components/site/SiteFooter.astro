@@ -57,7 +57,7 @@ import FooterListening from "./FooterListening.astro";
         Object.values(profile.links).map(({ label, href }) => (
           <a
             href={href}
-            class="inline-flex min-h-10 items-center gap-2 text-sm"
+            class="inline-flex min-h-10 items-center gap-2 text-base"
           >
             <SketchUnderline text={label} seed={`footer:${label}`} />
             <ArrowUpRight />
