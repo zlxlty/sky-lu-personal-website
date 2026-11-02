@@ -341,6 +341,69 @@ test("cancelled gestures and removed players release audio and animation", async
   expect(result.animations.every((state) => state === "idle")).toBe(true);
 });
 
+async function movePlayer(page: Page, method: "appendChild" | "moveBefore") {
+  await player(page).evaluate((node, method) => {
+    const root = document.documentElement;
+    const parent = node.parentElement;
+    if (!parent) throw new Error("Expected a parent");
+    const next = node.nextSibling;
+    if (method === "moveBefore") {
+      root.moveBefore(node, null);
+      parent.moveBefore(node, next);
+    } else {
+      root.appendChild(node);
+      parent.insertBefore(node, next);
+    }
+  }, method);
+}
+
+for (const method of ["appendChild", "moveBefore"] as const) {
+  test(`moving a playing record with ${method} keeps its sound, arm, and controls`, async ({
+    page,
+  }) => {
+    await openPlayer(page);
+    await arm(page).press("Enter");
+    await expect.poll(() => spinning(page)).toBe(true);
+    const angle = await arm(page).getAttribute("aria-valuenow");
+    await player(page)
+      .locator("audio")
+      .evaluate((node) => {
+        node.addEventListener("pause", () => {
+          node.dataset.pausedOnce = "true";
+        });
+      });
+    await movePlayer(page, method);
+    await expect(player(page)).toHaveAttribute("data-audio-state", "playing");
+    expect(await paused(page)).toBe(false);
+    await expect(player(page).locator("audio")).not.toHaveAttribute(
+      "data-paused-once",
+    );
+    await expect(arm(page)).toHaveAttribute("aria-valuenow", angle ?? "");
+    expect(await spinning(page)).toBe(true);
+    // Listeners survive too, so one gesture still stops the record.
+    await arm(page).press("Home");
+    await expect.poll(() => paused(page)).toBe(true);
+    await expect(arm(page)).toHaveAttribute("aria-valuenow", "0");
+  });
+}
+
+test("moving the player cancels a drag and leaves the arm usable", async ({
+  page,
+}) => {
+  await openPlayer(page);
+  const start = await point(page, 0);
+  const end = await point(page, 24);
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  await page.mouse.move(end.x, end.y);
+  await movePlayer(page, "appendChild");
+  await page.mouse.up();
+  await expect(arm(page)).toHaveAttribute("aria-valuenow", "0");
+  expect(await paused(page)).toBe(true);
+  await arm(page).press("Enter");
+  await expect.poll(() => paused(page)).toBe(false);
+});
+
 test("an interrupted load never reports playing or a spurious error", async ({
   page,
 }) => {
