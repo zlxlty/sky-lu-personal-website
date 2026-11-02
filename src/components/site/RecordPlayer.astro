@@ -45,8 +45,8 @@ const multiple = tracks.length > 1;
               {track.title}
             </p>
             <div class="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-              <p class="m-0 text-xs leading-snug">{track.author}</p>
-              <p class="m-0 flex flex-wrap items-baseline gap-x-[5px] font-mono text-[10px] leading-normal text-muted-foreground">
+              <p class="m-0 text-sm leading-snug">{track.author}</p>
+              <p class="m-0 flex flex-wrap items-baseline gap-x-[5px] font-mono text-xs leading-normal text-muted-foreground">
                 {track.record &&
                   (track.recordUrl ? (
                     <a href={track.recordUrl}>{track.record}</a>
@@ -63,7 +63,7 @@ const multiple = tracks.length > 1;
                 href={track.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="mt-2 inline-block text-[10px] text-muted-foreground"
+                class="mt-2 inline-block text-sm text-muted-foreground"
               >
                 Watch my cover <ArrowUpRight />
                 <span class="sr-only"> (opens in a new tab)</span>
@@ -89,7 +89,7 @@ const multiple = tracks.length > 1;
           data-audio-error
           role="alert"
           hidden
-          class="mt-2 text-xs text-muted-foreground"
+          class="mt-2 text-sm text-muted-foreground"
         />
         <audio preload="none" hidden />
       </div>
@@ -98,7 +98,7 @@ const multiple = tracks.length > 1;
   <noscript>
     {
       tracks.map((track) => (
-        <a href={track.audioSrc} class="mt-2 block text-xs underline">
+        <a href={track.audioSrc} class="mt-2 block text-sm underline">
           Listen to {track.title}
         </a>
       ))

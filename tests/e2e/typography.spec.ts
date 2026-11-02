@@ -85,3 +85,44 @@ for (const width of [320, 640, 1280]) {
     expect(box.height).toBe(2 * 26);
   });
 }
+
+const publicPaths = [
+  "/",
+  "/writing",
+  "/projects",
+  "/people",
+  "/projects/tundra",
+  "/privacy",
+];
+
+for (const path of publicPaths) {
+  for (const width of [390, 1280]) {
+    test(`no visible text on ${path} falls below the floors at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
+      const tooSmall = await page.evaluate(() => {
+        const found: string[] = [];
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+        );
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const text = node.textContent?.trim();
+          const element = node.parentElement;
+          if (!text || !element) continue;
+          if (element.closest(".sr-only, script, style, noscript")) continue;
+          if (!element.checkVisibility({ visibilityProperty: true })) continue;
+          const style = getComputedStyle(element);
+          const size = Number.parseFloat(style.fontSize);
+          const floor = style.fontFamily.includes("Mono") ? 12 : 14;
+          if (size < floor) found.push(`${size}px: ${text.slice(0, 40)}`);
+        }
+        return found;
+      });
+      expect(tooSmall).toEqual([]);
+    });
+  }
+}
