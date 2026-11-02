@@ -29,7 +29,7 @@ const projects = (await getProjects()).slice(0, 4);
           </h2>
           <a
             href="/projects"
-            class="inline-flex min-h-11 items-center gap-2 text-sm"
+            class="inline-flex min-h-11 items-center gap-2 text-base"
           >
             <SketchUnderline text="All projects" seed="home:all-projects" />
             <span aria-hidden="true">→</span>
@@ -63,7 +63,7 @@ const projects = (await getProjects()).slice(0, 4);
                     <ArrowUpRight className="text-base" />
                   </a>
                 </h3>
-                <p class="mt-3 mb-0 max-w-lg text-sm leading-(--leading-body)">
+                <p class="mt-3 mb-0 max-w-lg text-base leading-(--leading-body)">
                   {project.data.description}
                 </p>
                 <ul
