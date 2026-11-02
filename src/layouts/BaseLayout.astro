@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import { BlueprintPage } from "@/components/blueprint/BlueprintPage";
 import SiteHeader from "@/components/site/SiteHeader.astro";
 import SiteFooter from "@/components/site/SiteFooter.astro";
@@ -26,6 +27,8 @@ const canonicalUrl =
   Astro.url.pathname !== "/404"
     ? new URL(Astro.url.pathname.replace(/\/+$/, "") || "/", Astro.site)
     : undefined;
+// A player in <main> doesn't work after a swap, and only the lab has those.
+const usesClientRouter = !Astro.url.pathname.startsWith("/lab");
 ---
 
 <!doctype html>
@@ -116,6 +119,7 @@ const canonicalUrl =
       crossorigin="anonymous"
     />
     <title>{title}</title>
+    {usesClientRouter && <ClientRouter />}
     <slot name="head" />
   </head>
   <body id="top">

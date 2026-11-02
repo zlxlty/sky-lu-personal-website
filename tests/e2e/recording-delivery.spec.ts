@@ -182,6 +182,116 @@ test("decode errors do not retry automatically, but a fresh gesture can reload",
   await expect(player(page).locator("[data-audio-error]")).toBeHidden();
 });
 
+const writingLink = (page: Page) =>
+  page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "Writings", exact: true });
+const position = (page: Page) =>
+  audio(page).evaluate((node: HTMLAudioElement) => node.currentTime);
+
+async function startAndMark(page: Page) {
+  await open(page);
+  await arm(page).press("Enter");
+  await expect(player(page)).toHaveAttribute("data-audio-state", "playing");
+  await audio(page).evaluate((node: HTMLAudioElement) => {
+    node.dataset.kept = "true";
+    node.addEventListener("pause", () => {
+      node.dataset.pausedOnce = "true";
+    });
+  });
+}
+
+async function expectUninterrupted(page: Page, angle: string | null) {
+  await expect(audio(page)).toHaveAttribute("data-kept", "true");
+  await expect(audio(page)).not.toHaveAttribute("data-paused-once");
+  await expect(player(page)).toHaveAttribute("data-audio-state", "playing");
+  await expect(arm(page)).toHaveAttribute("aria-valuenow", angle ?? "");
+  const before = await position(page);
+  await expect.poll(() => position(page)).toBeGreaterThan(before);
+  await player(page).scrollIntoViewIfNeeded();
+  await expect
+    .poll(() =>
+      player(page)
+        .locator("[data-turntable-disc]")
+        .evaluate((node) =>
+          node
+            .getAnimations()
+            .some((animation) => animation.playState === "running"),
+        ),
+    )
+    .toBe(true);
+}
+
+test("the recording keeps playing across links, Back, and Forward", async ({
+  page,
+}) => {
+  await startAndMark(page);
+  const angle = await arm(page).getAttribute("aria-valuenow");
+  await writingLink(page).click();
+  await expect(page).toHaveURL(/\/writing$/);
+  await expectUninterrupted(page, angle);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expectUninterrupted(page, angle);
+  await page.goForward();
+  await expect(page).toHaveURL(/\/writing$/);
+  await expectUninterrupted(page, angle);
+});
+
+test("the recording keeps playing where the browser has no moveBefore", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Reflect.deleteProperty(Element.prototype, "moveBefore");
+  });
+  await startAndMark(page);
+  const angle = await arm(page).getAttribute("aria-valuenow");
+  await writingLink(page).click();
+  await expect(page).toHaveURL(/\/writing$/);
+  await expectUninterrupted(page, angle);
+});
+
+test("the selected record survives a page change", async ({ page }) => {
+  await open(page);
+  const active = player(page).locator("[data-record-track][data-active]");
+  const first = await active.textContent();
+  await player(page)
+    .getByRole("button", { name: "Change record" })
+    .press("ArrowUp");
+  await expect(active).not.toHaveText(first ?? "");
+  const chosen = await active.textContent();
+  await writingLink(page).click();
+  await expect(page).toHaveURL(/\/writing$/);
+  await expect(active).toHaveText(chosen ?? "");
+});
+
+test("a pending network retry carries on after a page change", async ({
+  page,
+}) => {
+  await startAndMark(page);
+  await page.clock.install();
+  await audio(page).evaluate((node: HTMLAudioElement) => {
+    node.load = () => {
+      node.dataset.reloads = String(Number(node.dataset.reloads ?? 0) + 1);
+    };
+  });
+  await networkError(page);
+  await expect(player(page)).toHaveAttribute("data-audio-state", "buffering");
+  await writingLink(page).click();
+  await expect(page).toHaveURL(/\/writing$/);
+  await page.clock.runFor(1100);
+  await expect(audio(page)).toHaveAttribute("data-reloads", "1");
+});
+
+test("reloading the page still ends the recording", async ({ page }) => {
+  await startAndMark(page);
+  await page.reload();
+  await expect(audio(page)).not.toHaveAttribute("src");
+  await expect(audio(page)).not.toHaveAttribute("data-kept");
+  await expect(player(page)).not.toHaveAttribute("data-audio-state");
+  await expect(arm(page)).toHaveAttribute("aria-valuenow", "0");
+});
+
 for (const cancel of ["pause", "change", "remove"] as const) {
   test(`${cancel} cancels a pending network retry`, async ({ page }) => {
     await open(page);

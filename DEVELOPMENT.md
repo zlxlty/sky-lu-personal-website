@@ -379,9 +379,27 @@ Privacy link opens `src/pages/privacy.astro`, a static statement about theme
 storage, ordinary connection information, and external links. Update that page
 when the site's data practices change.
 
+Same-site links use Astro's `<ClientRouter />`, which keeps the document alive,
+fades to the next page, and prefetches a link's page on hover. Pages stay static,
+and links work as ordinary navigation without JavaScript. Three rules follow for
+scripts:
+
+- A bundled script runs only once until the next full page load, and an inline
+  script runs only once per distinct text unless it has `data-astro-rerun`. Anything
+  that wires page elements must be a custom element, or rerun on `astro:after-swap`
+  or `astro:page-load`.
+- Keep the direct call too. `/lab` pages skip the router, because a player in `<main>`
+  doesn't work after a swap, so they get no `astro:*` events.
+- Remove `document` and `window` listeners tied to replaced elements. They no longer
+  go away with the document.
+
 The audio boundary is `src/lib/local-record.ts`: it loads the source only after
 a gesture, handles native playback events and failed/interrupted play promises,
-and releases the audio on navigation or disconnect. Only one record plays at a
+and releases the audio when removed from the page. `FooterListening.astro` marks the
+player with `transition:persist`, so a same-site link moves it instead of removing
+it. Both elements' callbacks return early while the element stays connected, so
+playback, the arm, and the selected record carry on. Reloading or leaving the site
+ends playback, and `pagehide` stops it first. Only one record plays at a
 time. `src/lib/turntable-control.ts` owns pointer capture, keyboard input, and a
 constrained SVG rotation. `turntable-geometry.ts` defines its pivot and allowed
 arc. The control emits playback requests; only actual media events set its

@@ -1,6 +1,7 @@
 import { execFile } from "node:child_process";
 import {
   cp,
+  mkdir,
   mkdtemp,
   readFile,
   realpath,
@@ -8,7 +9,6 @@ import {
   symlink,
   writeFile,
 } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { expect, it } from "vitest";
@@ -16,9 +16,12 @@ import { expect, it } from "vitest";
 const run = promisify(execFile);
 
 it("builds published article paths and navigation while excluding drafts", async () => {
-  // Resolve macOS's /var -> /private/var alias before Astro creates virtual IDs.
+  // Astro reads an absolute path with no common parent as relative to the root,
+  // which breaks components reached through the node_modules symlink below.
+  // Build inside the repository, so the fixture and node_modules share a parent.
+  await mkdir(resolve("test-results"), { recursive: true });
   const root = await realpath(
-    await mkdtemp(join(tmpdir(), "sky-content-build-")),
+    await mkdtemp(resolve("test-results/content-build-")),
   );
   const sharedCachePath = resolve("node_modules/.astro/data-store.json");
   const readSharedCache = () =>
