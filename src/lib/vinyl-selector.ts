@@ -71,6 +71,10 @@ export class VinylSelector {
     void this.#swap(direction, 0);
   }
 
+  cancel() {
+    this.#cancel();
+  }
+
   dispose() {
     this.#endDrag();
     this.#events.abort();

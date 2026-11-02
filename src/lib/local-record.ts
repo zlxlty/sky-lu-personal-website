@@ -23,6 +23,8 @@ class LocalRecord extends HTMLElement {
   #started = false;
 
   connectedCallback() {
+    // A moved player is already wired, and its playback must carry on.
+    if (this.#events && !this.#events.signal.aborted) return;
     this.#audio = this.querySelector("audio");
     const control = this.querySelector("turntable-control");
     this.#control = control instanceof TurntableControl ? control : null;
@@ -120,6 +122,8 @@ class LocalRecord extends HTMLElement {
   }
 
   disconnectedCallback() {
+    // The browser runs this after a move finishes, so a moved player is connected.
+    if (this.isConnected) return;
     this.#stop();
     this.#events?.abort();
     this.#observer?.disconnect();

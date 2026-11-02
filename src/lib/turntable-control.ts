@@ -39,6 +39,8 @@ export class TurntableControl extends HTMLElement {
   #armRevision = 0;
 
   connectedCallback() {
+    // A moved turntable keeps its arm angle and spin.
+    if (this.#events && !this.#events.signal.aborted) return;
     this.#svg = this.querySelector("svg");
     this.#arm = this.querySelector("[data-turntable-arm]");
     this.#disc = this.querySelector("[data-turntable-disc]");
@@ -85,6 +87,11 @@ export class TurntableControl extends HTMLElement {
 
   disconnectedCallback() {
     this.#cancel();
+    // The browser runs this after a move finishes, so a moved turntable is connected.
+    if (this.isConnected) {
+      this.#selector?.cancel();
+      return;
+    }
     this.#selector?.dispose();
     this.#selector = undefined;
     this.#parking?.revert();
