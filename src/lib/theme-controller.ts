@@ -25,13 +25,6 @@ function getController() {
 
 function createThemeController() {
   const root = document.documentElement;
-  const toggles = document.querySelectorAll<HTMLButtonElement>(
-    "[data-theme-toggle]",
-  );
-  const status = document.querySelector<HTMLElement>("[data-theme-status]");
-  const themeColor = document.querySelector<HTMLMetaElement>(
-    'meta[name="theme-color"]',
-  );
   let storage: Storage | undefined;
   let explicitTheme: Theme | null = null;
 
@@ -47,7 +40,18 @@ function createThemeController() {
     false,
   );
 
-  toggles.forEach((toggle) => toggle.addEventListener("click", toggleTheme));
+  // A page swap replaces the toggles, so listen where the swap can't remove the listener.
+  document.addEventListener("click", ({ target }) => {
+    if (target instanceof Element && target.closest("[data-theme-toggle]")) {
+      togglePreference();
+    }
+  });
+  document.addEventListener("astro:after-swap", () => {
+    applyTheme(
+      parseTheme(root.dataset.theme) ?? resolveTheme(explicitTheme),
+      false,
+    );
+  });
 
   window.addEventListener("storage", ({ key, newValue, storageArea }) => {
     // clear() has no key; session storage and unrelated preferences are ignored.
@@ -82,18 +86,24 @@ function createThemeController() {
     root.dataset.theme = theme;
     root.style.colorScheme = THEME_COLOR_SCHEMES[theme];
 
+    const themeColor = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
     const metaColor =
       theme === "dark"
         ? themeColor?.dataset.themeDark
         : themeColor?.dataset.themeLight;
     if (metaColor) themeColor?.setAttribute("content", metaColor);
 
-    for (const toggle of toggles) {
+    for (const toggle of document.querySelectorAll<HTMLButtonElement>(
+      "[data-theme-toggle]",
+    )) {
       toggle.hidden = false;
       toggle.ariaLabel = `Switch to ${nextTheme} theme`;
       toggle.title = `Switch to ${nextTheme} theme`;
     }
 
+    const status = document.querySelector<HTMLElement>("[data-theme-status]");
     if (status) {
       status.textContent = announce ? `${capitalize(theme)} theme active.` : "";
     }

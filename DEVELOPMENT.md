@@ -185,10 +185,12 @@ back to dark. OS appearance changes do not change the site's theme.
 `src/lib/theme-controller.ts` owns browser state, persistence,
 cross-tab updates, metadata, and all theme controls' accessible labels. The Astro
 theme control calls `initializeTheme()` after the document is parsed. Repeated calls
-reuse the same controller for the current document. This lifecycle follows the
-site's normal full-page navigation; there is no client router. The theme toggle
-lives in the header. `BaseLayout.astro` owns one live announcement region for the
-page.
+reuse the same controller. A page swap replaces the toggles, the announcement region,
+and the theme-color tag, so the controller finds them when it needs them, handles
+toggle clicks on `document`, and reapplies the theme on `astro:after-swap`. The
+bootstrap in `BaseLayout.astro` copies the theme into the incoming page on
+`astro:before-swap`, so no frame shows the default theme. The theme toggle lives in
+the header. `BaseLayout.astro` owns one live announcement region for the page.
 
 Feature handlers, including the lab's theme command, call `toggleTheme()` from
 that module. Do not click the header programmatically or write theme attributes

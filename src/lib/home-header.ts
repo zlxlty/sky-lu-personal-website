@@ -2,20 +2,33 @@ import type { WAAPIAnimation } from "animejs/waapi";
 
 const fadeDistance = 96;
 let initialized = false;
+let dispose: (() => void) | undefined;
 
 /** Enhance only the homepage's static header; other routes keep their paper mask. */
 export function initializeHomeHeader() {
+  if (initialized) return;
+  initialized = true;
+
+  enhance();
+  // A page swap replaces the header, and its script doesn't run again.
+  document.addEventListener("astro:after-swap", enhance);
+  window.addEventListener("pagehide", release);
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) enhance();
+  });
+}
+
+function enhance() {
+  release();
   const background = document.querySelector<HTMLElement>(
     '[data-home-header] [data-slot="site-header-background"]',
   );
-  if (!background || initialized) return;
-  initialized = true;
+  if (background) dispose = enhanceBackground(background);
+}
 
-  let dispose = enhanceBackground(background);
-  window.addEventListener("pagehide", () => dispose());
-  window.addEventListener("pageshow", (event) => {
-    if (event.persisted) dispose = enhanceBackground(background);
-  });
+function release() {
+  dispose?.();
+  dispose = undefined;
 }
 
 function enhanceBackground(background: HTMLElement) {

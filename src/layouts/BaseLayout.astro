@@ -79,6 +79,19 @@ const canonicalUrl =
         root.style.colorScheme =
           theme === "dark" ? darkThemeColorScheme : lightThemeColorScheme;
         if (metaColor) themeColor?.setAttribute("content", metaColor);
+
+        // A swap copies <html> and <head> from a page built with the default theme.
+        document.addEventListener("astro:before-swap", ({ newDocument }) => {
+          const nextRoot = newDocument.documentElement;
+          nextRoot.dataset.theme = root.dataset.theme;
+          nextRoot.style.colorScheme = root.style.colorScheme;
+          const selector = 'meta[name="theme-color"]';
+          const color = document
+            .querySelector(selector)
+            ?.getAttribute("content");
+          if (color)
+            newDocument.querySelector(selector)?.setAttribute("content", color);
+        });
       })();
     </script>
     <link
