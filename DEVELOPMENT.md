@@ -580,7 +580,8 @@ retry, and reporting settings. Servers explicitly use production or development
 `NODE_ENV` to match their suite, including when started from an editor terminal.
 The lab launcher in `scripts/serve-lab.ts` uses
 Astro's programmatic dev API so it leaves the interactive CLI server's lock alone.
-It also has a separate Vite optimization cache. Playwright manages its lifetime.
+It also has a separate Vite optimization cache, and hot reload is off so a content
+store write can't reload a page during a test. Playwright manages its lifetime.
 
 Failure artifacts live in `test-results/e2e/` and `test-results/lab/`. Running one
 suite no longer clears the other's results or downloaded CI traces. Keep concurrent
