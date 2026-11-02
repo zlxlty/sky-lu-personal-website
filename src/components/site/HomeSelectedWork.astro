@@ -41,7 +41,7 @@ const projects = (await getProjects()).slice(0, 4);
           <PanelGridItem aria-labelledby={`home-project-${project.id}`}>
             <PanelContent className="flex h-full flex-col gap-5">
               <div class="min-w-0">
-                <p class="m-0 mb-3 flex flex-wrap gap-x-2 gap-y-1 font-mono text-[10px] tracking-wide uppercase">
+                <p class="m-0 mb-3 flex flex-wrap gap-x-2 gap-y-1 font-mono text-xs tracking-wide uppercase">
                   <span>{project.data.context}</span>
                   <span aria-hidden="true">/</span>
                   <span>{project.data.category}</span>
@@ -68,7 +68,7 @@ const projects = (await getProjects()).slice(0, 4);
                 </p>
                 <ul
                   aria-label="Technologies and topics"
-                  class="m-0 mt-4 flex list-none flex-wrap gap-x-3 gap-y-2 p-0 font-mono text-[11px] leading-5"
+                  class="m-0 mt-4 flex list-none flex-wrap gap-x-3 gap-y-2 p-0 font-mono text-xs leading-5"
                 >
                   {project.data.tags.map((tag) => (
                     <li>[{tag}]</li>
@@ -80,7 +80,7 @@ const projects = (await getProjects()).slice(0, 4);
                   <span class="font-heading text-2xl font-medium tracking-tight">
                     {project.data.results[0].value}
                   </span>
-                  <span class="font-mono text-[11px] leading-5">
+                  <span class="font-mono text-xs leading-5">
                     {project.data.results[0].label}
                   </span>
                 </p>

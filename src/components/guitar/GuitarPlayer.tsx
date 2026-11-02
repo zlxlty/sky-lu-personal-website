@@ -231,7 +231,7 @@ export function GuitarPlayer({ layout, className }: Props) {
           role="status"
           className={
             phase === "error"
-              ? "absolute top-3 right-full m-0 mr-2 w-40 text-right text-xs"
+              ? "absolute top-3 right-full m-0 mr-2 w-40 text-right text-sm"
               : "sr-only"
           }
         >
