@@ -50,6 +50,28 @@ Each candidate runs `pnpm verify:full`. Before candidate 3 is approved, the owne
 checks by ear in iPhone Safari, desktop Safari, Firefox, and Chrome, because a
 browser that fires `pause` during the move would stop the music.
 
+### 16px type scale — `codex/fix/type-scale`
+
+The root and `<body>` were already 16px, but most paragraphs outside the reader set
+`text-sm`. Move body text and links to 16px and raise the smallest text, leaving the
+root size and headings alone. Raising the root would also stretch rem spacing, the
+header height, and the rail. `src/components/ui` and `/lab` stay as they are, because
+`ui` reaches only the lab.
+
+1. `docs: plan the 16px type scale`: this section and the `PLAN.md` type rules.
+2. `style: raise body text to 16px`: body paragraphs and links at 16px, header
+   navigation at 14px below `sm` and 16px above it, People names at 20px, and a 26/16
+   `--leading-body`. Overview labels move to `leading-6.5` to stay level with the first
+   line. The manual break in the "A little honesty" note applies only from `md`,
+   because it strands a word at 320px. `tests/e2e/typography.spec.ts` pins the body size
+   and line height.
+3. `style: raise the small-text floor`: sans text reaches 14px and the 10-11px mono
+   labels reach 12px. The test asserts both floors on every public page.
+
+Each style candidate runs `pnpm verify:full` and `pnpm test:lab`. Each also updates
+the lab snapshots after visual review, because they include the shared header and
+footer.
+
 ### 2.1 Repository lifecycle
 
 Repository bootstrapping uses one minimal reviewed root commit before normal feature work:
