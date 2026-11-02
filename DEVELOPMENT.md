@@ -249,14 +249,19 @@ render links with the shared sketch underline. No raw HTML is needed:
 ```
 
 The custom element in `horizontal-timeline.ts` maps vertical wheel input over
-the timeline to horizontal movement. At an endpoint, or when all events fit,
-vertical input scrolls the page. Native horizontal wheel input, pinch zoom, and
-touch behavior stay intact. Left/Right keys move one event; Home/End jump to an
-endpoint, only while the region is focused. The scrollbar and visible controls
-are omitted; a partially visible card indicates more content. Without JavaScript,
-native horizontal scrolling still works. Event listeners are cleaned up when an
-instance disconnects. Reduced motion uses immediate keyboard scrolling. The
-`/lab/timeline` specimens exercise independent instances and a single-event list.
+the timeline to horizontal movement. The first wheel event after a 50 ms pause
+decides who owns the whole gesture, using `src/lib/wheel-gesture.ts`. A gesture
+that starts with room to move, or sideways, stays on the timeline, so a flick
+stops at an endpoint instead of throwing the page. A gesture that starts at an
+endpoint, or when all events fit, scrolls the page. Browser tests that need a
+new gesture wait out `WHEEL_GESTURE_GAP_MS` first. Native horizontal wheel
+input, pinch zoom, and touch behavior stay intact. Left/Right keys move one
+event; Home/End jump to an endpoint, only while the region is focused. The
+scrollbar and visible controls are omitted; a partially visible card indicates
+more content. Without JavaScript, native horizontal scrolling still works. Event
+listeners are cleaned up when an instance disconnects. Reduced motion uses
+immediate keyboard scrolling. The `/lab/timeline` specimens exercise independent
+instances and a single-event list.
 
 The homepage at `/` uses `src/components/site/HomeHero.astro` for static identity
 and `home-header.ts` for a scroll-driven header mask. Only the homepage imports

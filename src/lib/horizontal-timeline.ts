@@ -1,3 +1,5 @@
+import { NO_WHEEL_GESTURE, nextWheelGesture } from "./wheel-gesture";
+
 /** Enhance native horizontal scrolling with local wheel and keyboard controls. */
 class HorizontalTimeline extends HTMLElement {
   private cleanup?: () => void;
@@ -14,6 +16,11 @@ class HorizontalTimeline extends HTMLElement {
     const options = { signal: abort.signal };
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
     const end = () => Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const canMove = (delta: number) =>
+      delta < 0
+        ? viewport.scrollLeft > 1
+        : delta > 0 && viewport.scrollLeft < end() - 1;
+    let gesture = NO_WHEEL_GESTURE;
     const scrollTo = (left: number) => {
       viewport.scrollTo({
         left,
@@ -32,9 +39,9 @@ class HorizontalTimeline extends HTMLElement {
     viewport.addEventListener(
       "wheel",
       (event) => {
-        // Leave pinch-to-zoom and predominantly horizontal trackpad gestures native.
-        if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY))
-          return;
+        // Leave pinch-to-zoom native.
+        if (event.ctrlKey) return;
+        const sideways = Math.abs(event.deltaX) >= Math.abs(event.deltaY);
         const unit =
           event.deltaMode === WheelEvent.DOM_DELTA_LINE
             ? 16
@@ -42,12 +49,19 @@ class HorizontalTimeline extends HTMLElement {
               ? viewport.clientWidth
               : 1;
         const delta = event.deltaY * unit;
-        // At an endpoint (or when everything fits), let the page keep scrolling.
-        if (
-          (delta < 0 && viewport.scrollLeft <= 1) ||
-          (delta > 0 && viewport.scrollLeft >= end() - 1)
-        )
-          return;
+        // The first event after a pause decides who owns the whole gesture. One
+        // that starts sideways or with room to move stays on the timeline, so a
+        // flick's momentum stops at an endpoint instead of throwing the page.
+        gesture = nextWheelGesture(
+          gesture,
+          event.timeStamp,
+          sideways ? end() > 0 : canMove(delta),
+        );
+        // Leave predominantly horizontal trackpad gestures native.
+        if (sideways) return;
+        // A gesture that starts at an endpoint (or when everything fits) scrolls
+        // the page. The browser already scrolls an uncancelable event itself.
+        if (!gesture.timelineOwns || !event.cancelable) return;
         event.preventDefault();
         // Apply trackpad deltas directly; restarting smooth scroll for every wheel
         // event fights the device's momentum and makes the timeline lag behind.
