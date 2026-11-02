@@ -490,8 +490,8 @@ falls back to dark. Static HTML also renders dark without JavaScript.
 - Mobile side padding: 20 px.
 - Desktop section spacing: 72-96 px depending on content density.
 - Text line length in prose: approximately 68 characters.
-- Paragraphs use a shared 24/14 line-height ratio: 24px for the standard 14px
-  paragraph text, scaling proportionally in larger Markdown/MDX readers. Inline
+- Paragraphs use a shared 26/16 line-height ratio: 26px for the standard 16px
+  paragraph text, scaling proportionally for smaller and larger text. Inline
   sketch links inherit the surrounding paragraph's line-height so linked lines
   keep the same spacing.
 
@@ -564,10 +564,15 @@ Theme behavior:
   these decorative overlays while continuing to check the surrounding interface.
 - Use no more than these four role-specific font families. Handwritten text must
   remain decorative and cannot carry essential instructions or content.
-- Body: 16 px/1.65.
-- Metadata: 12-13 px/1.45.
-- Hero heading: fluid 40-64 px, restrained rather than oversized.
-- Section headings: 22-28 px with compact annotations.
+- Body: 16 px/26 px on every page. The root stays at the browser default, so a
+  visitor's own font-size setting still scales the site.
+- Links: 16 px. Header navigation is 16 px from the `sm` breakpoint and 14 px below
+  it, where 16 px would crowd the wordmark at 320 px.
+- Other sans text: 14 px minimum.
+- Metadata: 12 px IBM Plex Mono, with nothing smaller.
+- Page headings stay restrained: fluid 40-64 px on index pages, and 36-48 px on the
+  homepage hero and reader pages.
+- Section headings: 36 px on the homepage, and 24-30 px in lists and Markdown.
 
 ### 6.5 Motion
 
