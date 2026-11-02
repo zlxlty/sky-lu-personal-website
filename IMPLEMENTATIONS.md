@@ -25,6 +25,29 @@ One candidate: `feat: add pixel art console greeting`.
 - No dedicated test is needed for this static decorative message; existing
   browser checks continue to cover page behavior and console errors.
 
+### Persistent footer playback — `codex/feat/persistent-footer-player`
+
+Keep the footer record playing across same-site navigation, reversing the earlier
+rule that navigation releases playback. The site stays static: Astro's
+`<ClientRouter />` swaps built pages inside one living document, fades between
+them, and prefetches a link's page on hover. `/lab` skips the router.
+
+1. `docs: plan persistent footer playback`: this section and the `PLAN.md` decision.
+2. `chore: upgrade Astro to 7.4.4`: `package.json` and the lockfile only. Versions
+   7.2.1 to 7.2.5 re-create persisted audio on every swap. Vite moves to `^8.3.5`
+   with it, because two Vite versions break the Vitest config's types.
+3. `fix: keep player state when its element moves`: both elements' callbacks return
+   early while connected, and real removal still releases the audio. A lab test
+   moves a playing record with `appendChild` and `moveBefore`.
+4. `fix: rebind theme and page scripts after swaps`: the theme, home header, text
+   hints, and People shuffle, tested with hand-dispatched events.
+5. `feat: keep footer music playing across navigation`: the router, `transition:persist`,
+   real navigation tests in Chromium and `webkit-mobile`, and `DEVELOPMENT.md`.
+
+Each candidate runs `pnpm verify:full`. Before candidate 3 is approved, the owner
+checks by ear in iPhone Safari, desktop Safari, Firefox, and Chrome, because a
+browser that fires `pause` during the move would stop the music.
+
 ### 2.1 Repository lifecycle
 
 Repository bootstrapping uses one minimal reviewed root commit before normal feature work:

@@ -38,6 +38,7 @@ The site is both a portfolio and a technical blog. It should feel like a careful
 | Content | Git-authored Markdown and MDX in Astro content collections |
 | Hosting | Cloudflare Workers Static Assets |
 | Rendering | Static generation by default; no SSR in v1 |
+| Navigation | Astro's `<ClientRouter />` for same-site links, with a fade and hover prefetch; ordinary links without JavaScript |
 | Guitar audio | Recorded acoustic samples through lazy Tone.js, E♭m11/B♭ voicing |
 | Animation | Anime.js v4 for authored motion; custom `requestAnimationFrame` for string physics |
 | Theme | Warm light palette (`#FCF3E6` / `#38332F`) and brown dark palette (`#2B2724` / `#AE9877`) |
@@ -436,8 +437,9 @@ Include:
   or keyboard focus on the player. Playback still requires placing the arm.
   Announce loading/buffering to screen readers without visible status text or labeling it paused. Let native media
   buffering recover naturally; retry terminal network errors at most twice,
-  preserving position and cancelling on pause, track change, or navigation.
-  Motion respects reduced motion and pauses while offscreen; navigation releases playback.
+  preserving position and cancelling on pause, track change, or leaving the site.
+  Motion respects reduced motion and pauses while offscreen. Same-site navigation
+  keeps playback; reloading or leaving the site ends it.
 - Prepare AAC/M4A recordings with metadata before media, without re-encoding.
   A local command uploads versioned files to R2 with immutable cache headers;
   an audio-host Cache Rule enables edge delivery. No R2 binding is added to the
