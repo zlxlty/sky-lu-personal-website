@@ -43,6 +43,8 @@ them, and prefetches a link's page on hover. `/lab` skips the router.
    hints, and People shuffle, tested with hand-dispatched events.
 5. `feat: keep footer music playing across navigation`: the router, `transition:persist`,
    real navigation tests in Chromium and `webkit-mobile`, and `DEVELOPMENT.md`.
+6. `test: stop the lab server reloading open pages`: found by CI on this branch. A new
+   content store makes Astro reload open pages, which destroyed a running test's page.
 
 Each candidate runs `pnpm verify:full`. Before candidate 3 is approved, the owner
 checks by ear in iPhone Safari, desktop Safari, Firefox, and Chrome, because a
