@@ -15,7 +15,7 @@ through the blog collection described below.
 ## People
 
 Edit `src/data/people.ts` to add or revise friends on `/people`. A small inline
-script randomizes the rows on each page load and reveals an order note. With
+script randomizes the rows on each visit and reveals an order note. With
 JavaScript disabled, the full list remains readable in source order. Each entry
 has a `name`, an HTTPS `href`, and a `note` array of
 text fragments. For a link within a note, use `{ label: "Bari", href: "https://…" }`
