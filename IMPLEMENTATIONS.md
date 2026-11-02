@@ -12,6 +12,25 @@ It is an execution plan, not blanket authorization to commit. Every commit candi
 
 ## 2. Delivery model
 
+### Timeline wheel gestures — `codex/fix/timeline-wheel-latch`
+
+One candidate: `fix: keep a flick on the timeline until it stops`.
+
+- A fast flick that reached either end of the homepage timeline handed its
+  remaining momentum to the page, which shot down or up. The wheel handler
+  decided each event alone.
+- The first wheel event after a 50 ms pause now decides who owns the whole
+  gesture. The owner chose 50 ms by hand on a trackpad. This revises the `PLAN.md` handoff rule; a new gesture that starts at
+  either end still scrolls the page.
+- Chromium stops letting a page cancel a gesture's events soon after one goes
+  uncancelled, so the timeline cancels from a gesture's first event.
+- Vitest covers the gesture rule. The lab test waits out a gesture before it
+  scrolls the same timeline again.
+- Known risk: a main-thread stall longer than 50 ms during a flick splits it into
+  two gestures, and the page takes the rest. Browser tests of a whole flick
+  failed this way under heavy test load, so the owner removed them.
+- Verify with `pnpm verify:full`.
+
 ### Console pixel art — `codex/feat/console-pixel-art`
 
 One candidate: `feat: add pixel art console greeting`.

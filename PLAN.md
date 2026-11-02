@@ -253,10 +253,12 @@ authored together in `src/data/timeline.ts`. Use a reusable static horizontal
 timeline: dates above connected open circles, titles and short anecdotes below.
 Show the most recent entries first, with the next card partially visible. Hide
 the scrollbar and omit direction labels and arrow buttons. While the pointer is
-over the timeline, vertical wheel gestures move it horizontally; at either end,
-let scrolling continue down or up the page. Preserve native horizontal trackpad
-and touch swipes, focused-region Left/Right/Home/End keys, reduced motion, and
-native horizontal scrolling without JavaScript. Keep the
+over the timeline, vertical wheel gestures move it horizontally. A gesture that
+starts with room to move stays on the timeline until it stops, so a flick's
+momentum ends at the first or last event instead of throwing the page. A new
+gesture that starts at either end scrolls down or up the page. Preserve native
+horizontal trackpad and touch swipes, focused-region Left/Right/Home/End keys,
+reduced motion, and native horizontal scrolling without JavaScript. Keep the
 user's humor and their supplied Cave and Zacc links with sketch underlines.
 Place a right RailAnnotation beside the timeline: "Scroll to the past", with
 the arrow below the text. Preserve its existing narrow-screen hiding behavior.

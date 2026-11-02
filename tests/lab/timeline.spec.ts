@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { WHEEL_GESTURE_GAP_MS } from "../../src/lib/wheel-gesture";
+
 test("independent timelines scroll only when their content overflows", async ({
   page,
 }) => {
@@ -21,6 +23,8 @@ test("independent timelines scroll only when their content overflows", async ({
     await page.locator("#timeline-short").evaluate((el) => el.scrollLeft),
   ).toBe(0);
   await page.setViewportSize({ width: 320, height: 900 });
+  // The short timeline's first scroll went to the page; let that gesture end.
+  await page.waitForTimeout(WHEEL_GESTURE_GAP_MS + 100);
   await short.hover();
   await page.mouse.wheel(0, 200);
   await expect
