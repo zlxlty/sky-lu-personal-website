@@ -375,7 +375,10 @@ in the audition before choosing the production library.
 draws the site's sound on it. The component is a one-pixel row in the copy. Its
 line and canvas are positioned from that row but take their width from the
 nearest positioned ancestor, a panel between the rails, so the line runs from
-rail to rail in the rails' colour token. The homepage hero mounts it.
+rail to rail in the rails' colour token. The homepage hero mounts it directly;
+`IndexHeading`'s `waves` prop adds it, and a wordmark-sized title, to Writings,
+Projects, and People. A page passes `settings` only where its waves differ from
+the hero's in `heroWaves`.
 
 `src/lib/sound-waves.ts` holds the `<sound-waves>` element and its pure motion.
 Each frame it reads band levels, eases each thread toward its register in two

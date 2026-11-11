@@ -5,17 +5,24 @@ import {
   PanelRuleBand,
 } from "@/components/blueprint/Panel";
 import { StripeSeparator } from "@/components/blueprint/StripeSeparator";
+import SoundWaves from "@/components/site/SoundWaves.astro";
 
 interface Props {
   title: string;
   eyebrow?: string;
   description: string;
+  /** Head the page like the homepage: a wordmark-sized title under the sound's waves. */
+  waves?: boolean;
 }
-const { title, eyebrow, description } = Astro.props;
+const { title, eyebrow, description, waves } = Astro.props;
 ---
 
 <Panel aria-labelledby="page-heading">
-  <PanelHeader className="pt-10 pb-8 sm:pt-16 sm:pb-12">
+  <PanelHeader
+    className={waves
+      ? "pt-10 pb-8 sm:pt-12 sm:pb-12"
+      : "pt-10 pb-8 sm:pt-16 sm:pb-12"}
+  >
     {
       eyebrow && (
         <p class="mb-5 font-mono text-xs tracking-(--tracking-meta) uppercase">
@@ -23,7 +30,24 @@ const { title, eyebrow, description } = Astro.props;
         </p>
       )
     }
-    <h1 id="page-heading" class="font-heading">{title}</h1>
+    <!--
+      Optical spacing, as on the homepage: the base line sits as far above the
+      title as the description sits below the title's baseline.
+    -->
+    {
+      waves && (
+        <SoundWaves
+          class="mb-[29px] md:mb-7"
+          settings={{ height: 16, spread: 700, gather: 60 }}
+        />
+      )
+    }
+    <h1
+      id="page-heading"
+      class:list={["font-heading", waves && "text-4xl md:text-5xl"]}
+    >
+      {title}
+    </h1>
     <p
       class="mt-5 mb-0 max-w-xl text-lg leading-(--leading-body) text-muted-foreground"
     >

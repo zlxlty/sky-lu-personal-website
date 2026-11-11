@@ -71,6 +71,13 @@ const pages = [
     text: "[data-hero-copy] > p",
     end: 441,
   },
+  ...["/writing", "/projects", "/people"].map((path) => ({
+    path,
+    title: "#page-heading",
+    letters: "#page-heading",
+    text: "#page-heading + p",
+    end: 776,
+  })),
 ];
 
 for (const { path, title, end } of pages)
@@ -161,6 +168,30 @@ for (const { path, letters, text } of pages)
     });
   }
 
+for (const [width, size] of [
+  [390, "36px"],
+  [1280, "48px"],
+] as const) {
+  test(`index titles are the size of the homepage wordmark at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    await expect(page.locator("#hero-heading")).toHaveCSS("font-size", size);
+    for (const path of ["/writing", "/projects", "/people"]) {
+      await page.goto(path);
+      await expect(page.locator("#page-heading")).toHaveCSS("font-size", size);
+    }
+    // Pages without waves keep the larger title.
+    await page.goto("/privacy");
+    await expect(waves(page)).toHaveCount(0);
+    await expect(page.locator("#page-heading")).not.toHaveCSS(
+      "font-size",
+      size,
+    );
+  });
+}
+
 test("strummed strings swell the waves until the guitar is muted", async ({
   page,
 }) => {
@@ -181,7 +212,7 @@ test("strummed strings swell the waves until the guitar is muted", async ({
   await expectRest(page);
 });
 
-test("the record swells the waves, on this visit and after returning", async ({
+test("the record swells the waves on every page it plays across", async ({
   page,
 }) => {
   const spectra = await stubRecord(page);
@@ -200,7 +231,8 @@ test("the record swells the waves, on this visit and after returning", async ({
     .getByRole("link", { name: "Writings" })
     .click();
   await expect(page).toHaveURL(/\/writing$/);
-  await expect(waves(page)).toHaveCount(0);
+  // The record keeps playing, and this page's own waves pick it up.
+  await expect.poll(() => reach(page)).toBeGreaterThan(11);
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
   await expect(record(page)).toHaveAttribute("data-audio-state", "playing");
