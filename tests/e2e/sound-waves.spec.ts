@@ -164,7 +164,8 @@ for (const { path, letters, text } of pages)
         { letters, text },
       );
       expect(gaps.above).toBeGreaterThan(20);
-      expect(Math.abs(gaps.above - gaps.below)).toBeLessThan(1);
+      // Linux reports text heights in whole pixels, so allow a pixel of rounding.
+      expect(Math.abs(gaps.above - gaps.below)).toBeLessThan(2);
     });
   }
 
