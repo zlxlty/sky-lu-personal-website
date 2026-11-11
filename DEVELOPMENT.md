@@ -369,6 +369,34 @@ failure, and accessibility checks. Browser tests observe Web Audio calls; they
 do not record microphone or system output. Judge the actual timbre by listening
 in the audition before choosing the production library.
 
+#### Sound waves
+
+`src/components/site/SoundWaves.astro` puts a base line above a page's title and
+draws the site's sound on it. The component is a one-pixel row in the copy. Its
+line and canvas are positioned from that row but take their width from the
+nearest positioned ancestor, a panel between the rails, so the line runs from
+rail to rail in the rails' colour token. The homepage hero mounts it.
+
+`src/lib/sound-waves.ts` holds the `<sound-waves>` element and its pure motion.
+Each frame it reads band levels, eases each thread toward its register in two
+short steps so a note starts gently, and strokes the threads on the canvas. The
+motion functions take the settings and no DOM, so Vitest covers them directly.
+The element stops drawing offscreen and under reduced motion, which leaves the
+line; without JavaScript only the line renders.
+
+Sound reaches the waves through `src/lib/spectrum-sources.ts`. The guitar engine
+publishes a live analyser on its limited output. The footer record cannot be
+analysed in the browser, because the audio host sends no CORS headers, so
+`src/lib/record-spectrum.ts` reads band levels precomputed for each recording
+at the playback position. `pnpm recordings spectra` writes them to
+`src/assets/spectra/`; see `DEPLOYMENT.md`. Both use the bands in
+`src/lib/spectrum-bands.ts`, so the two sources draw on one scale.
+
+Run `pnpm test spectrum` for the bands, the motion, and the recording spectra,
+and `pnpm test:e2e sound-waves.spec.ts` for the line, the spacing, the guitar,
+the record across page changes, and reduced motion. The browser tests read the
+canvas pixels; they do not judge how the motion feels.
+
 `src/components/site/SiteHeader.astro` owns the static `sky lu.` wordmark, public
 navigation records, and current-page labels. The wordmark reuses the preloaded
 Geist font and needs no client code. `SiteFooter.astro` consumes the shared profile's

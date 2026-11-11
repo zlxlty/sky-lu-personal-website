@@ -5,6 +5,7 @@ import { GuitarPlayer } from "@/components/guitar/GuitarPlayer";
 import type { GuitarLayout } from "@/components/guitar/string-geometry";
 import { profile } from "@/data/profile";
 import SiteWordmark from "./SiteWordmark.astro";
+import SoundWaves from "./SoundWaves.astro";
 
 const guitarLayout = {
   width: 800,
@@ -22,12 +23,11 @@ const guitarLayout = {
       className="z-10 min-w-0 pt-10 pb-8 md:col-start-1 md:row-start-1 md:pt-12"
     >
       <div data-hero-copy>
-        <p
-          data-slot="eyebrow"
-          class="mb-4 font-mono text-xs tracking-widest uppercase opacity-45"
-        >
-          Sincere,Compassionate,Tolerant
-        </p>
+        <!--
+          Optical spacing: the base line sits as far above the name's
+          ascenders as the introduction's sit below its baseline.
+        -->
+        <SoundWaves class="mb-6 md:mb-[23px]" />
         <div data-text-hint class="relative w-fit">
           <h1 id="hero-heading" class="m-0 font-heading text-4xl md:text-5xl">
             <SiteWordmark>

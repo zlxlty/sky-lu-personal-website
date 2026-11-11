@@ -1,0 +1,52 @@
+---
+import recordings from "@/data/recordings.json";
+import type { WaveSettings } from "@/lib/sound-waves";
+
+interface Props {
+  class?: string;
+  /** Where this page's waves differ from the homepage hero's. */
+  settings?: Partial<WaveSettings>;
+}
+const { class: className, settings } = Astro.props;
+
+// One precomputed spectrum per recording, named after its audio file.
+const assets = import.meta.glob<string>("/src/assets/spectra/*.bin", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const spectra = Object.fromEntries(
+  Object.values(recordings.files).flatMap((key) => {
+    const name = key.replace(/^.*\//, "").replace(/\.m4a$/, "");
+    const url = assets[`/src/assets/spectra/${name}.bin`];
+    return url ? [[`${recordings.origin}/${key}`, url]] : [];
+  }),
+);
+---
+
+<!--
+  Decoration: the guitar and the record announce their own state. This box is
+  the base line's row in the copy. Its children take their height from it and
+  their width from the nearest positioned ancestor, a panel between the rails,
+  so the line runs from rail to rail in the rails' own colour while the waves
+  gather above the title.
+-->
+<sound-waves
+  aria-hidden="true"
+  data-spectra={JSON.stringify(spectra)}
+  data-waves={settings && JSON.stringify(settings)}
+  class:list={["block h-px", className]}
+>
+  <div
+    data-sound-line
+    class="pointer-events-none absolute inset-x-0 h-px translate-y-(--wave-snap) bg-(--color-blueprint-rule)"
+  >
+  </div>
+  <canvas
+    class="pointer-events-none absolute inset-x-0 block h-0 w-full translate-y-[calc(-50%+var(--wave-snap,0px))]"
+  ></canvas>
+</sound-waves>
+
+<script>
+  import "@/lib/sound-waves";
+</script>
