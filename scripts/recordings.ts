@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import recordings from "../src/data/recordings.json" with { type: "json" };
@@ -9,6 +9,7 @@ import {
   assertUnreferenced,
   recordingKey,
 } from "./lib/recording-file.ts";
+import { analysisRate, recordingSpectrum } from "./lib/recording-spectrum.ts";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const [command, input, slug, ...extra] = process.argv.slice(2);
@@ -182,9 +183,65 @@ if (command === "prepare") {
       "Edge cache not warm/eligible; check the audio Cache Rule, then retry",
     );
   }
+} else if (command === "spectra") {
+  assert(!input, "Usage: pnpm recordings spectra");
+  const output = resolve(root, "src/assets/spectra");
+  await mkdir(directory, { recursive: true });
+  await mkdir(output, { recursive: true });
+  const wanted = new Set<string>();
+  for (const key of Object.values(recordings.files)) {
+    const [, slug] =
+      basename(key).match(/^([a-z0-9-]+)\.[a-f0-9]{16}\.m4a$/) ?? [];
+    assert(slug, `${key}: expected a hashed file produced by prepare`);
+    const local = resolve(directory, basename(key));
+    // Prefer the prepared file; otherwise analyse the published one.
+    const bytes = await readFile(local).catch(async () => {
+      const response = await request(`${recordings.origin}/${key}`);
+      const downloaded = Buffer.from(await response.arrayBuffer());
+      await writeFile(local, downloaded);
+      return downloaded;
+    });
+    assert.equal(
+      recordingKey(slug, bytes),
+      key,
+      `${local} does not match its hash; delete it and retry`,
+    );
+    const pcm = execFileSync(
+      "ffmpeg",
+      [
+        "-v",
+        "error",
+        "-i",
+        local,
+        "-map",
+        "0:a:0",
+        "-ac",
+        "1",
+        "-ar",
+        String(analysisRate),
+        "-f",
+        "f32le",
+        "-",
+      ],
+      { maxBuffer: 2 ** 30 },
+    );
+    const spectrum = recordingSpectrum(
+      new Float32Array(pcm.buffer, pcm.byteOffset, pcm.byteLength / 4),
+    );
+    const name = basename(key).replace(/\.m4a$/, ".bin");
+    wanted.add(name);
+    await writeFile(resolve(output, name), spectrum);
+    console.log(`${name}: ${spectrum.length} bytes`);
+  }
+  // A spectrum without its recording would ship in the build for nothing.
+  for (const name of await readdir(output))
+    if (name.endsWith(".bin") && !wanted.has(name)) {
+      await rm(resolve(output, name));
+      console.log(`${name}: removed, no longer in the playlist`);
+    }
 } else {
   console.log(
-    "Recording management (Wrangler login; prepare also needs ffmpeg):\n  pnpm recordings prepare <local-file> <name>\n  pnpm recordings upload <prepared-file>\n  pnpm recordings check\n  pnpm recordings remove <object-key> [--execute]\nUploads are remote and versioned. Removal defaults to a dry run and refuses referenced files.",
+    "Recording management (Wrangler login; prepare and spectra also need ffmpeg):\n  pnpm recordings prepare <local-file> <name>\n  pnpm recordings upload <prepared-file>\n  pnpm recordings check\n  pnpm recordings spectra\n  pnpm recordings remove <object-key> [--execute]\nUploads are remote and versioned. Removal defaults to a dry run and refuses referenced files. spectra rewrites src/assets/spectra for the hero's waves.",
   );
   if (command && command !== "--help") process.exitCode = 1;
 }

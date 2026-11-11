@@ -107,6 +107,8 @@ pnpm recordings prepare /path/to/cover.m4a my-cover
 # Use the exact output filename printed by prepare:
 pnpm recordings upload ".recordings/my-cover.<hash>.m4a"
 pnpm recordings check
+# After adding the key to src/data/recordings.json:
+pnpm recordings spectra
 ```
 
 `prepare` moves M4A metadata to the beginning without re-encoding, checks that
@@ -122,6 +124,12 @@ download with the uploaded bytes. Add the printed object key to
 `src/data/recordings.json` and reference it from the playlist before releasing
 the website. Upload first, deploy second. Build and deployment never upload or
 delete recordings as a side effect.
+
+`spectra` writes one small file per playlist recording to `src/assets/spectra/`
+for the hero's sound waves, and removes files for recordings no longer in
+`src/data/recordings.json`. It reads the prepared file in `.recordings/`, or
+downloads the published one, and needs `ffmpeg`. Commit the result with the
+playlist change; a unit test fails when a recording has no current spectrum.
 
 In Cloudflare **Caching → Cache Rules**, the `Cache audio recordings` rule is:
 

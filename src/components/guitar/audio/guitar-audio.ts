@@ -1,4 +1,5 @@
 import type { ToneBufferSource } from "tone";
+import { analyserSpectrum, publishSpectrum } from "@/lib/spectrum-sources";
 import type { GuitarPluck } from "../pluck";
 import {
   playbackRate,
@@ -21,6 +22,9 @@ function loadTone() {
       throw error;
     }));
 }
+
+/** Band decibels at which a firmly plucked string drives a wave to full size. */
+const spectrumCeiling = -36;
 
 /** Call directly from sound activation: unlock before any import or fetch awaits. */
 export function createGuitarAudio() {
@@ -50,7 +54,15 @@ export function createGuitarAudio() {
       threshold: -2,
     }).toDestination();
     const gain = new Tone.Gain({ context, gain: volume }).connect(limiter);
-    return { Tone, context, gain, limiter };
+    // The hero's waves follow what the visitor hears: the limited output.
+    const analyser = raw.createAnalyser();
+    analyser.fftSize = 8192;
+    analyser.smoothingTimeConstant = 0.5;
+    limiter.connect(analyser);
+    const unpublish = publishSpectrum(
+      analyserSpectrum(analyser, spectrumCeiling),
+    );
+    return { Tone, context, gain, limiter, unpublish };
   });
 
   const stop = () => {
@@ -152,7 +164,8 @@ export function createGuitarAudio() {
       lastVoice.clear();
       buffers.clear();
       void ready
-        .then(({ context, gain, limiter }) => {
+        .then(({ context, gain, limiter, unpublish }) => {
+          unpublish();
           gain.dispose();
           limiter.dispose();
           void context.close().then(() => context.dispose());
