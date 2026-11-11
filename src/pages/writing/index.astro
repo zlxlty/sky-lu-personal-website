@@ -15,11 +15,7 @@ const entries = await getWriting();
   title={`Writings — ${profile.name}`}
   description={`Thoughts on cooking, jazz guitar, and learning abstractions by ${profile.name}.`}
 >
-  <IndexHeading
-    title="Writings"
-    eyebrow="Thoughts / A notebook in the making"
-    description={writingsIntro}
-  />
+  <IndexHeading title="Writings" description={writingsIntro} />
   {entries.length > 0 && <WritingList {entries} />}
   <WritingIdeas />
   <StripeSeparator />
