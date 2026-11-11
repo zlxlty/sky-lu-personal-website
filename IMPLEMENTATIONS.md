@@ -12,6 +12,44 @@ It is an execution plan, not blanket authorization to commit. Every commit candi
 
 ## 2. Delivery model
 
+### Sound waves — `codex/feat/sound-waves`
+
+Replace the small mono titles above the homepage name and above the Writings,
+Projects, and People titles with a base line between the rails, on which the
+site's sound plays as waves. Remove the footer's small title outright. Privacy,
+the 404 page, and reader pages keep theirs.
+
+1. `docs: plan the sound waves`: this section and the `PLAN.md` decisions.
+2. `style: remove the small titles from the footer and index pages`: the footer
+   sign-off and the three index headings lose their small title, and
+   `IndexHeading` makes it optional. The lab snapshots change because they
+   include the footer.
+3. `feat: analyse the guitar and recordings into frequency bands`: 17 bands a
+   fourth wide from 100 Hz to 10 kHz. The guitar gains a live analyser on its
+   limited output. The recordings' host sends no CORS headers, so a browser
+   cannot read their samples. `pnpm recordings spectra` precomputes each
+   recording's band levels at 20 frames a second into `src/assets/spectra/`,
+   108-135 KB each, fetched only when that record plays. A unit test fails when
+   a playlist recording has no current spectrum.
+4. `feat: draw the site's sound as waves above the homepage name`: the
+   `<sound-waves>` element, its base line in the rails' colour, and the hero
+   mount in place of the small title.
+5. `feat: head Writings, Projects, and People with the waves`: wordmark-sized
+   titles under the same line, with their own wave settings.
+
+- The owner chose the design from a throwaway prototype that compared five wave
+  designs and six ways of driving them, then set the sizes, spread, and timing
+  by hand in a development-only tuning bar. Both are recorded on the local
+  branch `codex/prototype/hero-waves` and are not merged.
+- A thread follows its register in two short steps, with a 0.4 s rise and a
+  0.6 s fall, and sound adds to the idle ripple. A single faster step made every
+  note read as a jump.
+- The waves animate whenever their heading is on screen, because of the idle
+  ripple. They stop offscreen and under reduced motion.
+- Not checked in Safari or Firefox. Browser tests read the canvas pixels; they
+  do not judge how the motion feels.
+- Verify with `pnpm verify:full` and `pnpm test:lab`.
+
 ### Timeline wheel gestures — `codex/fix/timeline-wheel-latch`
 
 One candidate: `fix: keep a flick on the timeline until it stops`.

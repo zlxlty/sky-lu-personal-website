@@ -213,9 +213,33 @@ Hovering or focusing `sky` in the hero reveals `Legal Name: Tianyi Lu`. Keep
 the tooltip outside the heading's accessible name, dismissible with Escape,
 and available as a native title without JavaScript.
 
-The hero eyebrow reads `Sincere,Compassionate,Tolerant`. Keep “learning and building”
-together when the introduction wraps. The overview below introduces the people,
-communities, and everyday pursuits that motivate Sky.
+A base line crosses the hero from rail to rail above the wordmark, in the
+rails' own colour, and the site's sound plays on it as waves. Five hairline
+threads, lows to highs, gather over the name and introduction and fade out
+before the guitar. Each thread swells with its register over about half a
+second, starting gently, and eases back as slowly, rather than jumping with
+every note. A note lifts the idle ripple from its first moment. Threads reach
+up to 20 px either side of the line, in the ink colour at falling opacity. In
+silence the threads keep a slow ripple a few pixels tall. The guitar is heard
+through a live analyser on its output; the footer record is read from a
+spectrum precomputed for each recording, in 17 bands a fourth wide from 100 Hz
+to 10 kHz, because the audio host sends no CORS headers and its samples cannot
+be read in the browser. The waves are decorative and hidden from assistive
+technology, download nothing until a record plays, pause offscreen, and are not
+drawn under reduced motion or without JavaScript, which leave the line alone.
+The line sits as far above the name's ascenders as the introduction's tallest
+letters sit below the name's baseline.
+
+The Writings, Projects, and People indexes are headed the same way: a base line
+from rail to rail with waves above the title, spaced by the same rule. They
+have no guitar, so their waves follow the footer record when it is playing and
+otherwise keep the idle ripple. Their waves are a little lower than the hero's,
+16 px, gather nearer the left rail, and taper across the full width to the
+right rail. Privacy and the 404 page keep the larger title and no waves.
+
+Keep “learning and building” together when the introduction wraps. The overview
+below introduces the people, communities, and everyday pursuits that motivate
+Sky.
 
 Compact identity labels:
 
@@ -572,8 +596,9 @@ Theme behavior:
   it, where 16 px would crowd the wordmark at 320 px.
 - Other sans text: 14 px minimum.
 - Metadata: 12 px IBM Plex Mono, with nothing smaller.
-- Page headings stay restrained: fluid 40-64 px on index pages, and 36-48 px on the
-  homepage hero and reader pages.
+- Page headings stay restrained: 36-48 px on the homepage hero, reader pages,
+  and the Writings, Projects, and People indexes, whose titles match the
+  homepage wordmark; fluid 40-64 px on the remaining index-style pages.
 - Section headings: 36 px on the homepage, and 24-30 px in lists and Markdown.
 
 ### 6.5 Motion
