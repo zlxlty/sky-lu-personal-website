@@ -26,7 +26,8 @@ needed. The page renders statically; it does not fetch profiles or photographs.
 
 Prepare and upload a recording using the commands in
 [Managing recordings in R2](DEPLOYMENT.md#managing-recordings-in-r2), then add
-its printed key to `src/data/recordings.json`. Add an entry to `listeningTracks`
+its printed key to `src/data/recordings.json` and run `pnpm recordings spectra`
+so the hero's waves can draw it. Add an entry to `listeningTracks`
 in `src/data/listening.ts` for the ordered playlist and its metadata:
 
 ```ts

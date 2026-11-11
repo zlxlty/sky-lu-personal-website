@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createGuitarAudio } from "@/components/guitar/audio/guitar-audio";
 import type { GuitarSampleBank } from "@/components/guitar/audio/sample-bank";
+import { bandCount } from "@/lib/spectrum-bands";
+import { readSpectrum } from "@/lib/spectrum-sources";
 
 const fake = vi.hoisted(() => {
   class Source {
@@ -18,7 +20,14 @@ const fake = vi.hoisted(() => {
   const resume = vi.fn(() => Promise.resolve());
   const close = vi.fn(() => Promise.resolve());
   const decode = vi.fn((bytes: ArrayBuffer) => Promise.resolve({ bytes }));
-  return { Source, resume, close, decode };
+  const analyser = {
+    fftSize: 2048,
+    frequencyBinCount: 4096,
+    smoothingTimeConstant: 0.8,
+    context: { sampleRate: 48_000 },
+    getFloatFrequencyData: vi.fn((bins: Float32Array) => bins.fill(-36)),
+  };
+  return { Source, resume, close, decode, analyser };
 });
 
 vi.mock("tone", () => ({
@@ -40,6 +49,9 @@ vi.mock("tone", () => ({
   },
   Limiter: class {
     toDestination() {
+      return this;
+    }
+    connect() {
       return this;
     }
     dispose = vi.fn();
@@ -75,6 +87,8 @@ beforeEach(() => {
       resume = fake.resume;
       close = fake.close;
       decodeAudioData = fake.decode;
+      sampleRate = 48_000;
+      createAnalyser = () => fake.analyser;
     },
   );
   vi.stubGlobal(
@@ -145,6 +159,19 @@ describe("guitar audio lifecycle", () => {
     expect(fake.Source.all).toHaveLength(0);
     await engine.pluck(note);
     expect(fake.Source.all).toHaveLength(1);
+  });
+
+  it("offers its output to the hero's waves until it is disposed", async () => {
+    const levels = new Float32Array(bandCount);
+    expect(readSpectrum(levels)).toBe(false);
+    engine = createGuitarAudio();
+    await engine.load(bank);
+    expect(fake.analyser.fftSize).toBe(8192);
+    expect(readSpectrum(levels)).toBe(true);
+    expect(Math.max(...levels)).toBe(1);
+    engine.dispose();
+    await vi.waitFor(() => expect(readSpectrum(levels)).toBe(false));
+    expect(Math.max(...levels)).toBe(0);
   });
 
   it("aborts pending downloads on disposal and cannot play afterward", async () => {
